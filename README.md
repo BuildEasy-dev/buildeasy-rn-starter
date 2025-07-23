@@ -114,7 +114,9 @@ This starter template is designed to evolve with community feedback. Contributio
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+Note: The MIT license applies to the template itself. Code you generate using this template belongs to you.
 
 ---
 
