@@ -1,50 +1,121 @@
-# Welcome to your Expo app 👋
+# BuildEasy React Native Starter
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+An AI-friendly React Native starter template built on Expo and Tamagui, designed for optimal human-AI collaboration.
 
-## Get started
+## Features
 
-1. Install dependencies
+- 🔐 **Full Authentication Flow** - Complete auth implementation ready to use
+- 🎨 **Theming** - Built-in light/dark mode support with Tamagui
+- 🌍 **i18n Support** - Internationalization ready
+- 🔄 **State Management** - TanStack Query for server state & Zustand for client state
+- 📝 **Forms & Validation** - React Hook Form with Zod schema validation
+- 📚 **Component Documentation** - Storybook integration
+- ✨ **Animations** - React Native Reanimated configured
+- 🤖 **AI-Optimized Architecture** - Clean, understandable code structure for AI assistants
+
+## Why This Starter?
+
+The core goal is a clean architecture that AI assistants like Cursor and Claude Code can easily understand, making for better human-AI collaboration. Every architectural decision prioritizes clarity and maintainability.
+
+## Tech Stack
+
+- **Framework**: [Expo](https://expo.dev) (SDK 53)
+- **UI Library**: [Tamagui](https://tamagui.dev)
+- **Navigation**: [Expo Router](https://docs.expo.dev/router/introduction/) (file-based)
+- **Data Fetching**: [TanStack Query](https://tanstack.com/query/latest)
+- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
+- **Forms**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
+- **Animations**: [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/)
+- **Gestures**: [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/)
+- **Bottom Sheet**: [React Native Bottom Sheet](https://gorhom.github.io/react-native-bottom-sheet/)
+- **Documentation**: [Storybook](https://storybook.js.org/)
+- **Build & Deploy**: [Expo EAS](https://docs.expo.dev/eas/)
+- **TypeScript**: Strict mode enabled
+
+## Getting Started
+
+1. **Install dependencies**
 
    ```bash
-   npm install
+   pnpm install
    ```
 
-2. Start the app
+2. **Start the development server**
 
    ```bash
-   npx expo start
+   pnpm start
    ```
 
-In the output, you'll find options to open the app in a
+3. **Run on your platform**
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   In the output, you'll find options to open the app in a:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+   - [Development build](https://docs.expo.dev/develop/development-builds/introduction/) - Full featured development app
+   - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/) - Run on Android Virtual Device
+   - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/) - Run on iOS Simulator (macOS only)
+   - [Expo Go](https://expo.dev/go) - Limited sandbox for quick testing
 
-## Get a fresh project
+   Or use these commands:
 
-When you're ready, run:
+   ```bash
+   pnpm ios      # iOS simulator
+   pnpm android  # Android emulator
+   pnpm web      # Web browser
+   ```
 
-```bash
-npm run reset-project
+## Project Structure
+
+```
+app/              # Application screens (file-based routing)
+  (tabs)/         # Tab navigation screens
+  _layout.tsx     # Root layout with providers
+components/       # Reusable components
+  ui/            # UI components (Tamagui-based)
+constants/       # App constants
+hooks/          # Custom React hooks
+lib/            # Utilities and configurations
+  api/          # API client setup
+  auth/         # Authentication logic
+  i18n/         # Internationalization
+assets/         # Images, fonts, and static files
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+This project uses [file-based routing](https://docs.expo.dev/router/introduction) - start developing by editing files inside the **app** directory.
 
-## Learn more
+## AI Development Guidelines
 
-To learn more about developing your project with Expo, look at the following resources:
+This project includes a `CLAUDE.md` file with specific instructions for AI assistants. Key principles:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Clear component patterns with TypeScript
+- Consistent file naming and structure
+- Comprehensive documentation in code
+- Predictable state management patterns
+- Themed components with light/dark support
 
-## Join the community
+## Available Scripts
 
-Join our community of developers creating universal apps.
+- `pnpm start` - Start Expo development server
+- `pnpm android` - Run on Android
+- `pnpm ios` - Run on iOS
+- `pnpm web` - Run on web
+- `pnpm lint` - Run ESLint
+- `pnpm storybook` - Launch Storybook
+- `pnpm reset-project` - Reset to blank template (moves starter code to app-example/)
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Learn More
+
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides)
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web
+- [Tamagui documentation](https://tamagui.dev/docs/intro/introduction): Learn about the universal UI system
+
+## Contributing
+
+This starter template is designed to evolve with community feedback. Contributions that improve AI-friendliness and developer experience are especially welcome.
+
+## License
+
+MIT
+
+---
+
+Built with ❤️ for the AI-assisted development era.
