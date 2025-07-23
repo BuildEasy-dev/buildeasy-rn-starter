@@ -23,7 +23,7 @@ This project uses **pnpm** as the package manager. For Expo-compatible packages,
 ## Architecture
 
 ### File-based Routing (Expo Router)
-- Routes are defined by file structure in the `app/` directory
+- Routes are defined by file structure in the `src/app/` directory
 - `_layout.tsx` files define navigation structure
 - `(tabs)/` directory implements tab navigation
 - Dynamic routes use `[param]` syntax
@@ -31,7 +31,7 @@ This project uses **pnpm** as the package manager. For Expo-compatible packages,
 
 ### Theming System
 - All UI components should use themed wrappers (`ThemedView`, `ThemedText`)
-- Colors are defined in `constants/Colors.ts` with light/dark variants
+- Colors are defined in `src/constants/Colors.ts` with light/dark variants
 - Use `useThemeColor` hook to access theme-aware colors
 - Components automatically adapt to system theme changes
 
@@ -61,20 +61,26 @@ export function MyComponent({ lightColor, darkColor, ...props }) {
 
 ## Project Structure
 ```
-app/              # Application screens and navigation
-  (tabs)/         # Tab navigation screens
-  _layout.tsx     # Root layout with theme provider
-components/       # Reusable components
-  ui/            # UI-specific components
-constants/       # App constants (Colors, etc.)
-hooks/          # Custom React hooks
-assets/         # Images, fonts, and static files
+src/              # Source code directory
+  app/            # Application screens and navigation
+    (tabs)/       # Tab navigation screens
+    _layout.tsx   # Root layout with theme provider
+  components/     # Reusable components
+    ui/          # UI-specific components
+  constants/      # App constants (Colors, etc.)
+  hooks/         # Custom React hooks
+assets/          # Images, fonts, and static files (root level)
 ```
 
 ## TypeScript Configuration
-- Path alias: `@/*` maps to project root
+- Path alias: `@/*` maps to `src/*` directory with fallback to project root
 - Strict mode is enabled
 - All components should have proper TypeScript types
+
+## File Naming Conventions
+- Use kebab-case for all file names
+- Avoid capital letters in file names
+- Examples: `user-profile.tsx`, `theme-provider.ts`, `auth-context.tsx`
 
 ## Testing
 No test framework is currently configured. When adding tests, consider:
