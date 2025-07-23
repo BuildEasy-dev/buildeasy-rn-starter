@@ -66,21 +66,22 @@ The core goal is a clean architecture that AI assistants like Cursor and Claude 
 ## Project Structure
 
 ```
-app/              # Application screens (file-based routing)
-  (tabs)/         # Tab navigation screens
-  _layout.tsx     # Root layout with providers
-components/       # Reusable components
-  ui/            # UI components (Tamagui-based)
-constants/       # App constants
-hooks/          # Custom React hooks
-lib/            # Utilities and configurations
-  api/          # API client setup
-  auth/         # Authentication logic
-  i18n/         # Internationalization
-assets/         # Images, fonts, and static files
+src/              # Source code directory
+  app/            # Application screens (file-based routing)
+    (tabs)/       # Tab navigation screens
+    _layout.tsx   # Root layout with providers
+  components/     # Reusable components
+    ui/          # UI components (Tamagui-based)
+  constants/      # App constants
+  hooks/         # Custom React hooks
+  lib/           # Utilities and configurations
+    api/         # API client setup
+    auth/        # Authentication logic
+    i18n/        # Internationalization
+assets/          # Images, fonts, and static files (root level)
 ```
 
-This project uses [file-based routing](https://docs.expo.dev/router/introduction) - start developing by editing files inside the **app** directory.
+This project uses [file-based routing](https://docs.expo.dev/router/introduction) - start developing by editing files inside the **src/app** directory.
 
 ## AI Development Guidelines
 
