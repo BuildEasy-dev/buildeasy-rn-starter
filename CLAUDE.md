@@ -11,6 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm web` - Run in web browser
 - `pnpm lint` - Run ESLint to check code quality
 - `pnpm reset-project` - Reset to blank Expo template (destructive)
+- `npx create-expo-module --local` - Create native modules
 
 ### Package Management
 This project uses **pnpm** as the package manager. For Expo-compatible packages, use:
