@@ -1,0 +1,53 @@
+{
+  "cli": {
+    "version": ">= 15.0.6"
+  },
+  "build": {
+    "base": {},
+    "development": {
+      "extends": "common",
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_ENV": "development"
+      },
+      "ios": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "extends": "common",
+      "developmentClient": false,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_ENV": "preview"
+      },
+      "ios": {
+	"image": "latest"
+      },
+      "android": {
+        "buildType": "apk",
+	"image": "latest"
+      }
+    },
+    "production": {
+      "extends": "common",
+      "developmentClient": false,
+      "distribution": "store",
+      "env": {
+        "EXPO_PUBLIC_ENV": "production"
+      },
+      "autoIncrement": true,
+      "ios": {
+	"image": "latest"
+      },
+      "android": {
+        "buildType": "app-bundle",
+	"image": "latest"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
