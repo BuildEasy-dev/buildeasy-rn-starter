@@ -21,20 +21,10 @@ interface ExtraConfig {
   // Build config
   bundleId: string;
   scheme: string;
-  iosStoreUrl: string;
-  androidStoreUrl: string;
   universalLinks: string[];
   
-  // Website & Social Media
-  websiteUrl: string;
-  supportEmail: string;
-  twitterUrl: string;
-  githubUrl: string;
-  
-  // Legal
-  copyright: string;
-  privacyUrl: string;
-  termsUrl: string;
+  // Build time
+  buildTime?: string;
 }
 
 // Access runtime configuration from expo-constants
@@ -61,26 +51,29 @@ export const Config = {
   // Build Configuration
   BUNDLE_ID: extra?.bundleId || 'com.buildeasy.rnstarter',
   SCHEME: extra?.scheme || 'buildeasyrnstarter',
-  IOS_STORE_URL: extra?.iosStoreUrl || '',
-  ANDROID_STORE_URL: extra?.androidStoreUrl || '',
+  IOS_STORE_URL: 'https://apps.apple.com/app/buildeasy-rn-starter',
+  ANDROID_STORE_URL: 'https://play.google.com/store/apps/details?id=com.buildeasy.rnstarter',
   UNIVERSAL_LINKS: extra?.universalLinks || [],
   
   // Website & Social Media
-  WEBSITE_URL: extra?.websiteUrl || 'https://buildeasy.dev',
-  SUPPORT_EMAIL: extra?.supportEmail || 'support@buildeasy.dev',
-  TWITTER_URL: extra?.twitterUrl || '',
-  GITHUB_URL: extra?.githubUrl || '',
+  WEBSITE_URL: 'https://buildeasy.dev',
+  SUPPORT_EMAIL: 'support@buildeasy.dev',
+  TWITTER_URL: 'https://twitter.com/buildeasy',
+  GITHUB_URL: 'https://github.com/buildeasy-dev/buildeasy-rn-starter',
   
   // Legal
-  COPYRIGHT: extra?.copyright || `© ${new Date().getFullYear()} BuildEasy. All rights reserved.`,
-  PRIVACY_URL: extra?.privacyUrl || '',
-  TERMS_URL: extra?.termsUrl || '',
+  COPYRIGHT: `© ${new Date().getFullYear()} BuildEasy. All rights reserved.`,
+  PRIVACY_URL: 'https://buildeasy.dev/privacy',
+  TERMS_URL: 'https://buildeasy.dev/terms',
   
   // Platform Info
   PLATFORM: Constants.platform,
   IS_IOS: Constants.platform?.ios !== undefined,
   IS_ANDROID: Constants.platform?.android !== undefined,
   IS_WEB: Constants.platform?.web !== undefined,
+  
+  // Build Info
+  BUILD_TIME: extra?.buildTime || new Date().toISOString(),
 } as const;
 
 // Type-safe config access

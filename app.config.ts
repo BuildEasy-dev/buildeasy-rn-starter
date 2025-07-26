@@ -1,6 +1,26 @@
 import { ExpoConfig, ConfigContext } from "expo/config";
 import packageJson from "./package.json";
-import { BUILD_CONFIG } from "./build.config.js";
+
+// Build configuration constants  
+const BUILD_CONFIG = {
+  // Expo Configuration
+  OWNER: 'buildeasy',
+  PROJECT_ID: '12345678-abcd-1234-abcd-123456789abc', 
+  SLUG: 'buildeasyrnstarter',
+  
+  // App Identity - Base values for environment-specific generation
+  BUNDLE_ID_BASE: 'com.buildeasy.rnstarter',
+  SCHEME_BASE: 'buildeasyrnstarter',
+  
+  // Universal Links configuration
+  // Add your domains here to enable HTTPS deep linking (e.g., ['example.com', 'www.example.com'])
+  // Leave empty to use only custom scheme deep linking
+  UNIVERSAL_LINKS: [] as string[],
+  
+  // Build numbers (auto-incremented by EAS for production)
+  IOS_BUILD_NUMBER: '1',
+  ANDROID_VERSION_CODE: 1,
+};
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   const IS_DEV = process.env.EXPO_PUBLIC_ENV === "development";
@@ -13,7 +33,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   };
 
   const getUniqueIdentifier = (): string => {
-    return withEnvSuffix(BUILD_CONFIG.BUNDLE_ID);
+    return withEnvSuffix(BUILD_CONFIG.BUNDLE_ID_BASE);
   };
 
   const getAppName = (): string => {
@@ -24,7 +44,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   };
 
   const getScheme = (): string => {
-    return withEnvSuffix(BUILD_CONFIG.SCHEME);
+    return withEnvSuffix(BUILD_CONFIG.SCHEME_BASE);
   };
 
   return {
@@ -41,6 +61,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ios: {
       supportsTablet: true,
       bundleIdentifier: getUniqueIdentifier(),
+      ...(BUILD_CONFIG.UNIVERSAL_LINKS.length > 0 && {
+        associatedDomains: BUILD_CONFIG.UNIVERSAL_LINKS.map(domain => `applinks:${domain}`),
+      }),
     },
     android: {
       adaptiveIcon: {
@@ -49,6 +72,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       },
       edgeToEdgeEnabled: true,
       package: getUniqueIdentifier(),
+      ...(BUILD_CONFIG.UNIVERSAL_LINKS.length > 0 && {
+        intentFilters: BUILD_CONFIG.UNIVERSAL_LINKS.map(domain => ({
+          action: "VIEW",
+          autoVerify: true,
+          data: { scheme: "https", host: domain },
+          category: ["BROWSABLE", "DEFAULT"]
+        })),
+      }),
     },
     web: {
       bundler: "metro",
@@ -87,20 +118,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       // Build config
       bundleId: getUniqueIdentifier(),
       scheme: getScheme(),
-      iosStoreUrl: BUILD_CONFIG.IOS_STORE_URL,
-      androidStoreUrl: BUILD_CONFIG.ANDROID_STORE_URL,
       universalLinks: BUILD_CONFIG.UNIVERSAL_LINKS,
-
-      // Website & Social Media
-      websiteUrl: BUILD_CONFIG.WEBSITE_URL,
-      supportEmail: BUILD_CONFIG.SUPPORT_EMAIL,
-      twitterUrl: BUILD_CONFIG.TWITTER_URL,
-      githubUrl: BUILD_CONFIG.GITHUB_URL,
-
-      // Legal
-      copyright: BUILD_CONFIG.COPYRIGHT,
-      privacyUrl: BUILD_CONFIG.PRIVACY_URL,
-      termsUrl: BUILD_CONFIG.TERMS_URL,
+      
+      // Build time
+      buildTime: new Date().toISOString(),
     },
   };
 };
