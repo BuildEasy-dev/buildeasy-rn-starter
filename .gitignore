@@ -36,4 +36,6 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# project files
 app-example
+plans/
