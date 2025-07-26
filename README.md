@@ -63,6 +63,38 @@ The core goal is a clean architecture that AI assistants like Cursor and Claude 
    pnpm web      # Web browser
    ```
 
+4. **Configure EAS (Optional - for building and deployment)**
+   
+   Install EAS CLI:
+   ```bash
+   npm install -g @expo/eas-cli
+   ```
+   
+   Login and configure:
+   ```bash
+   eas login
+   eas build:configure
+   ```
+   
+   Set up environment variables in `.env` file based on `.env.example`
+
+## Build & Deploy
+
+This project is configured with Expo Application Services (EAS) for building and deploying your app.
+
+### Environment Setup
+Copy `.env.example` to `.env` and configure your environment variables:
+- Bundle identifiers for iOS/Android
+- API URLs for different environments
+- App metadata and configuration
+
+### Building Your App
+- **Preview builds**: For internal testing and UAT
+- **Production builds**: For app store submission
+- **Local builds**: Build on your machine (requires Xcode/Android Studio)
+
+See the configuration guide at `docs/configuration-guide.md` for detailed setup instructions.
+
 ## Project Structure
 
 ```
@@ -95,6 +127,7 @@ This project includes a `CLAUDE.md` file with specific instructions for AI assis
 
 ## Available Scripts
 
+### Development Scripts
 - `pnpm start` - Start Expo development server
 - `pnpm android` - Run on Android
 - `pnpm ios` - Run on iOS
@@ -103,11 +136,29 @@ This project includes a `CLAUDE.md` file with specific instructions for AI assis
 - `pnpm storybook` - Launch Storybook
 - `pnpm reset-project` - Reset to blank template (moves starter code to app-example/)
 
+### Build & Deploy Scripts
+- `pnpm build:preview` - Build for preview/testing (iOS + Android)
+- `pnpm build:preview:ios` - Build for preview (iOS only)
+- `pnpm build:preview:android` - Build for preview (Android only)
+- `pnpm build:prod` - Build for production (iOS + Android)
+- `pnpm build:prod:ios` - Build for production (iOS only)
+- `pnpm build:prod:android` - Build for production (Android only)
+- `pnpm build:local:preview` - Local build for preview
+- `pnpm build:local:preview:ios` - Local build for preview (iOS only)
+- `pnpm build:local:preview:android` - Local build for preview (Android only)
+- `pnpm build:local:prod` - Local build for production
+- `pnpm build:local:prod:ios` - Local build for production (iOS only)
+- `pnpm build:local:prod:android` - Local build for production (Android only)
+- `pnpm submit:ios` - Submit to App Store
+- `pnpm submit:android` - Submit to Google Play
+
 ## Learn More
 
 - [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides)
 - [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web
 - [Tamagui documentation](https://tamagui.dev/docs/intro/introduction): Learn about the universal UI system
+- [EAS Build documentation](https://docs.expo.dev/build/introduction/): Learn about building and deploying with EAS
+- [EAS Submit documentation](https://docs.expo.dev/submit/introduction/): Learn about submitting to app stores
 
 ## Contributing
 

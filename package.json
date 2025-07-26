@@ -8,7 +8,21 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "build:preview": "eas build --profile preview --platform all",
+    "build:preview:ios": "eas build --profile preview --platform ios",
+    "build:preview:android": "eas build --profile preview --platform android",
+    "build:prod": "eas build --profile production --platform all",
+    "build:prod:ios": "eas build --profile production --platform ios",
+    "build:prod:android": "eas build --profile production --platform android",
+    "build:local:preview": "eas build --profile preview --platform all --local",
+    "build:local:preview:ios": "eas build --profile preview --platform ios --local",
+    "build:local:preview:android": "eas build --profile preview --platform android --local",
+    "build:local:prod": "eas build --profile production --platform all --local",
+    "build:local:prod:ios": "eas build --profile production --platform ios --local",
+    "build:local:prod:android": "eas build --profile production --platform android --local",
+    "submit:ios": "eas submit --platform ios",
+    "submit:android": "eas submit --platform android"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
