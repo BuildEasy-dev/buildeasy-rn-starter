@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.expo.dev)",
+      "Bash(git checkout:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm submit:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(npx expo config:*)",
+      "Bash(npx tsc:*)"
+    ],
+    "deny": []
+  }
+}
