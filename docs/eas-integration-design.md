@@ -47,13 +47,30 @@ The template includes a pre-configured `eas.json` with three build profiles:
 Update the configuration with your specific requirements.
 
 #### 3. Environment Setup
-- Copy `.env.example` to `.env.local` and configure your variables:
-  - Bundle identifiers (iOS/Android)
-  - API URLs for different environments
-  - Feature flags
-- Use `eas secret:create` for sensitive data (API keys, certificates)
-- The template automatically uses `package.json` name and version for app metadata
-- Environment variables in `app.config.js` eliminate manual JSON editing
+
+**Configuration Hierarchy** (highest to lowest priority):
+1. **EAS Cloud variables** - for sensitive data (API keys, tokens)
+2. **`eas.json` env field** - for non-sensitive build config
+3. **Local `.env` files** - ⚠️ **NOT used in EAS builds** (development only)
+
+**For Local Development:**
+```bash
+# Copy template and configure for local testing only
+cp .env.example .env.local
+```
+
+**For EAS Builds:**
+- **Sensitive variables**: Use `eas secret:create` for API keys, certificates
+- **Non-sensitive config**: Add to `eas.json` env field for each profile
+- **Build constants**: Configure in `app.config.ts` BUILD_CONFIG
+
+**Configuration Access:**
+```typescript
+// Always use Config.ts in your app code
+import { Config } from '@/constants/Config';
+const apiUrl = Config.API_URL;
+const bundleId = Config.BUNDLE_ID;
+```
 
 #### 4. Platform Configuration
 - **iOS**: Run `eas credentials` to set up certificates and provisioning profiles
@@ -76,14 +93,14 @@ The template includes three pre-configured profiles that dynamically use environ
 
 ### Preview Profile  
 - Internal testing builds
-- Uses staging environment variables (configurable via `.env`)
+- Uses preview environment variables (configured via `eas.json` env field)
 - Ad-hoc distribution for iOS, APK for Android
 
 ### Production Profile
 - Store-ready builds
-- Uses production environment variables
+- Uses production environment variables (EAS Cloud + `eas.json` env field)
 - App Bundle for Android, store distribution for iOS
-- All metadata pulled from environment configuration
+- All metadata pulled from `app.config.ts` BUILD_CONFIG
 
 
 ## Best Practices
@@ -99,7 +116,9 @@ The template includes three pre-configured profiles that dynamically use environ
 - Trigger full builds only when necessary
 
 ### General Guidelines
-- Use environment variables for all non-sensitive configuration
+- Follow configuration hierarchy: EAS Cloud > `eas.json` > local files
+- Use `Config.ts` for all runtime configuration access
+- Store sensitive data in EAS Cloud, non-sensitive in `eas.json`
 - Keep `eas.json` generic and reusable across projects
 - Use semantic versioning
 - Establish clear branching strategy
