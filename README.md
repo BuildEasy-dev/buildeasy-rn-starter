@@ -129,6 +129,16 @@ This project includes a `CLAUDE.md` file with specific instructions for AI assis
 - Predictable state management patterns
 - Themed components with light/dark support
 
+## Git Commit Standards
+
+This project enforces commit message standards using commitlint. All commits must follow the conventional format:
+
+```
+<type>: <subject>
+```
+
+For detailed guidelines, see the [Commitlint Guide](docs/commitlint-guide.md).
+
 ## Available Scripts
 
 ### Development Scripts
@@ -138,6 +148,8 @@ This project includes a `CLAUDE.md` file with specific instructions for AI assis
 - `pnpm ios` - Run on iOS
 - `pnpm web` - Run on web
 - `pnpm lint` - Run ESLint
+- `pnpm typecheck` - Run TypeScript type checking
+- `pnpm commitlint` - Validate last commit message
 - `pnpm storybook` - Launch Storybook
 - `pnpm reset-project` - Reset to blank template (moves starter code to app-example/)
 
