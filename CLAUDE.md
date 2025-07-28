@@ -138,3 +138,17 @@ Examples:
 - `fix: resolve navigation crash on Android`
 - `refactor: simplify theme provider implementation`
 - `chore: update expo to v53`
+
+### Commit Message Validation
+
+This project uses commitlint to automatically validate commit messages:
+
+- **Automatic validation**: Git hooks check every commit message
+- **Manual validation**: Run `pnpm commitlint` to check the last commit
+- **Check multiple commits**: Run `pnpm commitlint:last` to check the last 10 commits
+
+If a commit is rejected:
+1. The message must follow the format: `<type>: <subject>`
+2. Type must be one of the allowed types above
+3. Subject cannot be empty and must start with lowercase
+4. Fix the message and try again
