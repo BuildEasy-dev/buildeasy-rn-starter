@@ -24,7 +24,10 @@
     "build:local:prod:ios": "eas build --profile production --platform ios --local",
     "build:local:prod:android": "eas build --profile production --platform android --local",
     "submit:ios": "eas submit --platform ios",
-    "submit:android": "eas submit --platform android"
+    "submit:android": "eas submit --platform android",
+    "prepare": "husky",
+    "commitlint": "commitlint --from HEAD~1 --to HEAD --verbose",
+    "commitlint:last": "commitlint --from HEAD~10 --to HEAD"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
@@ -56,10 +59,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
     "prettier": "^3.6.2",
     "typescript": "~5.8.3"
   },
