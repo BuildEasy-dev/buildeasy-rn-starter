@@ -1,0 +1,14 @@
+node_modules
+dist
+build
+coverage
+.expo
+.expo-shared
+web-build
+ios
+android
+.git
+*.log
+*.tmp
+assets/images
+assets/fonts

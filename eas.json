@@ -23,11 +23,11 @@
         "EXPO_PUBLIC_ENV": "preview"
       },
       "ios": {
-	"image": "latest"
+        "image": "latest"
       },
       "android": {
         "buildType": "apk",
-	"image": "latest"
+        "image": "latest"
       }
     },
     "production": {
@@ -39,11 +39,11 @@
       },
       "autoIncrement": true,
       "ios": {
-	"image": "latest"
+        "image": "latest"
       },
       "android": {
         "buildType": "app-bundle",
-	"image": "latest"
+        "image": "latest"
       }
     }
   },

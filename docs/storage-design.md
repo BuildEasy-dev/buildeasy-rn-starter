@@ -17,24 +17,28 @@ This document outlines the storage architecture using MMKV as the primary storag
 ### Storage Tiers
 
 #### Preferences
+
 - **Purpose**: Persistent user settings that define app behavior and appearance
 - **Examples**: Theme selection, language preference, notification settings, user onboarding status
 - **Lifecycle**: Persists across app reinstalls (via system backup)
 - **Cleanup**: Manual only, when user explicitly changes settings
 
 #### Cache
+
 - **Purpose**: Performance optimization by storing frequently accessed remote data
 - **Examples**: API responses, user profiles, image URLs, search results
 - **Lifecycle**: Persists across app restarts but can expire based on TTL
 - **Cleanup**: Automatic expiration based on TTL, manual clear via settings, or when storage is full
 
 #### Secure
+
 - **Purpose**: Sensitive data requiring encryption at rest
 - **Examples**: Authentication tokens, API keys, user credentials, payment information
 - **Lifecycle**: Persists until explicitly removed or user logs out
 - **Cleanup**: On user logout, token expiration, or security events
 
 #### Temp
+
 - **Purpose**: Transient data relevant only to current app session
 - **Examples**: Form drafts, navigation state, search filters, shopping cart (guest)
 - **Lifecycle**: Cleared automatically on app restart
@@ -42,21 +46,21 @@ This document outlines the storage architecture using MMKV as the primary storag
 
 ### Storage Comparison
 
-| Tier | Persistence | Backup | Encryption | TTL Support | Use Case |
-|------|------------|--------|------------|-------------|----------|
-| preferences | Forever | ✅ | ❌ | ❌ | User settings |
-| cache | Until expired | ❌ | ❌ | ✅ | Performance optimization |
-| secure | Until logout | ❌ | ✅ | ❌ | Sensitive credentials |
-| temp | Current session | ❌ | ❌ | ❌ | Transient state |
+| Tier        | Persistence     | Backup | Encryption | TTL Support | Use Case                 |
+| ----------- | --------------- | ------ | ---------- | ----------- | ------------------------ |
+| preferences | Forever         | ✅     | ❌         | ❌          | User settings            |
+| cache       | Until expired   | ❌     | ❌         | ✅          | Performance optimization |
+| secure      | Until logout    | ❌     | ✅         | ❌          | Sensitive credentials    |
+| temp        | Current session | ❌     | ❌         | ❌          | Transient state          |
 
 ### Core Interfaces
 
 ```typescript
 interface StorageManager {
-  preferences: IStorage;      // Persistent user preferences
-  cache: IStorageWithTTL;    // Cached data with expiration
-  secure: ISecureStorage;    // Encrypted storage
-  temp: IStorage;            // Temporary storage
+  preferences: IStorage; // Persistent user preferences
+  cache: IStorageWithTTL; // Cached data with expiration
+  secure: ISecureStorage; // Encrypted storage
+  temp: IStorage; // Temporary storage
 }
 
 interface IStorage {
@@ -81,33 +85,36 @@ interface IStorageWithTTL extends IStorage {
 const instances = {
   preferences: new MMKV({
     id: 'preferences',
-    path: `${MMKV.appGroupPath}/backup`
+    path: `${MMKV.appGroupPath}/backup`,
   }),
-  
+
   cache: new MMKV({
     id: 'cache',
-    path: `${MMKV.appGroupPath}/no-backup`
+    path: `${MMKV.appGroupPath}/no-backup`,
   }),
-  
+
   secure: new MMKV({
     id: 'secure',
     path: `${MMKV.appGroupPath}/no-backup`,
-    encryptionKey: 'generated-key'
-  })
-}
+    encryptionKey: 'generated-key',
+  }),
+};
 ```
 
 ### Backup Strategy
 
 **Path-based separation:**
+
 - `/backup/` - Included in system backups
 - `/no-backup/` - Excluded from backups
 
 **iOS Configuration:**
+
 - Set `NSURLIsExcludedFromBackupKey` on no-backup directories
 - Backup directory automatically included in iCloud
 
 **Android Configuration:**
+
 ```xml
 <!-- backup_rules.xml -->
 <full-backup-content>
@@ -138,21 +145,21 @@ module.exports = (config) => {
   <include domain="file" path="mmkv/backup/" />
   <exclude domain="file" path="mmkv/no-backup/" />
 </full-backup-content>`;
-      
+
       // Write to res/xml/backup_rules.xml
       return config;
-    }
+    },
   ]);
-  
+
   // iOS: Configure backup exclusion
   config = withDangerousMod(config, [
     'ios',
     async (config) => {
       // Add NSURLIsExcludedFromBackupKey setup
       return config;
-    }
+    },
   ]);
-  
+
   return config;
 };
 ```
@@ -162,12 +169,15 @@ module.exports = (config) => {
 {
   "expo": {
     "plugins": [
-      ["expo-build-properties", {
-        "android": {
-          "allowBackup": true,
-          "fullBackupContent": "@xml/backup_rules"
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "allowBackup": true,
+            "fullBackupContent": "@xml/backup_rules"
+          }
         }
-      }],
+      ],
       "./plugins/mmkv-backup.js"
     ]
   }
@@ -178,12 +188,12 @@ module.exports = (config) => {
 
 ### Data Type Mapping
 
-| Data Type | Storage Tier | Example |
-|-----------|-------------|---------|
-| User preferences | preferences | `theme: 'dark'` |
-| API responses | cache | `userProfile` (7d TTL) |
-| Auth tokens | secure | `authToken` |
-| Form drafts | temp | `checkoutForm` |
+| Data Type        | Storage Tier | Example                |
+| ---------------- | ------------ | ---------------------- |
+| User preferences | preferences  | `theme: 'dark'`        |
+| API responses    | cache        | `userProfile` (7d TTL) |
+| Auth tokens      | secure       | `authToken`            |
+| Form drafts      | temp         | `checkoutForm`         |
 
 ### Code Example
 
@@ -206,15 +216,16 @@ Storage.temp.set('form_draft', formData);
 
 ## Performance Benchmarks
 
-| Operation | MMKV | AsyncStorage |
-|-----------|------|--------------|
-| Write | ~0.3ms | ~10ms |
-| Read | ~0.1ms | ~3ms |
-| Batch write (100 items) | ~30ms | ~1000ms |
+| Operation               | MMKV   | AsyncStorage |
+| ----------------------- | ------ | ------------ |
+| Write                   | ~0.3ms | ~10ms        |
+| Read                    | ~0.1ms | ~3ms         |
+| Batch write (100 items) | ~30ms  | ~1000ms      |
 
 ## Data Management Strategy
 
 ### Initialization
+
 ```typescript
 // App.tsx or entry point
 import { initializeStorage } from '@/services/storage';
@@ -228,13 +239,13 @@ function App() {
 
 ### Cleanup Policies
 
-| Storage | Trigger | Action |
-|---------|---------|--------|
-| temp | App launch | Clear all |
-| cache | App launch | Remove expired entries |
-| cache | Storage full | Remove oldest entries (LRU) |
-| secure | User logout | Clear auth tokens |
-| preferences | Factory reset | Clear all |
+| Storage     | Trigger       | Action                      |
+| ----------- | ------------- | --------------------------- |
+| temp        | App launch    | Clear all                   |
+| cache       | App launch    | Remove expired entries      |
+| cache       | Storage full  | Remove oldest entries (LRU) |
+| secure      | User logout   | Clear auth tokens           |
+| preferences | Factory reset | Clear all                   |
 
 ### Storage Limits
 
@@ -245,7 +256,7 @@ function App() {
 
 ## Best Practices
 
-1. **Choose the right tier**: 
+1. **Choose the right tier**:
    - Settings that should survive reinstalls → preferences
    - Data that improves performance → cache
    - Sensitive credentials → secure
@@ -257,6 +268,7 @@ function App() {
    - Auth tokens: Match server expiry
 
 3. **Handle storage errors**:
+
    ```typescript
    try {
      Storage.secure.setSecure('token', value);
