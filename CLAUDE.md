@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ### Development
+
 - `pnpm start` - Start Expo development server
 - `pnpm android` - Run on Android device/emulator
 - `pnpm ios` - Run on iOS simulator
@@ -14,7 +15,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npx create-expo-module --local` - Create native modules
 
 ### Package Management
+
 This project uses **pnpm** as the package manager. For Expo-compatible packages, use:
+
 - `npx expo install [package]` - Install Expo-compatible packages (recommended)
 - `pnpm install` - Install all dependencies
 - `pnpm add [package]` - Add non-Expo packages
@@ -23,6 +26,7 @@ This project uses **pnpm** as the package manager. For Expo-compatible packages,
 ## Architecture
 
 ### File-based Routing (Expo Router)
+
 - Routes are defined by file structure in the `src/app/` directory
 - `_layout.tsx` files define navigation structure
 - `(tabs)/` directory implements tab navigation
@@ -30,12 +34,14 @@ This project uses **pnpm** as the package manager. For Expo-compatible packages,
 - Stack navigation is automatic based on nesting
 
 ### Theming System
+
 - All UI components should use themed wrappers (`ThemedView`, `ThemedText`)
 - Colors are defined in `src/constants/Colors.ts` with light/dark variants
 - Use `useThemeColor` hook to access theme-aware colors
 - Components automatically adapt to system theme changes
 
 ### Component Patterns
+
 ```typescript
 // Example themed component structure
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -47,11 +53,13 @@ export function MyComponent({ lightColor, darkColor, ...props }) {
 ```
 
 ### Platform-specific Code
+
 - Use `.ios.tsx` or `.android.tsx` file extensions for platform-specific components
 - Access platform via `Platform.OS` when needed
 - IconSymbol component handles iOS SF Symbols vs Material Icons automatically
 
 ## Key Technologies
+
 - **React Native**: 0.79.5 with New Architecture enabled
 - **React**: 19.0.0
 - **Expo SDK**: 53.0.20
@@ -60,6 +68,7 @@ export function MyComponent({ lightColor, darkColor, ...props }) {
 - **Animations**: react-native-reanimated v3
 
 ## Project Structure
+
 ```
 src/              # Source code directory
   app/            # Application screens and navigation
@@ -73,17 +82,21 @@ assets/          # Images, fonts, and static files (root level)
 ```
 
 ## TypeScript Configuration
+
 - Path alias: `@/*` maps to `src/*` directory with fallback to project root
 - Strict mode is enabled
 - All components should have proper TypeScript types
 
 ## File Naming Conventions
+
 - Use kebab-case for all file names
 - Avoid capital letters in file names
 - Examples: `user-profile.tsx`, `theme-provider.ts`, `auth-context.tsx`
 
 ## Testing
+
 No test framework is currently configured. When adding tests, consider:
+
 - Jest for unit testing
 - React Native Testing Library for component testing
 - Detox or Maestro for E2E testing
@@ -91,14 +104,18 @@ No test framework is currently configured. When adding tests, consider:
 ## Git Commit Standards
 
 ### Important: Human-like Commits Only
+
 **NEVER include Claude Code collaboration information in any Git operations:**
+
 - NO "Generated with Claude Code" messages
 - NO "Co-Authored-By: Claude" signatures
 - NO AI/bot attribution in commits, PRs, tags, or releases
 - Write commits as if they were human-written
 
 ### Commit Message Format
+
 Keep messages concise while preserving key information:
+
 ```
 <type>: <subject>
 
@@ -106,6 +123,7 @@ Keep messages concise while preserving key information:
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -115,6 +133,7 @@ Types:
 - `chore`: Maintenance tasks
 
 Examples:
+
 - `feat: add user authentication flow`
 - `fix: resolve navigation crash on Android`
 - `refactor: simplify theme provider implementation`

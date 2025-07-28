@@ -13,14 +13,18 @@ EAS Cloud          →  Sensitive variables (API keys, secrets)
 ## Key Files
 
 ### 1. `app.config.ts`
+
 Build-time configuration - contains:
+
 - BUILD_CONFIG constant with app identity (Bundle ID, Scheme, Slug, Owner)
 - Universal Links configuration (empty by default)
 - Environment-specific logic for dev/preview/production
 - Passes configuration to runtime via extra field
 
 ### 2. `src/constants/Config.ts`
+
 Runtime configuration access - use this in your app:
+
 ```typescript
 import { Config } from '@/constants/Config';
 const bundleId = Config.BUNDLE_ID;
@@ -30,6 +34,7 @@ const supportEmail = Config.SUPPORT_EMAIL;
 ### 3. Environment Variables
 
 **Local Development Only** - These files are NOT used in EAS builds:
+
 ```bash
 # .env (team defaults, committed)
 EXPO_PUBLIC_API_URL=http://localhost:3000
@@ -51,6 +56,7 @@ Priority: `.env.local` > `.env` > hardcoded defaults
 | production | app-name | com.bundle.id | store |
 
 **EAS Build Variables Priority**:
+
 1. EAS Cloud variables (highest) - for secrets
 2. `eas.json` env field - for non-sensitive config
 3. ❌ Local .env files are NOT used
@@ -58,12 +64,14 @@ Priority: `.env.local` > `.env` > hardcoded defaults
 ## Adding New Configuration
 
 ### 1. Runtime constant (e.g., Facebook URL):
+
 ```typescript
 // In src/constants/Config.ts only
 FACEBOOK_URL: 'https://facebook.com/buildeasy',
 ```
 
 ### 2. Environment variable (including sensitive):
+
 ```typescript
 // Step 1: For sensitive values, create EAS secret
 eas secret:create EXPO_PUBLIC_STRIPE_KEY pk_test_xxx
@@ -78,6 +86,7 @@ STRIPE_KEY: extra?.stripeKey || '',
 ```
 
 ### 3. Build-time constant:
+
 ```typescript
 // In app.config.ts BUILD_CONFIG
 NEW_BUILD_CONSTANT: 'value',
@@ -86,12 +95,14 @@ NEW_BUILD_CONSTANT: 'value',
 ## Common Tasks
 
 **Local setup:**
+
 ```bash
 cp .env.example .env.local
 pnpm start
 ```
 
 **Production build:**
+
 ```bash
 # Option 1: Use eas.json for non-sensitive config
 # (API URL already in eas.json production.env)
@@ -104,6 +115,7 @@ eas build --profile production
 ```
 
 **Access in code:**
+
 ```typescript
 // Runtime configuration (recommended)
 import { Config } from '@/constants/Config';
@@ -117,21 +129,25 @@ const apiUrl = Config.API_URL; // Environment variables accessed via Config
 ### Where to put configurations:
 
 **`app.config.ts` BUILD_CONFIG** - Build constants
+
 - Bundle ID, URL schemes, Slug
 - Universal Links domains
 - Build numbers
 
 **`.env` files** - Local development only
+
 - API URLs for local testing
 - Feature flags for development
 - ⚠️ NOT used in EAS builds
 
 **`eas.json` env field** - Non-sensitive build config
+
 - Production API URLs
 - Default feature flags
 - Environment identifiers
 
 **EAS Cloud** - Sensitive data only
+
 - API keys, tokens
 - Third-party service credentials
 - Use `eas secret:create` for truly secret values

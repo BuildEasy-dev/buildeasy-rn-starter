@@ -49,7 +49,6 @@ The core goal is a clean architecture that AI assistants like Cursor and Claude 
 3. **Run on your platform**
 
    In the output, you'll find options to open the app in a:
-
    - [Development build](https://docs.expo.dev/develop/development-builds/introduction/) - Full featured development app
    - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/) - Run on Android Virtual Device
    - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/) - Run on iOS Simulator (macOS only)
@@ -64,18 +63,20 @@ The core goal is a clean architecture that AI assistants like Cursor and Claude 
    ```
 
 4. **Configure EAS (Optional - for building and deployment)**
-   
+
    Install EAS CLI:
+
    ```bash
    npm install -g @expo/eas-cli
    ```
-   
+
    Login and configure:
+
    ```bash
    eas login
    eas build:configure
    ```
-   
+
    Set up environment variables in `.env` file based on `.env.example`
 
 ## Build & Deploy
@@ -83,12 +84,15 @@ The core goal is a clean architecture that AI assistants like Cursor and Claude 
 This project is configured with Expo Application Services (EAS) for building and deploying your app.
 
 ### Environment Setup
+
 Copy `.env.example` to `.env` and configure your environment variables:
+
 - Bundle identifiers for iOS/Android
 - API URLs for different environments
 - App metadata and configuration
 
 ### Building Your App
+
 - **Preview builds**: For internal testing and UAT
 - **Production builds**: For app store submission
 - **Local builds**: Build on your machine (requires Xcode/Android Studio)
@@ -128,6 +132,7 @@ This project includes a `CLAUDE.md` file with specific instructions for AI assis
 ## Available Scripts
 
 ### Development Scripts
+
 - `pnpm start` - Start Expo development server
 - `pnpm android` - Run on Android
 - `pnpm ios` - Run on iOS
@@ -137,6 +142,7 @@ This project includes a `CLAUDE.md` file with specific instructions for AI assis
 - `pnpm reset-project` - Reset to blank template (moves starter code to app-example/)
 
 ### Build & Deploy Scripts
+
 - `pnpm build:preview` - Build for preview/testing (iOS + Android)
 - `pnpm build:preview:ios` - Build for preview (iOS only)
 - `pnpm build:preview:android` - Build for preview (Android only)
