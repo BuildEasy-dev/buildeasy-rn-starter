@@ -9,7 +9,9 @@
       "Bash(git push:*)",
       "Bash(git add:*)",
       "Bash(npx expo config:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)"
     ],
     "deny": []
   }
