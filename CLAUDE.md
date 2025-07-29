@@ -95,82 +95,40 @@ assets/          # Images, fonts, and static files (root level)
 
 ## Testing
 
-The project uses **Jest** with **React Native Testing Library** for unit and component testing.
+This project uses **Jest** with **React Native Testing Library** for comprehensive testing.
 
-### Test Commands
+### Quick Commands
 
 - `pnpm test` - Run all tests
 - `pnpm test:watch` - Run tests in watch mode
-- `pnpm test:coverage` - Run tests with coverage report
-- `pnpm test:update` - Update snapshots
+- `pnpm test:coverage` - Generate coverage report
 - `pnpm test:ci` - Run tests in CI mode
 
-### Test Configuration
+### Framework Overview
 
-- **Framework**: Jest with jest-expo preset (Node environment)
-- **Component Testing**: React Native Testing Library
-- **TypeScript Support**: Full TypeScript support with path aliases
-- **Coverage**: HTML and lcov reports generated in `coverage/` directory
-- **Mocks**: Expo modules and React Native components are automatically mocked
+- **Jest** with jest-expo preset for React Native compatibility
+- **React Native Testing Library** for component and hook testing
+- **TypeScript** support with path aliases (@/\* imports)
+- **Automatic mocking** of Expo modules and React Native components
+- **Coverage reporting** with configurable thresholds (80% default)
 
-### Writing Tests
+### Test Structure
 
-#### Component Tests
+Place tests in `__tests__` directories next to source files:
 
-```typescript
-// src/components/__tests__/MyComponent.test.tsx
-import React from 'react';
-import { render } from '@testing-library/react-native';
-import { MyComponent } from '../MyComponent';
-
-describe('MyComponent', () => {
-  it('renders without crashing', () => {
-    expect(() => {
-      render(<MyComponent>Test</MyComponent>);
-    }).not.toThrow();
-  });
-});
+```
+src/
+  components/
+    __tests__/
+      MyComponent.test.tsx
+    MyComponent.tsx
+  hooks/
+    __tests__/
+      useMyHook.test.ts
+    useMyHook.ts
 ```
 
-#### Hook Tests
-
-```typescript
-// src/hooks/__tests__/useMyHook.test.ts
-import { renderHook } from '@testing-library/react-native';
-import { useMyHook } from '../useMyHook';
-
-describe('useMyHook', () => {
-  it('returns expected value', () => {
-    const { result } = renderHook(() => useMyHook());
-    expect(result.current).toBe(expectedValue);
-  });
-});
-```
-
-### Test Best Practices
-
-- **File Location**: Place tests in `__tests__` directories next to source files
-- **Naming**: Use `.test.tsx` or `.test.ts` extensions
-- **Mocking**: Use jest.mock() for external dependencies
-- **Coverage**: Aim for meaningful coverage, focus on critical paths
-- **Isolation**: Each test should be independent and clean up after itself
-
-### Mocked Modules
-
-The following modules are automatically mocked:
-
-- All Expo modules (expo-constants, expo-font, etc.)
-- React Native Reanimated
-- @expo/vector-icons
-- Platform-specific components
-
-### Future Testing Enhancements
-
-Consider adding:
-
-- **E2E Testing**: Detox or Maestro for end-to-end testing
-- **Visual Testing**: Screenshot testing for UI components
-- **Performance Testing**: React DevTools Profiler integration
+For detailed testing patterns, best practices, debugging tips, and comprehensive examples, see **[docs/testing-guide.md](docs/testing-guide.md)**.
 
 ## Git Commit Standards
 
