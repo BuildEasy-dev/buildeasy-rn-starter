@@ -95,11 +95,82 @@ assets/          # Images, fonts, and static files (root level)
 
 ## Testing
 
-No test framework is currently configured. When adding tests, consider:
+The project uses **Jest** with **React Native Testing Library** for unit and component testing.
 
-- Jest for unit testing
-- React Native Testing Library for component testing
-- Detox or Maestro for E2E testing
+### Test Commands
+
+- `pnpm test` - Run all tests
+- `pnpm test:watch` - Run tests in watch mode
+- `pnpm test:coverage` - Run tests with coverage report
+- `pnpm test:update` - Update snapshots
+- `pnpm test:ci` - Run tests in CI mode
+
+### Test Configuration
+
+- **Framework**: Jest with jest-expo preset (Node environment)
+- **Component Testing**: React Native Testing Library
+- **TypeScript Support**: Full TypeScript support with path aliases
+- **Coverage**: HTML and lcov reports generated in `coverage/` directory
+- **Mocks**: Expo modules and React Native components are automatically mocked
+
+### Writing Tests
+
+#### Component Tests
+
+```typescript
+// src/components/__tests__/MyComponent.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react-native';
+import { MyComponent } from '../MyComponent';
+
+describe('MyComponent', () => {
+  it('renders without crashing', () => {
+    expect(() => {
+      render(<MyComponent>Test</MyComponent>);
+    }).not.toThrow();
+  });
+});
+```
+
+#### Hook Tests
+
+```typescript
+// src/hooks/__tests__/useMyHook.test.ts
+import { renderHook } from '@testing-library/react-native';
+import { useMyHook } from '../useMyHook';
+
+describe('useMyHook', () => {
+  it('returns expected value', () => {
+    const { result } = renderHook(() => useMyHook());
+    expect(result.current).toBe(expectedValue);
+  });
+});
+```
+
+### Test Best Practices
+
+- **File Location**: Place tests in `__tests__` directories next to source files
+- **Naming**: Use `.test.tsx` or `.test.ts` extensions
+- **Mocking**: Use jest.mock() for external dependencies
+- **Coverage**: Aim for meaningful coverage, focus on critical paths
+- **Isolation**: Each test should be independent and clean up after itself
+
+### Mocked Modules
+
+The following modules are automatically mocked:
+
+- All Expo modules (expo-constants, expo-font, etc.)
+- React Native Reanimated
+- @expo/vector-icons
+- Platform-specific components
+
+### Future Testing Enhancements
+
+Consider adding:
+
+- **E2E Testing**: Detox or Maestro for end-to-end testing
+- **Visual Testing**: Screenshot testing for UI components
+- **Performance Testing**: React DevTools Profiler integration
 
 ## Git Commit Standards
 
@@ -148,6 +219,7 @@ This project uses commitlint to automatically validate commit messages:
 - **Check multiple commits**: Run `pnpm commitlint:last` to check the last 10 commits
 
 If a commit is rejected:
+
 1. The message must follow the format: `<type>: <subject>`
 2. Type must be one of the allowed types above
 3. Subject cannot be empty and must start with lowercase
