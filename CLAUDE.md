@@ -95,11 +95,40 @@ assets/          # Images, fonts, and static files (root level)
 
 ## Testing
 
-No test framework is currently configured. When adding tests, consider:
+This project uses **Jest** with **React Native Testing Library** for comprehensive testing.
 
-- Jest for unit testing
-- React Native Testing Library for component testing
-- Detox or Maestro for E2E testing
+### Quick Commands
+
+- `pnpm test` - Run all tests
+- `pnpm test:watch` - Run tests in watch mode
+- `pnpm test:coverage` - Generate coverage report
+- `pnpm test:ci` - Run tests in CI mode
+
+### Framework Overview
+
+- **Jest** with jest-expo preset for React Native compatibility
+- **React Native Testing Library** for component and hook testing
+- **TypeScript** support with path aliases (@/\* imports)
+- **Automatic mocking** of Expo modules and React Native components
+- **Coverage reporting** with configurable thresholds (80% default)
+
+### Test Structure
+
+Place tests in `__tests__` directories next to source files:
+
+```
+src/
+  components/
+    __tests__/
+      MyComponent.test.tsx
+    MyComponent.tsx
+  hooks/
+    __tests__/
+      useMyHook.test.ts
+    useMyHook.ts
+```
+
+For detailed testing patterns, best practices, debugging tips, and comprehensive examples, see **[docs/testing-guide.md](docs/testing-guide.md)**.
 
 ## Git Commit Standards
 
@@ -148,6 +177,7 @@ This project uses commitlint to automatically validate commit messages:
 - **Check multiple commits**: Run `pnpm commitlint:last` to check the last 10 commits
 
 If a commit is rejected:
+
 1. The message must follow the format: `<type>: <subject>`
 2. Type must be one of the allowed types above
 3. Subject cannot be empty and must start with lowercase

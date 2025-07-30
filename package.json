@@ -28,7 +28,12 @@
     "submit:android": "eas submit --platform android",
     "prepare": "husky",
     "commitlint": "commitlint --from HEAD~1 --to HEAD --verbose",
-    "commitlint:last": "commitlint --from HEAD~10 --to HEAD"
+    "commitlint:last": "commitlint --from HEAD~10 --to HEAD",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:update": "jest -u",
+    "test:ci": "jest --ci --coverage --maxWorkers=2"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -69,15 +74,24 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@babel/preset-typescript": "^7.27.1",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@testing-library/react-native": "^13.2.1",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.0.10",
+    "babel-jest": "^30.0.5",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
+    "jest": "^30.0.5",
+    "jest-expo": "^53.0.9",
+    "jsdom": "^26.1.0",
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
+    "react-test-renderer": "^19.0.0",
+    "ts-jest": "^29.4.0",
     "typescript": "~5.8.3"
   },
   "private": true
