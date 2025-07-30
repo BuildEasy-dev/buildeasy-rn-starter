@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "msjsdiag.vscode-react-native",
+    "yoavbls.pretty-ts-errors",
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-rename-tag",
+    "mikestead.dotenv",
+    "ms-vscode.vscode-typescript-tsdoc",
+    "streetsidesoftware.code-spell-checker",
+    "lokalise.i18n-ally"
+  ]
+}
