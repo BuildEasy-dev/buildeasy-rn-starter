@@ -53,30 +53,6 @@ export class TempStorage extends MMKVAdapter implements IStorage {
     return this.get(`search_filters_${screenId}`);
   }
 
-  setShoppingCart(items: any[]): void {
-    this.set('shopping_cart_guest', items);
-  }
-
-  getShoppingCart(): any[] {
-    return this.get('shopping_cart_guest', []);
-  }
-
-  addToShoppingCart(item: any): void {
-    const cart = this.getShoppingCart();
-    cart.push(item);
-    this.setShoppingCart(cart);
-  }
-
-  removeFromShoppingCart(itemId: string): void {
-    const cart = this.getShoppingCart();
-    const updatedCart = cart.filter((item: any) => item.id !== itemId);
-    this.setShoppingCart(updatedCart);
-  }
-
-  clearShoppingCart(): void {
-    this.delete('shopping_cart_guest');
-  }
-
   // Session data
   setSessionData(key: string, value: any): void {
     this.set(`session_${key}`, value);

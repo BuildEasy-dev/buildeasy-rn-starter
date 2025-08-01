@@ -18,7 +18,7 @@ import { Storage } from '@/services/storage';
 Storage.preferences.set('theme', 'dark');
 Storage.cache.setWithTTL('userProfile', userData, 86400); // 1 day TTL
 Storage.secure.setAuthToken('my-secret-token');
-Storage.temp.setFormDraft('checkout', formData);
+Storage.temp.setFormDraft('contact', formData);
 ```
 
 ## Storage Tiers
@@ -112,12 +112,12 @@ Use for session-only data that should be cleared on app restart:
 import { Storage } from '@/services/storage';
 
 // Form drafts
-Storage.temp.setFormDraft('checkout', {
-  items: cart,
-  address: partialAddress,
+Storage.temp.setFormDraft('contact', {
+  name: 'John Doe',
+  email: 'john@example.com',
 });
-const draft = Storage.temp.getFormDraft('checkout');
-Storage.temp.deleteFormDraft('checkout');
+const draft = Storage.temp.getFormDraft('contact');
+Storage.temp.deleteFormDraft('contact');
 
 // Navigation state
 Storage.temp.setNavigationState({
@@ -130,11 +130,6 @@ Storage.temp.setSearchFilters('productList', {
   category: 'electronics',
   priceRange: [0, 100],
 });
-
-// Guest shopping cart
-Storage.temp.addToShoppingCart({ id: '123', quantity: 2 });
-Storage.temp.removeFromShoppingCart('123');
-const cart = Storage.temp.getShoppingCart();
 
 // UI state
 Storage.temp.setUIState('productModal', {
