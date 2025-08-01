@@ -2,10 +2,18 @@ import { MMKV } from 'react-native-mmkv';
 import type { IStorage, StorageOptions } from './types';
 
 export abstract class MMKVAdapter implements IStorage {
-  public mmkv: MMKV;
+  private _mmkv: MMKV | null = null;
+  private options: StorageOptions;
 
   constructor(options: StorageOptions) {
-    this.mmkv = new MMKV(options);
+    this.options = options;
+  }
+
+  public get mmkv(): MMKV {
+    if (!this._mmkv) {
+      this._mmkv = new MMKV(this.options);
+    }
+    return this._mmkv;
   }
 
   set<T>(key: string, value: T): void {

@@ -1,4 +1,4 @@
-const { withDangerousMod, withInfoPlist } = require('@expo/config-plugins');
+const { withDangerousMod, withAppDelegate } = require('@expo/config-plugins');
 const fs = require('fs');
 const path = require('path');
 
@@ -35,17 +35,53 @@ module.exports = function withMMKVBackup(config) {
   ]);
 
   // iOS configuration
-  config = withInfoPlist(config, (config) => {
-    // Add keys for backup exclusion handling
-    // Note: The actual exclusion is handled in the storage implementation
-    // by using different paths for backup vs no-backup
+  config = withAppDelegate(config, (config) => {
+    const appDelegate = config.modResults;
+    const newCode = `
+  // BEGIN: MMKV Backup Exclusion
+  // This code ensures that the 'no-backup' directory used by MMKV is excluded from iCloud backups.
+  @try {
+    NSURL *documentsDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *noBackupDir = [documentsDirectory URLByAppendingPathComponent:@"mmkv/no-backup"];
 
-    // Ensure we have the required background modes if needed
-    if (!config.modResults.UIBackgroundModes) {
-      config.modResults.UIBackgroundModes = [];
+    // Create the directory if it doesn't exist, which is a good practice.
+    [[NSFileManager defaultManager] createDirectoryAtURL:noBackupDir withIntermediateDirectories:YES attributes:nil error:nil];
+
+    // Apply the backup exclusion attribute.
+    NSError *error = nil;
+    BOOL success = [noBackupDir setResourceValue:@(YES) forKey:NSURLIsExcludedFromBackupKey error:&error];
+    if (!success) {
+      NSLog(@"[MMKVBackup] Error excluding %@ from backup: %@", [noBackupDir path], error);
+    } else {
+      NSLog(@"[MMKVBackup] Successfully excluded %@ from backup.", [noBackupDir path]);
+    }
+  } @catch (NSException *exception) {
+    NSLog(@"[MMKVBackup] Exception while configuring backup exclusion: %@", exception.reason);
+  }
+  // END: MMKV Backup Exclusion
+`;
+
+    if (appDelegate.contents.includes('// BEGIN: MMKV Backup Exclusion')) {
+      console.log('✅ iOS backup exclusion code already configured in AppDelegate.');
+      return config;
     }
 
-    console.log('✅ Configured iOS Info.plist for MMKV');
+    const didFinishLaunchingWithOptions =
+      'didFinishLaunchingWithOptions:(NSDictionary *)launchOptions';
+    const insertionPoint = new RegExp(
+      `(-\s*\(BOOL\)application:\(UIApplication\s*\*\)application\s+${didFinishLaunchingWithOptions}\s*\{)`
+    );
+
+    if (insertionPoint.test(appDelegate.contents)) {
+      appDelegate.contents = appDelegate.contents.replace(insertionPoint, `$1${newCode}`);
+      console.log(
+        '✅ Configured iOS AppDelegate to exclude MMKV no-backup directory from iCloud backups.'
+      );
+    } else {
+      console.warn(
+        'Could not find didFinishLaunchingWithOptions in AppDelegate to insert backup exclusion code.'
+      );
+    }
 
     return config;
   });
