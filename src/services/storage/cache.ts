@@ -9,7 +9,7 @@ export class CacheStorage extends MMKVAdapter implements IStorageWithTTL {
   constructor() {
     super({
       id: 'cache',
-      path: `${MMKV.appGroupPath}/no-backup`,
+      path: './no-backup',
     });
   }
 

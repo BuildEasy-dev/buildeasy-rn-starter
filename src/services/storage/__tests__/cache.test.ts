@@ -164,7 +164,9 @@ describe('CacheStorage', () => {
       };
 
       (storage.mmkv.getAllKeys as jest.Mock).mockReturnValue(keys);
-      (storage.mmkv.getString as jest.Mock).mockImplementation((key) => entries[key]);
+      (storage.mmkv.getString as jest.Mock).mockImplementation(
+        (key: string) => entries[key as keyof typeof entries]
+      );
 
       storage.clearExpired();
 
@@ -262,7 +264,9 @@ describe('CacheStorage', () => {
       };
 
       (storage.mmkv.getAllKeys as jest.Mock).mockReturnValue(keys);
-      (storage.mmkv.getString as jest.Mock).mockImplementation((key) => entries[key]);
+      (storage.mmkv.getString as jest.Mock).mockImplementation(
+        (key: string) => entries[key as keyof typeof entries]
+      );
 
       // Mock getSize to return a value over the limit
       jest.spyOn(storage, 'getSize').mockReturnValue(40);

@@ -13,7 +13,7 @@ export class SecureStorage extends MMKVAdapter implements ISecureStorage {
 
     super({
       id: 'secure',
-      path: `${MMKV.appGroupPath}/no-backup`,
+      path: './no-backup',
       encryptionKey,
     });
 

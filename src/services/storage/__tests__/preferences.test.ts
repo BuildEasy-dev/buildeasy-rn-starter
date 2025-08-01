@@ -149,7 +149,9 @@ describe('PreferencesStorage', () => {
       };
 
       (storage.mmkv.getAllKeys as jest.Mock).mockReturnValue(mockKeys);
-      (storage.mmkv.getString as jest.Mock).mockImplementation((key) => mockValues[key]);
+      (storage.mmkv.getString as jest.Mock).mockImplementation(
+        (key: string) => mockValues[key as keyof typeof mockValues]
+      );
 
       const size = storage.getSize();
       const expectedSize = mockValues.key1.length + mockValues.key2.length;
