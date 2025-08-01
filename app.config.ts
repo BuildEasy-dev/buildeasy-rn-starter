@@ -97,6 +97,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           backgroundColor: '#ffffff',
         },
       ],
+      './plugins/mmkv-backup.js',
     ],
     experiments: {
       typedRoutes: true,
