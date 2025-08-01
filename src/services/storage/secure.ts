@@ -1,4 +1,3 @@
-import { MMKV } from 'react-native-mmkv';
 import { MMKVAdapter } from './mmkv-adapter';
 import type { ISecureStorage } from './types';
 import * as Crypto from 'expo-crypto';
