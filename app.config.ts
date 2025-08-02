@@ -9,7 +9,7 @@ const BUILD_CONFIG = {
   SLUG: 'buildeasyrnstarter',
 
   // App Identity - Base values for environment-specific generation
-  BUNDLE_ID_BASE: 'com.buildeasy.rnstarter',
+  BUNDLE_ID_BASE: 'dev.buildeasy.rnstarter',
   SCHEME_BASE: 'buildeasyrnstarter',
 
   // Universal Links configuration

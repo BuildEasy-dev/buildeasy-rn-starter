@@ -48,3 +48,4 @@ plans/
 
 # claude files
 .claude/settings.local.json
+sessions
