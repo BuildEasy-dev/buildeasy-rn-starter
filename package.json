@@ -33,7 +33,9 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:update": "jest -u",
-    "test:ci": "jest --ci --coverage --maxWorkers=2"
+    "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "prebuild": "expo prebuild",
+    "prebuild:clean": "expo prebuild --clean"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
