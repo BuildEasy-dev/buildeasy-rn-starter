@@ -5,9 +5,9 @@
 The MMKV storage implementation provides four distinct storage tiers, each optimized for specific use cases:
 
 - **Preferences**: Persistent user settings with backup support
-- **Cache**: Performance optimization with TTL support
-- **Secure**: Encrypted storage for sensitive data
-- **Temp**: Session-only storage cleared on app restart
+- **Cache**: Performance optimization with TTL support (backed up, but expired data cleared)
+- **Secure**: Encrypted storage for sensitive data (backed up and restored)
+- **Temp**: Session-only storage cleared on app restart (backed up, but always cleared)
 
 ## Quick Start
 
@@ -78,7 +78,7 @@ Storage.cache.set('staticConfig', config);
 
 ### Secure Storage
 
-Use for sensitive data like tokens and credentials:
+Use for sensitive data like tokens and credentials. **Note**: Secure storage is backed up and restored (encrypted), making it suitable for data that should persist across device migrations:
 
 ```typescript
 import { Storage } from '@/services/storage';
@@ -106,7 +106,7 @@ const privateData = Storage.secure.getSecure('privateKey');
 
 ### Temporary Storage
 
-Use for session-only data that should be cleared on app restart:
+Use for session-only data that should be cleared on app restart. **Note**: While technically backed up, temp data is always cleared when the app starts, achieving the effect of "not backed up":
 
 ```typescript
 import { Storage } from '@/services/storage';
@@ -306,9 +306,12 @@ const theme = Storage.preferences.getTheme();
 
 ### Storage not persisting
 
-- Ensure you're using the correct tier (preferences for persistent data)
+- Ensure you're using the correct tier:
+  - **Preferences**: True persistence across reinstalls
+  - **Secure**: Persistence across reinstalls (encrypted)
+  - **Cache**: May be cleared if expired
+  - **Temp**: Always cleared on app restart
 - Check if the app has necessary permissions
-- Verify backup configuration for preferences
 
 ### Encryption errors
 
@@ -324,6 +327,8 @@ const theme = Storage.preferences.getTheme();
 
 ### Data not clearing
 
-- Temp storage only clears on app restart
+- Temp storage only clears on app restart (not manually)
+- Cache data persists until expired or manually cleared
+- Secure data persists across restores (validate tokens after restore)
 - Use `clearAll()` for factory reset
 - Use `clearUserData()` for logout scenarios

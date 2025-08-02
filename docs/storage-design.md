@@ -34,8 +34,9 @@ This document outlines the storage architecture using MMKV as the primary storag
 
 - **Purpose**: Sensitive data requiring encryption at rest
 - **Examples**: Authentication tokens, API keys, user credentials, payment information
-- **Lifecycle**: Persists until explicitly removed or user logs out
-- **Cleanup**: On user logout, token expiration, or security events
+- **Lifecycle**: Persists across app restarts and device restores (when encrypted)
+- **Backup**: Included in system backups (encrypted)
+- **Cleanup**: On user logout, token expiration, or when validation fails after restore
 
 #### Temp
 
@@ -49,9 +50,12 @@ This document outlines the storage architecture using MMKV as the primary storag
 | Tier        | Persistence     | Backup | Encryption | TTL Support | Use Case                 |
 | ----------- | --------------- | ------ | ---------- | ----------- | ------------------------ |
 | preferences | Forever         | ✅     | ❌         | ❌          | User settings            |
-| cache       | Until expired   | ❌     | ❌         | ✅          | Performance optimization |
-| secure      | Until logout    | ❌     | ✅         | ❌          | Sensitive credentials    |
-| temp        | Current session | ❌     | ❌         | ❌          | Transient state          |
+| cache       | Until expired   | ❌\*   | ❌         | ✅          | Performance optimization |
+| secure      | Until logout    | ✅\*\* | ✅         | ❌          | Sensitive credentials    |
+| temp        | Current session | ❌\*   | ❌         | ❌          | Transient state          |
+
+\*Technically backed up, but cleared by application logic after restore  
+\*\*Backed up and restored (encrypted), application should validate after restore
 
 ### Core Interfaces
 
@@ -85,41 +89,43 @@ interface IStorageWithTTL extends IStorage {
 const instances = {
   preferences: new MMKV({
     id: 'preferences',
-    path: `${MMKV.appGroupPath}/backup`,
   }),
 
   cache: new MMKV({
     id: 'cache',
-    path: `${MMKV.appGroupPath}/no-backup`,
   }),
 
   secure: new MMKV({
     id: 'secure',
-    path: `${MMKV.appGroupPath}/no-backup`,
     encryptionKey: 'generated-key',
+  }),
+
+  temp: new MMKV({
+    id: 'temp',
   }),
 };
 ```
 
 ### Backup Strategy
 
-**Path-based separation:**
+**Implementation approach: Platform backup + Application-level cleanup**
 
-- `/backup/` - Included in system backups
-- `/no-backup/` - Excluded from backups
+- All MMKV instances store data in the default location (technically all backed up)
+- Application logic enforces the intended backup behavior through cleanup strategies
+- This approach avoids platform-specific path configuration issues while maintaining design goals
 
 **iOS Configuration:**
 
-- Set `NSURLIsExcludedFromBackupKey` on no-backup directories
-- Backup directory automatically included in iCloud
+- Uses default iCloud backup behavior
+- All Documents directory data is backed up automatically
 
 **Android Configuration:**
 
 ```xml
 <!-- backup_rules.xml -->
 <full-backup-content>
-  <include domain="file" path="mmkv/backup/" />
-  <exclude domain="file" path="mmkv/no-backup/" />
+  <!-- Include all MMKV data in backups -->
+  <include domain="file" path="mmkv/" />
 </full-backup-content>
 ```
 
@@ -142,8 +148,8 @@ module.exports = (config) => {
     async (config) => {
       const backupRules = `<?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-  <include domain="file" path="mmkv/backup/" />
-  <exclude domain="file" path="mmkv/no-backup/" />
+  <!-- Include all MMKV data in backups -->
+  <include domain="file" path="mmkv/" />
 </full-backup-content>`;
 
       // Write to res/xml/backup_rules.xml
@@ -151,14 +157,8 @@ module.exports = (config) => {
     },
   ]);
 
-  // iOS: Configure backup exclusion
-  config = withDangerousMod(config, [
-    'ios',
-    async (config) => {
-      // Add NSURLIsExcludedFromBackupKey setup
-      return config;
-    },
-  ]);
+  // iOS uses default iCloud backup behavior
+  // No special configuration needed
 
   return config;
 };
@@ -237,6 +237,17 @@ function App() {
 }
 ```
 
+### Backup Restore Handling
+
+The application enforces storage tier behavior through cleanup logic at startup:
+
+- **Temporary data**: Always cleared on app start (achieving "not backed up" effect)
+- **Cache data**: Expired entries are removed automatically (partial cleanup)
+- **Secure data**: **Backed up and restored** (encrypted). Application should validate tokens and handle authentication state appropriately
+- **Preferences**: Preserved after restore (true backup behavior)
+
+**Important**: Unlike cache and temp storage, secure storage is designed to persist across restores. This allows for a better user experience where encrypted credentials can survive device migrations, but the application must handle token validation and authentication state properly.
+
 ### Cleanup Policies
 
 | Storage     | Trigger       | Action                      |
@@ -283,6 +294,8 @@ function App() {
    - Implement automatic cleanup
 
 5. **Test backup/restore**:
-   - Verify preferences survive app reinstalls
-   - Ensure cache and temp don't restore
-   - Confirm secure data remains encrypted
+   - Verify preferences survive app reinstalls (true backup)
+   - Ensure temp data is cleared on app restart (effective "no backup")
+   - Validate that expired cache is cleaned up
+   - Test that invalid secure tokens are handled properly
+   - Confirm encrypted data remains encrypted

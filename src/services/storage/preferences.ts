@@ -7,7 +7,6 @@ export class PreferencesStorage extends MMKVAdapter implements IStorage {
   constructor() {
     super({
       id: 'preferences',
-      path: './backup',
     });
   }
 

@@ -2,12 +2,19 @@
 
 ## 1. Objective
 
-This document outlines the test procedures to verify that the MMKV storage implementation correctly handles system-level backup and restore on both Android and iOS. The goal is to ensure that designated data persists after an app reinstall (via backup) while non-essential or sensitive data is correctly excluded.
+This document outlines the test procedures to verify that the MMKV storage implementation achieves the intended backup behavior. The current implementation strategy:
+
+- **Preferences & Secure**: Backed up and restored (secure data is encrypted)
+- **Cache**: Technically backed up, but expired data is cleared by application logic
+- **Temp**: Technically backed up, but always cleared on app startup
 
 ## 2. Scope
 
 - **In Scope:**
-  - Verifying the backup and restore behavior of `preferences`, `cache`, `secure`, and `temp` storage tiers.
+  - Verifying that preferences and secure data persist after restore
+  - Testing that cache data cleanup works properly (expired entries removed)
+  - Testing that temp data is always cleared on app startup
+  - Verifying that secure data remains encrypted during backup/restore
   - Testing on both Android (Google Drive Backup) and iOS (iCloud Backup).
 - **Out of Scope:**
   - UI/UX testing.
@@ -52,11 +59,11 @@ This phase confirms that the `prebuild` command correctly modified the native pr
 
 1.  **Android Verification**:
     - **Check 1**: Verify that the file `android/app/src/main/res/xml/backup_rules.xml` exists.
-    - **Check 2**: Read its content and confirm it includes `<include domain="file" path="mmkv/backup/" />` and `<exclude domain="file" path="mmkv/no-backup/" />`.
+    - **Check 2**: Read its content and confirm it includes `<include domain="file" path="mmkv/" />`.
     - **Check 3**: Verify that `android/app/src/main/AndroidManifest.xml` contains `android:fullBackupContent="@xml/backup_rules"` in the `<application>` tag.
 2.  **iOS Verification**:
-    - **Check 1**: Verify that the file `ios/buildeasyrnstarter/AppDelegate.m` has been modified.
-    - **Check 2**: Confirm that the `didFinishLaunchingWithOptions` method contains the Objective-C code block for setting the `NSURLIsExcludedFromBackupKey` attribute on the `mmkv/no-backup` directory.
+    - **Check 1**: No special iOS configuration is required.
+    - **Check 2**: Default iCloud backup behavior will handle all Documents directory data.
 
 ### Phase 2: Runtime Verification (Manual Execution)
 
@@ -70,7 +77,7 @@ This phase confirms that the `prebuild` command correctly modified the native pr
     adb shell bmgr run
     ```
 4.  **Simulate Restore**: Uninstall the application from the device. Then, reinstall it from the Play Store or by running `npx expo run:android` again.
-5.  **Verification**: Launch the reinstalled app. Use the debug interface to read the data from all storage tiers. Record the results.
+5.  **Verification**: Launch the reinstalled app. Use the debug interface to read the data from all storage tiers. Note that the application's initialization logic will automatically clear temp storage, so temp data should be empty even if it was restored.
 
 #### Test Case 2: iOS Backup and Restore
 
@@ -82,15 +89,15 @@ This phase confirms that the `prebuild` command correctly modified the native pr
 4.  **Simulate Restore**:
     - **(Recommended)** On a _secondary_ iOS device, begin the setup process and choose to restore from the iCloud backup you just created.
     - **(Destructive)** On the _primary_ device, go to **Settings > General > Transfer or Reset iPhone > Erase All Content and Settings**. After the device reboots, choose to restore from the iCloud backup.
-5.  **Verification**: Once the device is restored, the app will be automatically downloaded. Open it and use the debug interface to read the data. Record the results.
+5.  **Verification**: Once the device is restored, the app will be automatically downloaded. Open it and use the debug interface to read the data. Note that the application's initialization logic will automatically clear temp storage.
 
 ## 6. Expected Results & Recording
 
 Use the table below to record the outcome for each platform. The application passes the test only if the results match the expected state.
 
-| Storage Tier  | Expected State After Restore | Android Result (Pass/Fail) | iOS Result (Pass/Fail) | Notes |
-| ------------- | ---------------------------- | -------------------------- | ---------------------- | ----- |
-| `preferences` | Data is **RESTORED**         |                            |                        |       |
-| `cache`       | Data is **EMPTY**            |                            |                        |       |
-| `secure`      | Data is **EMPTY**            |                            |                        |       |
-| `temp`        | Data is **EMPTY**            |                            |                        |       |
+| Storage Tier  | Expected State After Restore | Android Result (Pass/Fail) | iOS Result (Pass/Fail) | Notes                                     |
+| ------------- | ---------------------------- | -------------------------- | ---------------------- | ----------------------------------------- |
+| `preferences` | Data is **RESTORED**         |                            |                        | True backup behavior                      |
+| `cache`       | **Expired data CLEARED**     |                            |                        | Effective "no backup" via TTL             |
+| `secure`      | Data is **RESTORED**         |                            |                        | **Backed up and restored** (encrypted)    |
+| `temp`        | Data is **EMPTY**            |                            |                        | Effective "no backup" via startup cleanup |

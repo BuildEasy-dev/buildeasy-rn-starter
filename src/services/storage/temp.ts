@@ -7,7 +7,6 @@ export class TempStorage extends MMKVAdapter implements IStorage {
   constructor() {
     super({
       id: 'temp',
-      path: './no-backup',
     });
   }
 
