@@ -6,32 +6,48 @@ import { TempStorage } from './temp';
 
 export class StorageManager implements IStorageManager {
   private static instance: StorageManager | null = null;
+  private static initializationPromise: Promise<StorageManager> | null = null;
 
   public readonly preferences: PreferencesStorage;
   public readonly cache: CacheStorage;
   public readonly secure: SecureStorage;
   public readonly temp: TempStorage;
 
-  private constructor() {
+  private constructor(secureStorage: SecureStorage) {
     this.preferences = PreferencesStorage.getInstance();
     this.cache = CacheStorage.getInstance();
-    this.secure = SecureStorage.getInstance();
+    this.secure = secureStorage;
     this.temp = TempStorage.getInstance();
   }
 
   static getInstance(): StorageManager {
     if (!StorageManager.instance) {
-      StorageManager.instance = new StorageManager();
+      throw new Error('StorageManager not initialized. Call StorageManager.initialize() first.');
     }
     return StorageManager.instance;
   }
 
+  static async initialize(): Promise<StorageManager> {
+    if (!StorageManager.instance) {
+      if (!StorageManager.initializationPromise) {
+        StorageManager.initializationPromise = StorageManager.createInstance();
+      }
+      StorageManager.instance = await StorageManager.initializationPromise;
+    }
+    return StorageManager.instance;
+  }
+
+  private static async createInstance(): Promise<StorageManager> {
+    const secureStorage = await SecureStorage.getInstance();
+    return new StorageManager(secureStorage);
+  }
+
   /**
-   * Initialize storage on app startup
+   * Perform storage cleanup on app startup
    * - Clears temporary storage
    * - Removes expired cache entries
    */
-  initialize(): void {
+  performStartupCleanup(): void {
     console.log('Initializing storage...');
 
     // Clear all temporary storage
@@ -43,7 +59,7 @@ export class StorageManager implements IStorageManager {
     // Check cache size and evict if necessary
     this.cache.evictOldest();
 
-    console.log('Storage initialized successfully');
+    console.log('Storage cleanup completed successfully');
   }
 
   /**

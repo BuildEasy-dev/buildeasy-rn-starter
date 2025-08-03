@@ -4,9 +4,10 @@
 
 This document outlines the test procedures to verify that the MMKV storage implementation achieves the intended backup behavior. The current implementation strategy:
 
-- **Preferences & Secure**: Backed up and restored (secure data is encrypted)
+- **Preferences & Secure**: Backed up and restored (secure data is encrypted with expo-secure-store keys)
 - **Cache**: Technically backed up, but expired data is cleared by application logic
 - **Temp**: Technically backed up, but always cleared on app startup
+- **Encryption Keys**: Stored in platform-native secure storage (iOS Keychain/Android Keystore)
 
 ## 2. Scope
 
@@ -15,6 +16,8 @@ This document outlines the test procedures to verify that the MMKV storage imple
   - Testing that cache data cleanup works properly (expired entries removed)
   - Testing that temp data is always cleared on app startup
   - Verifying that secure data remains encrypted during backup/restore
+  - Testing expo-secure-store encryption key persistence and regeneration
+  - Verifying async storage initialization works correctly after restore
   - Testing on both Android (Google Drive Backup) and iOS (iCloud Backup).
 - **Out of Scope:**
   - UI/UX testing.
@@ -39,6 +42,8 @@ This document outlines the test procedures to verify that the MMKV storage imple
     - **Write Test Data**: A button to populate all four storage tiers with predefined test data.
     - **Read and Display Data**: A section on the screen that reads the data from all four tiers and displays the current values.
     - **Clear All Data**: A button to wipe all storage tiers to reset the new test run.
+    - **Test Storage Initialization**: A button to verify async storage initialization status.
+    - **Check Encryption Key Status**: Display whether encryption keys are from expo-secure-store or temporary fallback.
 
 ## 4. Test Data
 
@@ -91,13 +96,43 @@ This phase confirms that the `prebuild` command correctly modified the native pr
     - **(Destructive)** On the _primary_ device, go to **Settings > General > Transfer or Reset iPhone > Erase All Content and Settings**. After the device reboots, choose to restore from the iCloud backup.
 5.  **Verification**: Once the device is restored, the app will be automatically downloaded. Open it and use the debug interface to read the data. Note that the application's initialization logic will automatically clear temp storage.
 
+#### Test Case 3: Encryption Key Management
+
+1.  **Key Persistence Test**: After writing secure data, verify that encryption keys are stored in expo-secure-store (not temporary).
+2.  **Key Regeneration Test**:
+    - Manually delete the expo-secure-store key using device settings or a debug function
+    - Restart the app and verify it generates a new encryption key
+    - Confirm that previously encrypted data becomes inaccessible (expected behavior)
+    - Note: Key rotation API is planned for future release
+3.  **Async Initialization Test**:
+    - Verify that storage initialization completes successfully on first app launch
+    - Test that storage operations fail gracefully if initialization hasn't completed
+    - Confirm that multiple initialization calls return the same instance
+
+#### Test Case 4: Fallback Behavior
+
+1.  **Simulate expo-secure-store Failure**: Mock or disable expo-secure-store functionality
+2.  **Verify Fallback**: Confirm the app falls back to temporary encryption keys with appropriate warnings
+3.  **Persistence Check**: Verify that data encrypted with temporary keys doesn't persist across app restarts
+
 ## 6. Expected Results & Recording
 
 Use the table below to record the outcome for each platform. The application passes the test only if the results match the expected state.
 
-| Storage Tier  | Expected State After Restore | Android Result (Pass/Fail) | iOS Result (Pass/Fail) | Notes                                     |
-| ------------- | ---------------------------- | -------------------------- | ---------------------- | ----------------------------------------- |
-| `preferences` | Data is **RESTORED**         |                            |                        | True backup behavior                      |
-| `cache`       | **Expired data CLEARED**     |                            |                        | Effective "no backup" via TTL             |
-| `secure`      | Data is **RESTORED**         |                            |                        | **Backed up and restored** (encrypted)    |
-| `temp`        | Data is **EMPTY**            |                            |                        | Effective "no backup" via startup cleanup |
+| Storage Tier        | Expected State After Restore | Android Result (Pass/Fail) | iOS Result (Pass/Fail) | Notes                                       |
+| ------------------- | ---------------------------- | -------------------------- | ---------------------- | ------------------------------------------- |
+| `preferences`       | Data is **RESTORED**         |                            |                        | True backup behavior                        |
+| `cache`             | **Expired data CLEARED**     |                            |                        | Effective "no backup" via TTL               |
+| `secure`            | Data is **RESTORED**         |                            |                        | **Backed up and restored** (encrypted)      |
+| `temp`              | Data is **EMPTY**            |                            |                        | Effective "no backup" via startup cleanup   |
+| **Encryption Keys** | **Keys REGENERATED**         |                            |                        | Platform-native storage (Keychain/Keystore) |
+| **Initialization**  | **Completes successfully**   |                            |                        | Async initialization works correctly        |
+
+### Additional Verification Checklist
+
+- [ ] **Storage initialization**: Completes without errors on first launch after restore
+- [ ] **Encryption key source**: Verify keys are from expo-secure-store (not temporary fallback)
+- [ ] **Key regeneration**: New encryption keys generated after restore (device-bound keys)
+- [ ] **Secure data accessibility**: Previously encrypted data accessible after restore
+- [ ] **Fallback behavior**: Temporary keys work if expo-secure-store fails
+- [ ] **Console warnings**: Appropriate warnings logged for key management issues

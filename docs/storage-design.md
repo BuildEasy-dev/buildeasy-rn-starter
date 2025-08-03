@@ -37,6 +37,7 @@ This document outlines the storage architecture using MMKV as the primary storag
 - **Lifecycle**: Persists across app restarts and device restores (when encrypted)
 - **Backup**: Included in system backups (encrypted)
 - **Cleanup**: On user logout, token expiration, or when validation fails after restore
+- **Encryption**: Uses MMKV's built-in AES CFB-128 encryption with keys managed by expo-secure-store
 
 #### Temp
 
@@ -232,7 +233,15 @@ import { initializeStorage } from '@/services/storage';
 
 function App() {
   useEffect(() => {
-    initializeStorage(); // Clears temp, removes expired cache
+    // Initialize storage asynchronously
+    initializeStorage()
+      .then(() => {
+        console.log('Storage initialized successfully');
+      })
+      .catch((error) => {
+        console.error('Failed to initialize storage:', error);
+        // App can still function with degraded storage capabilities
+      });
   }, []);
 }
 ```
@@ -264,6 +273,53 @@ The application enforces storage tier behavior through cleanup logic at startup:
 - **Cache size**: Limit to 20MB, LRU eviction
 - **Secure storage**: Minimal, only essential credentials
 - **Temp storage**: No limit, cleared on restart
+
+## Encryption Key Management
+
+### Overview
+
+The secure storage tier uses MMKV's built-in encryption with keys managed by expo-secure-store, providing platform-native security for encryption keys.
+
+### Key Storage
+
+- **iOS**: Keys are stored in the iOS Keychain with `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`
+- **Android**: Keys are stored using Android Keystore system
+- **Key Generation**: 256-bit cryptographically secure keys using `expo-crypto`
+- **Key Persistence**: Keys survive app updates but not app uninstalls
+
+### Implementation Details
+
+```typescript
+// Key generation using expo-crypto
+const randomBytes = await Crypto.getRandomBytesAsync(32); // 256 bits
+const encryptionKey = btoa(String.fromCharCode(...randomBytes));
+
+// Key storage using expo-secure-store
+await SecureStore.setItemAsync('mmkv_encryption_key', encryptionKey, {
+  keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+});
+```
+
+### Security Features
+
+1. **Platform-level Protection**: Encryption keys are protected by the OS security features
+2. **Device-bound Keys**: Keys don't sync across devices for maximum security
+3. **Fallback Mechanism**: Temporary keys are generated if secure storage fails
+4. **Key Rotation**: Support for rotating encryption keys with data migration
+
+### Key Rotation Process (Future Feature)
+
+**Note: Key rotation is not yet implemented and will be available in a future release.**
+
+Planned implementation:
+
+1. Generate new encryption key
+2. Create new MMKV instance with new key
+3. Migrate all data from old to new instance
+4. Update key in secure storage
+5. Clear old encrypted data
+
+See `SecureStorage.rotateEncryptionKey()` for implementation requirements and TODO.
 
 ## Best Practices
 
@@ -299,3 +355,8 @@ The application enforces storage tier behavior through cleanup logic at startup:
    - Validate that expired cache is cleaned up
    - Test that invalid secure tokens are handled properly
    - Confirm encrypted data remains encrypted
+
+6. **Initialize storage properly**:
+   - Always call `initializeStorage()` on app startup
+   - Handle initialization errors gracefully
+   - Storage operations will fail if not initialized

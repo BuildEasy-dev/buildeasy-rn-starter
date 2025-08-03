@@ -145,14 +145,23 @@ Storage.temp.setSessionData('viewHistory', ['product1', 'product2']);
 
 ### Initialization
 
-Storage is automatically initialized when the app starts, but you can manually initialize:
+Storage requires async initialization due to expo-secure-store encryption key management:
 
 ```typescript
 import { initializeStorage } from '@/services/storage';
 
 // Called automatically in _layout.tsx
-initializeStorage();
+useEffect(() => {
+  initializeStorage().catch((error) => {
+    console.error('Failed to initialize storage:', error);
+  });
+}, []);
+
+// Manual initialization
+const storage = await initializeStorage();
 ```
+
+**Important**: Storage operations will fail if not properly initialized. The secure storage tier requires async key retrieval from expo-secure-store.
 
 ### Monitoring Storage Size
 
@@ -280,6 +289,52 @@ AppState.addEventListener('change', (state) => {
 });
 ```
 
+## Encryption Key Management
+
+### Platform-Native Security
+
+The secure storage tier uses expo-secure-store for encryption key management:
+
+```typescript
+// Automatic key generation and storage
+const storage = await SecureStorage.getInstance();
+
+// Keys are stored securely:
+// - iOS: Keychain Services with kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+// - Android: Android Keystore System
+// - Key size: 256-bit (32 bytes) cryptographically secure
+```
+
+### Key Rotation (Future Feature)
+
+**Note: Key rotation is not yet implemented and will be available in a future release.**
+
+```typescript
+// TODO: Coming in future release
+// await Storage.secure.rotateEncryptionKey();
+
+// Planned key rotation process:
+// 1. Backup existing data
+// 2. Generate new encryption key
+// 3. Create new MMKV instance
+// 4. Migrate data to new instance
+// 5. Update key in expo-secure-store
+
+// Use cases for key rotation:
+// - Scheduled security maintenance (e.g., every 90 days)
+// - Response to security incidents
+// - Compliance requirements (PCI-DSS, HIPAA)
+// - User-requested security enhancement
+```
+
+### Fallback Behavior
+
+```typescript
+// If expo-secure-store fails, temporary keys are used
+// Data will not persist across app restarts in this case
+// Check console for warnings about temporary key usage
+```
+
 ## Migration from AsyncStorage
 
 If migrating from AsyncStorage:
@@ -289,9 +344,12 @@ If migrating from AsyncStorage:
 await AsyncStorage.setItem('theme', 'dark');
 const theme = await AsyncStorage.getItem('theme');
 
-// New MMKV code (synchronous!)
+// New MMKV code (synchronous after initialization!)
 Storage.preferences.setTheme('dark');
 const theme = Storage.preferences.getTheme();
+
+// Note: Initialization is async due to expo-secure-store
+await initializeStorage();
 ```
 
 ## Performance Comparison
@@ -315,9 +373,11 @@ const theme = Storage.preferences.getTheme();
 
 ### Encryption errors
 
-- Secure storage requires a valid encryption key
-- Key is generated on first use and stored in memory
-- Consider implementing proper key management for production
+- Secure storage uses expo-secure-store for encryption key management
+- Keys are stored in iOS Keychain (iOS) or Android Keystore (Android)
+- 256-bit cryptographically secure keys generated using expo-crypto
+- Keys persist across app updates but not app uninstalls
+- Fallback to temporary keys if secure storage fails
 
 ### Performance issues
 
@@ -332,3 +392,11 @@ const theme = Storage.preferences.getTheme();
 - Secure data persists across restores (validate tokens after restore)
 - Use `clearAll()` for factory reset
 - Use `clearUserData()` for logout scenarios
+
+### expo-secure-store issues
+
+- **Storage initialization fails**: Check device security settings (passcode/biometrics enabled)
+- **Temporary key warnings**: expo-secure-store unavailable, data won't persist across restarts
+- **Key rotation errors**: Ensure sufficient storage space and device unlock state
+- **iOS Keychain access**: Requires device to be unlocked (`WHEN_UNLOCKED_THIS_DEVICE_ONLY`)
+- **Android Keystore**: May fail on older devices or custom ROMs without hardware security

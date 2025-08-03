@@ -18,6 +18,8 @@ export interface ISecureStorage extends IStorage {
   setSecure<T>(key: string, value: T): void;
   getSecure<T>(key: string): T | null;
   getSecure<T>(key: string, defaultValue: T): T;
+  // TODO: Key rotation to be implemented in future release
+  // rotateEncryptionKey(): Promise<void>;
 }
 
 export interface StorageEntry<T> {

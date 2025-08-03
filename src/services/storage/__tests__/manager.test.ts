@@ -10,10 +10,26 @@ jest.mock('expo-crypto', () => ({
 }));
 
 // Mock all storage implementations
-jest.mock('../preferences');
-jest.mock('../cache');
-jest.mock('../secure');
-jest.mock('../temp');
+jest.mock('../preferences', () => ({
+  PreferencesStorage: {
+    getInstance: jest.fn(),
+  },
+}));
+jest.mock('../cache', () => ({
+  CacheStorage: {
+    getInstance: jest.fn(),
+  },
+}));
+jest.mock('../secure', () => ({
+  SecureStorage: {
+    getInstance: jest.fn(),
+  },
+}));
+jest.mock('../temp', () => ({
+  TempStorage: {
+    getInstance: jest.fn(),
+  },
+}));
 
 describe('StorageManager', () => {
   let manager: StorageManager;
@@ -22,34 +38,53 @@ describe('StorageManager', () => {
   let mockSecure: jest.Mocked<SecureStorage>;
   let mockTemp: jest.Mocked<TempStorage>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
 
     // Reset singleton
     (StorageManager as any).instance = null;
+    (StorageManager as any).initializationPromise = null;
 
     // Create mock instances
     mockPreferences = {
       clear: jest.fn(),
       getSize: jest.fn().mockReturnValue(1024),
       getAllKeys: jest.fn().mockReturnValue(['theme', 'language']),
-      get: jest.fn(),
+      get: jest.fn((key: string) => {
+        const data: { [key: string]: any } = { theme: 'dark', language: 'en' };
+        return data[key];
+      }),
       set: jest.fn(),
       delete: jest.fn(),
       contains: jest.fn(),
+      mmkv: {
+        clearAll: jest.fn(),
+      },
     } as any;
 
     mockCache = {
       clear: jest.fn(),
       getSize: jest.fn().mockReturnValue(2048),
       getAllKeys: jest.fn().mockReturnValue(['user_profile', 'products']),
-      get: jest.fn(),
+      get: jest.fn((key: string) => {
+        const data: { [key: string]: any } = {
+          user_profile: { name: 'John' },
+          products: ['product1', 'product2'],
+        };
+        return data[key];
+      }),
       set: jest.fn(),
       delete: jest.fn(),
       contains: jest.fn(),
       clearExpired: jest.fn(),
       evictOldest: jest.fn(),
-      getExpiration: jest.fn(),
+      getExpiration: jest.fn((key) => {
+        if (key === 'products') return Date.now() + 86400000;
+        return null;
+      }),
+      mmkv: {
+        clearAll: jest.fn(),
+      },
     } as any;
 
     mockSecure = {
@@ -60,33 +95,62 @@ describe('StorageManager', () => {
       set: jest.fn(),
       delete: jest.fn(),
       contains: jest.fn(),
+      clearAuth: jest.fn(),
+      mmkv: {
+        clearAll: jest.fn(),
+      },
     } as any;
 
     mockTemp = {
       clear: jest.fn(),
       getSize: jest.fn().mockReturnValue(256),
-      getAllKeys: jest.fn().mockReturnValue(['form_draft', 'navigation_state']),
-      get: jest.fn(),
+      getAllKeys: jest.fn().mockReturnValue(['navigation_state', 'form_draft']),
+      get: jest.fn((key: string) => {
+        const data: { [key: string]: any } = {
+          navigation_state: '/home',
+          form_draft: { field: 'value' },
+        };
+        return data[key];
+      }),
       set: jest.fn(),
       delete: jest.fn(),
       contains: jest.fn(),
       initialize: jest.fn(),
+      mmkv: {
+        clearAll: jest.fn(),
+      },
     } as any;
 
-    // Mock getInstance methods
+    // Mock getInstance methods to return our mock instances
     (PreferencesStorage.getInstance as jest.Mock).mockReturnValue(mockPreferences);
     (CacheStorage.getInstance as jest.Mock).mockReturnValue(mockCache);
-    (SecureStorage.getInstance as jest.Mock).mockReturnValue(mockSecure);
+    (SecureStorage.getInstance as jest.Mock).mockResolvedValue(mockSecure);
     (TempStorage.getInstance as jest.Mock).mockReturnValue(mockTemp);
 
-    manager = StorageManager.getInstance();
+    manager = await StorageManager.initialize();
   });
 
   describe('singleton pattern', () => {
-    it('should return the same instance', () => {
-      const instance1 = StorageManager.getInstance();
-      const instance2 = StorageManager.getInstance();
+    it('should return the same instance after initialization', async () => {
+      const instance1 = await StorageManager.initialize();
+      const instance2 = await StorageManager.initialize();
       expect(instance1).toBe(instance2);
+    });
+
+    it('should use getInstance after initialization', () => {
+      // Since manager was initialized in beforeEach, getInstance should work
+      const instance = StorageManager.getInstance();
+      expect(instance).toBe(manager);
+    });
+
+    it('should throw error if getInstance is called before initialization', () => {
+      // Reset singleton
+      (StorageManager as any).instance = null;
+      (StorageManager as any).initializationPromise = null;
+
+      expect(() => StorageManager.getInstance()).toThrow(
+        'StorageManager not initialized. Call StorageManager.initialize() first.'
+      );
     });
   });
 
@@ -99,17 +163,17 @@ describe('StorageManager', () => {
     });
   });
 
-  describe('initialize', () => {
+  describe('performStartupCleanup', () => {
     it('should initialize temp storage and clear expired cache', () => {
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
-      manager.initialize();
+      manager.performStartupCleanup();
 
       expect(mockTemp.initialize).toHaveBeenCalled();
       expect(mockCache.clearExpired).toHaveBeenCalled();
       expect(mockCache.evictOldest).toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith('Initializing storage...');
-      expect(consoleSpy).toHaveBeenCalledWith('Storage initialized successfully');
+      expect(consoleSpy).toHaveBeenCalledWith('Storage cleanup completed successfully');
 
       consoleSpy.mockRestore();
     });

@@ -16,7 +16,9 @@ export default function RootLayout() {
 
   useEffect(() => {
     // Initialize storage on app startup
-    initializeStorage();
+    initializeStorage().catch((error) => {
+      console.error('Failed to initialize storage:', error);
+    });
   }, []);
 
   if (!loaded) {

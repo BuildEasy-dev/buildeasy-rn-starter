@@ -1,4 +1,6 @@
 import { SecureStorage } from '../secure';
+import * as SecureStore from 'expo-secure-store';
+import * as Crypto from 'expo-crypto';
 
 // Mock MMKV
 jest.mock('react-native-mmkv', () => ({
@@ -16,39 +18,97 @@ jest.mock('react-native-mmkv', () => ({
 // Mock expo-crypto
 jest.mock('expo-crypto', () => ({
   randomUUID: jest.fn().mockReturnValue('mock-uuid-1234'),
+  getRandomBytesAsync: jest.fn().mockResolvedValue(new Uint8Array(32).fill(42)),
+}));
+
+// Mock expo-secure-store
+jest.mock('expo-secure-store', () => ({
+  getItemAsync: jest.fn(),
+  setItemAsync: jest.fn(),
+  deleteItemAsync: jest.fn(),
+  WHEN_UNLOCKED_THIS_DEVICE_ONLY: 'WHEN_UNLOCKED_THIS_DEVICE_ONLY',
 }));
 
 describe('SecureStorage', () => {
   let storage: SecureStorage;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
     // Reset singleton
     (SecureStorage as any).instance = null;
-    // Reset global encryption key
-    global.mmkvEncryptionKey = undefined;
-    storage = SecureStorage.getInstance();
+    (SecureStorage as any).initializationPromise = null;
+
+    // Mock SecureStore to return no existing key by default
+    (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(null);
+    (SecureStore.setItemAsync as jest.Mock).mockResolvedValue(undefined);
+
+    storage = await SecureStorage.getInstance();
   });
 
   describe('singleton pattern', () => {
-    it('should return the same instance', () => {
-      const instance1 = SecureStorage.getInstance();
-      const instance2 = SecureStorage.getInstance();
+    it('should return the same instance', async () => {
+      const instance1 = await SecureStorage.getInstance();
+      const instance2 = await SecureStorage.getInstance();
       expect(instance1).toBe(instance2);
     });
   });
 
   describe('encryption key management', () => {
-    it('should generate encryption key on first use', () => {
-      expect(global.mmkvEncryptionKey).toBe('mock-uuid-1234');
+    it('should generate encryption key on first use', async () => {
+      // Verify that a new key is generated when none exists
+      expect(SecureStore.getItemAsync).toHaveBeenCalledWith('mmkv_encryption_key');
+      expect(Crypto.getRandomBytesAsync).toHaveBeenCalledWith(32);
+      expect(SecureStore.setItemAsync).toHaveBeenCalledWith(
+        'mmkv_encryption_key',
+        expect.any(String),
+        {
+          keychainAccessible: 'WHEN_UNLOCKED_THIS_DEVICE_ONLY',
+        }
+      );
     });
 
-    it('should reuse existing encryption key', () => {
-      global.mmkvEncryptionKey = 'existing-key';
+    it('should reuse existing encryption key', async () => {
+      // Reset singleton
       (SecureStorage as any).instance = null;
+      (SecureStorage as any).initializationPromise = null;
 
-      SecureStorage.getInstance();
-      expect(global.mmkvEncryptionKey).toBe('existing-key');
+      // Clear previous mock calls
+      jest.clearAllMocks();
+
+      // Mock existing key
+      (SecureStore.getItemAsync as jest.Mock).mockResolvedValue('existing-key');
+
+      await SecureStorage.getInstance();
+
+      expect(SecureStore.getItemAsync).toHaveBeenCalledWith('mmkv_encryption_key');
+      expect(Crypto.getRandomBytesAsync).not.toHaveBeenCalled();
+      expect(SecureStore.setItemAsync).not.toHaveBeenCalled();
+    });
+
+    it('should fallback to temporary key if secure storage fails', async () => {
+      // Reset singleton
+      (SecureStorage as any).instance = null;
+      (SecureStorage as any).initializationPromise = null;
+
+      // Mock secure storage failure
+      (SecureStore.getItemAsync as jest.Mock).mockRejectedValue(new Error('Secure storage error'));
+
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+      await SecureStorage.getInstance();
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to manage encryption key:',
+        expect.any(Error)
+      );
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Using temporary encryption key. Data will not persist across app restarts.'
+      );
+      expect(Crypto.randomUUID).toHaveBeenCalled();
+
+      consoleSpy.mockRestore();
+      warnSpy.mockRestore();
     });
   });
 
@@ -170,14 +230,14 @@ describe('SecureStorage', () => {
   });
 
   describe('rotateEncryptionKey', () => {
-    it('should warn about unimplemented feature', async () => {
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-
-      await storage.rotateEncryptionKey();
-
-      expect(consoleSpy).toHaveBeenCalledWith('Encryption key rotation not yet implemented');
-      consoleSpy.mockRestore();
+    it('should throw not implemented error', async () => {
+      // Key rotation is not yet implemented
+      await expect(storage.rotateEncryptionKey()).rejects.toThrow(
+        'Key rotation is not yet implemented. This feature will be available in a future release.'
+      );
     });
+
+    // TODO: Add tests when key rotation is implemented
   });
 
   describe('error handling', () => {
