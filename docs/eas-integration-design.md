@@ -60,7 +60,7 @@ Update the configuration with your specific requirements.
 
 1. **EAS Cloud variables** - for sensitive data (API keys, tokens)
 2. **`eas.json` env field** - for non-sensitive build config
-3. **Local `.env` files** - **NOT used in EAS builds** (development only)
+3. **Local `.env` files** - ⚠️ **NOT used in EAS builds** (development only)
 
 **For Local Development:**
 

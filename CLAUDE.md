@@ -182,13 +182,3 @@ If a commit is rejected:
 2. Type must be one of the allowed types above
 3. Subject cannot be empty and must start with lowercase
 4. Fix the message and try again
-
-### Git Add Guidelines
-
-**NEVER use `git add .` to add all files:**
-
-- Always specify individual files: `git add src/component.tsx`
-- Add multiple specific files: `git add file1.tsx file2.ts`
-- Review changes before staging: `git status` and `git diff`
-
-This ensures intentional commits and prevents accidentally staging unrelated files.

@@ -59,7 +59,7 @@ Priority: `.env.local` > `.env` > hardcoded defaults
 
 1. EAS Cloud variables (highest) - for secrets
 2. `eas.json` env field - for non-sensitive config
-3. Local .env files are NOT used
+3. ❌ Local .env files are NOT used
 
 ## Adding New Configuration
 
@@ -138,7 +138,7 @@ const apiUrl = Config.API_URL; // Environment variables accessed via Config
 
 - API URLs for local testing
 - Feature flags for development
-- NOT used in EAS builds
+- ⚠️ NOT used in EAS builds
 
 **`eas.json` env field** - Non-sensitive build config
 
