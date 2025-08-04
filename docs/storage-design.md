@@ -48,12 +48,12 @@ This document outlines the storage architecture using MMKV as the primary storag
 
 ### Storage Comparison
 
-| Tier        | Persistence     | Backup | Encryption | TTL Support | Use Case                 |
-| ----------- | --------------- | ------ | ---------- | ----------- | ------------------------ |
-| preferences | Forever         | ✅     | ❌         | ❌          | User settings            |
-| cache       | Until expired   | ❌\*   | ❌         | ✅          | Performance optimization |
-| secure      | Until logout    | ✅\*\* | ✅         | ❌          | Sensitive credentials    |
-| temp        | Current session | ❌\*   | ❌         | ❌          | Transient state          |
+| Tier        | Persistence     | Backup  | Encryption | TTL Support | Use Case                 |
+| ----------- | --------------- | ------- | ---------- | ----------- | ------------------------ |
+| preferences | Forever         | Yes     | No         | No          | User settings            |
+| cache       | Until expired   | No\*    | No         | Yes         | Performance optimization |
+| secure      | Until logout    | Yes\*\* | Yes        | No          | Sensitive credentials    |
+| temp        | Current session | No\*    | No         | No          | Transient state          |
 
 \*Technically backed up, but cleared by application logic after restore  
 \*\*Backed up and restored (encrypted), application should validate after restore

@@ -231,16 +231,16 @@ Storage.performMaintenance();
 ### 1. Choose the Right Storage Tier
 
 ```typescript
-// ✅ Good: User preferences in preferences storage
+// Good: User preferences in preferences storage
 Storage.preferences.setTheme('dark');
 
-// ❌ Bad: Auth token in preferences (use secure instead)
+// Bad: Auth token in preferences (use secure instead)
 Storage.preferences.set('authToken', token);
 
-// ✅ Good: API response in cache with TTL
+// Good: API response in cache with TTL
 Storage.cache.setWithTTL('products', data, 3600);
 
-// ❌ Bad: Form draft in cache (use temp instead)
+// Bad: Form draft in cache (use temp instead)
 Storage.cache.set('formDraft', draft);
 ```
 
