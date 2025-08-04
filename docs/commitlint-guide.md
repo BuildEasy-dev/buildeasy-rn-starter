@@ -11,21 +11,22 @@ This project uses commitlint to enforce consistent commit message standards.
 ```
 
 Examples:
+
 - `feat: add user authentication`
 - `fix: resolve navigation crash`
 - `docs: update API documentation`
 
 ### Allowed Types
 
-| Type | Use for | Example |
-|------|---------|---------|
-| `feat` | New features | `feat: add dark mode` |
-| `fix` | Bug fixes | `fix: resolve memory leak` |
-| `docs` | Documentation | `docs: update README` |
-| `style` | Code formatting | `style: format with prettier` |
+| Type       | Use for            | Example                         |
+| ---------- | ------------------ | ------------------------------- |
+| `feat`     | New features       | `feat: add dark mode`           |
+| `fix`      | Bug fixes          | `fix: resolve memory leak`      |
+| `docs`     | Documentation      | `docs: update README`           |
+| `style`    | Code formatting    | `style: format with prettier`   |
 | `refactor` | Code restructuring | `refactor: simplify auth logic` |
-| `test` | Tests | `test: add user service tests` |
-| `chore` | Maintenance | `chore: update dependencies` |
+| `test`     | Tests              | `test: add user service tests`  |
+| `chore`    | Maintenance        | `chore: update dependencies`    |
 
 ## Automatic Checks
 
@@ -35,33 +36,40 @@ Examples:
 ## Common Errors
 
 ### Missing type
-❌ `Add new feature`  
-✅ `feat: add new feature`
+
+Bad: `Add new feature`  
+Good: `feat: add new feature`
 
 ### Wrong case
-❌ `FEAT: add feature`  
-✅ `feat: add feature`
+
+Bad: `FEAT: add feature`  
+Good: `feat: add feature`
 
 ### Empty subject
-❌ `fix:`  
-✅ `fix: resolve login issue`
+
+Bad: `fix:`  
+Good: `fix: resolve login issue`
 
 ### Capital letter
-❌ `feat: Add feature`  
-✅ `feat: add feature`
+
+Bad: `feat: Add feature`  
+Good: `feat: add feature`
 
 ### Period at end
-❌ `feat: add feature.`  
-✅ `feat: add feature`
+
+Bad: `feat: add feature.`  
+Good: `feat: add feature`
 
 ## Manual Validation
 
 Check last commit:
+
 ```bash
 pnpm commitlint
 ```
 
 Check last 10 commits:
+
 ```bash
 pnpm commitlint:last
 ```
@@ -82,11 +90,13 @@ git commit -m "message" --no-verify
 ## Troubleshooting
 
 **Pre-commit fails?**
+
 - Run `pnpm typecheck` for type errors
 - Run `pnpm lint` for code style issues
 
 **Commit rejected?**
 Check the error message. Usually:
+
 - Missing type prefix
 - Wrong type spelling
 - Invalid subject format

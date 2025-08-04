@@ -34,8 +34,10 @@ This document outlines the storage architecture using MMKV as the primary storag
 
 - **Purpose**: Sensitive data requiring encryption at rest
 - **Examples**: Authentication tokens, API keys, user credentials, payment information
-- **Lifecycle**: Persists until explicitly removed or user logs out
-- **Cleanup**: On user logout, token expiration, or security events
+- **Lifecycle**: Persists across app restarts and device restores (when encrypted)
+- **Backup**: Included in system backups (encrypted)
+- **Cleanup**: On user logout, token expiration, or when validation fails after restore
+- **Encryption**: Uses MMKV's built-in AES CFB-128 encryption with keys managed by expo-secure-store
 
 #### Temp
 
@@ -46,12 +48,15 @@ This document outlines the storage architecture using MMKV as the primary storag
 
 ### Storage Comparison
 
-| Tier        | Persistence     | Backup | Encryption | TTL Support | Use Case                 |
-| ----------- | --------------- | ------ | ---------- | ----------- | ------------------------ |
-| preferences | Forever         | ✅     | ❌         | ❌          | User settings            |
-| cache       | Until expired   | ❌     | ❌         | ✅          | Performance optimization |
-| secure      | Until logout    | ❌     | ✅         | ❌          | Sensitive credentials    |
-| temp        | Current session | ❌     | ❌         | ❌          | Transient state          |
+| Tier        | Persistence     | Backup  | Encryption | TTL Support | Use Case                 |
+| ----------- | --------------- | ------- | ---------- | ----------- | ------------------------ |
+| preferences | Forever         | Yes     | No         | No          | User settings            |
+| cache       | Until expired   | No\*    | No         | Yes         | Performance optimization |
+| secure      | Until logout    | Yes\*\* | Yes        | No          | Sensitive credentials    |
+| temp        | Current session | No\*    | No         | No          | Transient state          |
+
+\*Technically backed up, but cleared by application logic after restore  
+\*\*Backed up and restored (encrypted), application should validate after restore
 
 ### Core Interfaces
 
@@ -75,6 +80,42 @@ interface IStorageWithTTL extends IStorage {
   setWithTTL<T>(key: string, value: T, ttlSeconds: number): void;
   clearExpired(): void;
 }
+
+interface ISecureStorage extends IStorage {
+  setSecure<T>(key: string, value: T): void;
+  getSecure<T>(key: string, defaultValue?: T): T | null;
+  setAuthToken(token: string): void;
+  getAuthToken(): string | null;
+  setRefreshToken(token: string): void;
+  getRefreshToken(): string | null;
+  setApiKey(service: string, key: string): void;
+  getApiKey(service: string): string | null;
+  setCredentials(username: string, password: string): void;
+  getCredentials(): { username: string; password: string } | null;
+  clearAuth(): void;
+  rotateEncryptionKey(): Promise<void>;
+}
+```
+
+### Error Types
+
+Storage operations may throw typed errors for better error handling:
+
+```typescript
+// Base error class with context information
+class StorageError extends Error {
+  readonly tier: 'preferences' | 'cache' | 'secure' | 'temp' | 'manager';
+  readonly operation: string;
+  readonly key?: string;
+  readonly cause?: Error;
+}
+
+// Specific error types
+class InitializationError extends StorageError {} // Storage initialization failure
+class EncryptionError extends StorageError {} // Encryption/key management failure
+class SerializationError extends StorageError {} // JSON.stringify failure
+class DeserializationError extends StorageError {} // JSON.parse failure (data corruption)
+class IOError extends StorageError {} // Native MMKV read/write failure
 ```
 
 ## MMKV Configuration
@@ -85,41 +126,43 @@ interface IStorageWithTTL extends IStorage {
 const instances = {
   preferences: new MMKV({
     id: 'preferences',
-    path: `${MMKV.appGroupPath}/backup`,
   }),
 
   cache: new MMKV({
     id: 'cache',
-    path: `${MMKV.appGroupPath}/no-backup`,
   }),
 
   secure: new MMKV({
     id: 'secure',
-    path: `${MMKV.appGroupPath}/no-backup`,
     encryptionKey: 'generated-key',
+  }),
+
+  temp: new MMKV({
+    id: 'temp',
   }),
 };
 ```
 
 ### Backup Strategy
 
-**Path-based separation:**
+**Implementation approach: Platform backup + Application-level cleanup**
 
-- `/backup/` - Included in system backups
-- `/no-backup/` - Excluded from backups
+- All MMKV instances store data in the default location (technically all backed up)
+- Application logic enforces the intended backup behavior through cleanup strategies
+- This approach avoids platform-specific path configuration issues while maintaining design goals
 
 **iOS Configuration:**
 
-- Set `NSURLIsExcludedFromBackupKey` on no-backup directories
-- Backup directory automatically included in iCloud
+- Uses default iCloud backup behavior
+- All Documents directory data is backed up automatically
 
 **Android Configuration:**
 
 ```xml
 <!-- backup_rules.xml -->
 <full-backup-content>
-  <include domain="file" path="mmkv/backup/" />
-  <exclude domain="file" path="mmkv/no-backup/" />
+  <!-- Include all MMKV data in backups -->
+  <include domain="file" path="mmkv/" />
 </full-backup-content>
 ```
 
@@ -142,8 +185,8 @@ module.exports = (config) => {
     async (config) => {
       const backupRules = `<?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-  <include domain="file" path="mmkv/backup/" />
-  <exclude domain="file" path="mmkv/no-backup/" />
+  <!-- Include all MMKV data in backups -->
+  <include domain="file" path="mmkv/" />
 </full-backup-content>`;
 
       // Write to res/xml/backup_rules.xml
@@ -151,14 +194,8 @@ module.exports = (config) => {
     },
   ]);
 
-  // iOS: Configure backup exclusion
-  config = withDangerousMod(config, [
-    'ios',
-    async (config) => {
-      // Add NSURLIsExcludedFromBackupKey setup
-      return config;
-    },
-  ]);
+  // iOS uses default iCloud backup behavior
+  // No special configuration needed
 
   return config;
 };
@@ -184,58 +221,26 @@ module.exports = (config) => {
 }
 ```
 
-## Usage Examples
+## Usage
 
-### Data Type Mapping
-
-| Data Type        | Storage Tier | Example                |
-| ---------------- | ------------ | ---------------------- |
-| User preferences | preferences  | `theme: 'dark'`        |
-| API responses    | cache        | `userProfile` (7d TTL) |
-| Auth tokens      | secure       | `authToken`            |
-| Form drafts      | temp         | `checkoutForm`         |
-
-### Code Example
-
-```typescript
-import { Storage } from '@/services/storage';
-
-// User preferences (backed up)
-Storage.preferences.set('theme', 'dark');
-Storage.preferences.set('language', 'en');
-
-// Cache with TTL (not backed up)
-Storage.cache.setWithTTL('user_profile', userData, 86400); // 1 day
-
-// Secure storage (encrypted, not backed up)
-Storage.secure.setSecure('auth_token', token);
-
-// Temporary data (cleared on app restart)
-Storage.temp.set('form_draft', formData);
-```
-
-## Performance Benchmarks
-
-| Operation               | MMKV   | AsyncStorage |
-| ----------------------- | ------ | ------------ |
-| Write                   | ~0.3ms | ~10ms        |
-| Read                    | ~0.1ms | ~3ms         |
-| Batch write (100 items) | ~30ms  | ~1000ms      |
+For detailed usage examples, API reference, and best practices, see the [Storage Usage Guide](./storage-usage.md).
 
 ## Data Management Strategy
 
 ### Initialization
 
-```typescript
-// App.tsx or entry point
-import { initializeStorage } from '@/services/storage';
+Storage requires async initialization due to encryption key management. The initialization process must handle `InitializationError` appropriately, typically by showing an error screen to users when critical storage failures occur.
 
-function App() {
-  useEffect(() => {
-    initializeStorage(); // Clears temp, removes expired cache
-  }, []);
-}
-```
+### Backup Restore Handling
+
+The application enforces storage tier behavior through cleanup logic at startup:
+
+- **Temporary data**: Always cleared on app start (achieving "not backed up" effect)
+- **Cache data**: Expired entries are removed automatically (partial cleanup)
+- **Secure data**: **Backed up and restored** (encrypted). Application should validate tokens and handle authentication state appropriately
+- **Preferences**: Preserved after restore (true backup behavior)
+
+**Important**: Unlike cache and temp storage, secure storage is designed to persist across restores. This allows for a better user experience where encrypted credentials can survive device migrations, but the application must handle token validation and authentication state properly.
 
 ### Cleanup Policies
 
@@ -254,35 +259,102 @@ function App() {
 - **Secure storage**: Minimal, only essential credentials
 - **Temp storage**: No limit, cleared on restart
 
-## Best Practices
+## Encryption Key Management
 
-1. **Choose the right tier**:
-   - Settings that should survive reinstalls → preferences
-   - Data that improves performance → cache
-   - Sensitive credentials → secure
-   - Data for current session only → temp
+### Overview
 
-2. **Set appropriate TTLs**:
-   - User profiles: 7 days
-   - API lists: 1 hour
-   - Auth tokens: Match server expiry
+The secure storage tier uses MMKV's built-in encryption with keys managed by expo-secure-store, providing platform-native security for encryption keys.
 
-3. **Handle storage errors**:
+### Key Storage
 
-   ```typescript
-   try {
-     Storage.secure.setSecure('token', value);
-   } catch (error) {
-     // Handle encryption failure
-   }
-   ```
+- **iOS**: Keys are stored in the iOS Keychain with `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`
+- **Android**: Keys are stored using Android Keystore system
+- **Key Generation**: 256-bit cryptographically secure keys using `expo-crypto`
+- **Key Persistence**: Keys survive app updates but not app uninstalls
 
-4. **Monitor storage usage**:
-   - Track size per tier
-   - Alert on unusual growth
-   - Implement automatic cleanup
+### Implementation Details
 
-5. **Test backup/restore**:
-   - Verify preferences survive app reinstalls
-   - Ensure cache and temp don't restore
-   - Confirm secure data remains encrypted
+```typescript
+// Key generation using expo-crypto
+const randomBytes = await Crypto.getRandomBytesAsync(32); // 256 bits
+const encryptionKey = btoa(String.fromCharCode(...randomBytes));
+
+// Key storage using expo-secure-store
+await SecureStore.setItemAsync('mmkv_encryption_key', encryptionKey, {
+  keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+});
+```
+
+### Security Features
+
+1. **Platform-level Protection**: Encryption keys are protected by the OS security features
+2. **Device-bound Keys**: Keys don't sync across devices for maximum security
+3. **Robust Error Handling**: Failures are reported as explicit errors instead of silent fallbacks
+4. **Key Rotation**: Support for rotating encryption keys with data migration
+
+### Key Rotation Process (Future Feature)
+
+**Note: Key rotation is not yet implemented and will be available in a future release.**
+
+Planned implementation:
+
+1. Generate new encryption key
+2. Create new MMKV instance with new key
+3. Migrate all data from old to new instance
+4. Update key in secure storage
+5. Clear old encrypted data
+
+See `SecureStorage.rotateEncryptionKey()` for implementation requirements and TODO.
+
+## Error Handling
+
+### Overview
+
+The storage system implements a robust, typed error handling mechanism that eliminates silent failures and provides rich context for debugging and error recovery.
+
+### Error Types
+
+All storage errors extend the base `StorageError` class, which includes contextual information:
+
+- **tier**: Which storage layer failed (preferences, cache, secure, temp, manager)
+- **operation**: What operation was being performed (read, write, serialize, decrypt, etc.)
+- **key**: The storage key involved (when applicable)
+- **cause**: The underlying error that caused the failure
+
+#### Specific Error Types
+
+| Error Type             | When Thrown                           | Common Scenarios                                   |
+| ---------------------- | ------------------------------------- | -------------------------------------------------- |
+| `InitializationError`  | Storage service fails to initialize   | Secure storage key management fails on app startup |
+| `EncryptionError`      | Encryption/decryption operations fail | Device security settings changed, keystore issues  |
+| `SerializationError`   | `JSON.stringify` fails                | Circular references, invalid data types            |
+| `DeserializationError` | `JSON.parse` fails                    | Data corruption, invalid JSON format               |
+| `IOError`              | Native MMKV operations fail           | Disk full, permissions issues, hardware problems   |
+
+### Error Handling Strategies
+
+For practical error handling examples and implementation patterns, see the [Storage Usage Guide](./storage-usage.md#error-handling).
+
+### Error Recovery Patterns
+
+The system defines standard recovery patterns for different error types:
+
+- **Encryption Errors**: Clear corrupted data and force re-authentication
+- **Data Corruption**: Remove corrupted data and attempt to refetch from source
+- **Storage Full**: Trigger cleanup, retry operations, and potentially degrade functionality
+
+### Error Monitoring
+
+Error monitoring should track error patterns across all storage tiers to identify system health issues. Key metrics include error frequency by tier, operation type, and device characteristics.
+
+## Design Principles
+
+1. **Tier Selection**: Each storage tier serves a specific purpose - preferences for persistent settings, cache for performance optimization, secure for sensitive data, and temp for session-only data
+
+2. **Error Handling**: Use typed errors for precise error recovery strategies and robust system behavior
+
+3. **Initialization**: Storage requires proper async initialization with error handling for secure key management
+
+4. **Monitoring**: Track storage usage patterns and error frequencies across all tiers
+
+For detailed implementation guidelines and practical examples, see the [Storage Usage Guide](./storage-usage.md).
