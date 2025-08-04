@@ -9,7 +9,7 @@ const BUILD_CONFIG = {
   SLUG: 'buildeasyrnstarter',
 
   // App Identity - Base values for environment-specific generation
-  BUNDLE_ID_BASE: 'dev.buildeasy.rnstarter',
+  BUNDLE_ID_BASE: 'com.buildeasy.rnstarter',
   SCHEME_BASE: 'buildeasyrnstarter',
 
   // Universal Links configuration
@@ -97,7 +97,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           backgroundColor: '#ffffff',
         },
       ],
-      './plugins/mmkv-backup.js',
     ],
     experiments: {
       typedRoutes: true,
