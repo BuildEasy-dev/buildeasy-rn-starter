@@ -2,6 +2,8 @@
 
 ## Overview
 
+This guide provides practical usage examples and best practices for the MMKV storage system. For architectural design details and system configuration, see the [Storage Design Documentation](./storage-design.md).
+
 The MMKV storage implementation provides four distinct storage tiers, each optimized for specific use cases:
 
 - **Preferences**: Persistent user settings with backup support
@@ -148,20 +150,35 @@ Storage.temp.setSessionData('viewHistory', ['product1', 'product2']);
 Storage requires async initialization due to expo-secure-store encryption key management:
 
 ```typescript
-import { initializeStorage } from '@/services/storage';
+import { initializeStorage, InitializationError } from '@/services/storage';
 
-// Called automatically in _layout.tsx
+// Called automatically in _layout.tsx with proper error handling
 useEffect(() => {
-  initializeStorage().catch((error) => {
-    console.error('Failed to initialize storage:', error);
-  });
+  const initStorage = async () => {
+    try {
+      await initializeStorage();
+    } catch (error) {
+      if (error instanceof InitializationError) {
+        // Show error screen to user
+        setStorageError('Storage initialization failed. Please restart the app.');
+      } else {
+        console.error('Unexpected initialization error:', error);
+      }
+    }
+  };
+  initStorage();
 }, []);
 
 // Manual initialization
-const storage = await initializeStorage();
+try {
+  const storage = await initializeStorage();
+  // Storage ready to use
+} catch (error) {
+  // Handle initialization failure
+}
 ```
 
-**Important**: Storage operations will fail if not properly initialized. The secure storage tier requires async key retrieval from expo-secure-store.
+**Important**: Storage operations will throw typed errors if initialization fails or operations encounter issues. The secure storage tier requires async key retrieval from expo-secure-store.
 
 ### Monitoring Storage Size
 
@@ -240,18 +257,32 @@ Storage.cache.setWithTTL('products', products, 3600); // 1 hour
 Storage.cache.setWithTTL('stockPrices', prices, 60); // 1 minute
 ```
 
-### 3. Handle Storage Errors
+### 3. Handle Storage Errors with Typed Errors
 
 ```typescript
+import { EncryptionError, IOError, DeserializationError } from '@/services/storage';
+
+// Writing with error handling
 try {
   Storage.secure.setSecure('sensitiveData', data);
 } catch (error) {
-  console.error('Failed to store secure data:', error);
-  // Handle encryption failure
+  if (error instanceof EncryptionError) {
+    redirectToLogin('Security settings changed. Please log in again.');
+  } else if (error instanceof IOError) {
+    scheduleRetry(() => Storage.secure.setSecure('sensitiveData', data));
+  }
 }
 
-// Safe getter with default
-const theme = Storage.preferences.get('theme', 'light');
+// Reading with error handling
+try {
+  return Storage.cache.get('user_profile');
+} catch (error) {
+  if (error instanceof DeserializationError) {
+    Storage.cache.delete('user_profile');
+    return refetchUserProfile();
+  }
+  return null;
+}
 ```
 
 ### 4. Clean Up Unused Data
@@ -271,39 +302,16 @@ Storage.temp.clear();
 ### 5. Monitor Storage Usage
 
 ```typescript
-// Check storage size periodically
-const checkStorage = () => {
-  const sizes = Storage.getStorageSizes();
-  if (sizes.total > 40 * 1024 * 1024) {
-    // 40MB warning
-    console.warn('Storage usage high:', sizes);
-    Storage.cache.evictOldest();
-  }
-};
-
-// Run check on app foreground
-AppState.addEventListener('change', (state) => {
-  if (state === 'active') {
-    checkStorage();
-  }
-});
+// Check storage size and clean up if needed
+const sizes = Storage.getStorageSizes();
+if (sizes.total > 40 * 1024 * 1024) {
+  Storage.cache.evictOldest();
+}
 ```
 
 ## Encryption Key Management
 
-### Platform-Native Security
-
-The secure storage tier uses expo-secure-store for encryption key management:
-
-```typescript
-// Automatic key generation and storage
-const storage = await SecureStorage.getInstance();
-
-// Keys are stored securely:
-// - iOS: Keychain Services with kSecAttrAccessibleWhenUnlockedThisDeviceOnly
-// - Android: Android Keystore System
-// - Key size: 256-bit (32 bytes) cryptographically secure
-```
+Encryption keys are managed automatically by the storage system using platform-native security features. See the [Storage Design Documentation](./storage-design.md#encryption-key-management) for technical implementation details.
 
 ### Key Rotation (Future Feature)
 
@@ -327,12 +335,21 @@ const storage = await SecureStorage.getInstance();
 // - User-requested security enhancement
 ```
 
-### Fallback Behavior
+### Error Handling
+
+The storage system now uses robust error handling instead of silent fallbacks:
 
 ```typescript
-// If expo-secure-store fails, temporary keys are used
-// Data will not persist across app restarts in this case
-// Check console for warnings about temporary key usage
+import { initializeStorage, InitializationError } from '@/services/storage';
+
+try {
+  await initializeStorage();
+} catch (error) {
+  if (error instanceof InitializationError) {
+    // Critical storage failure - show error to user
+    showErrorScreen('Storage initialization failed. Please restart the app.');
+  }
+}
 ```
 
 ## Migration from AsyncStorage
@@ -352,14 +369,6 @@ const theme = Storage.preferences.getTheme();
 await initializeStorage();
 ```
 
-## Performance Comparison
-
-| Operation   | MMKV   | AsyncStorage | Improvement |
-| ----------- | ------ | ------------ | ----------- |
-| Write       | ~0.3ms | ~10ms        | 33x faster  |
-| Read        | ~0.1ms | ~3ms         | 30x faster  |
-| Batch (100) | ~30ms  | ~1000ms      | 33x faster  |
-
 ## Troubleshooting
 
 ### Storage not persisting
@@ -377,7 +386,7 @@ await initializeStorage();
 - Keys are stored in iOS Keychain (iOS) or Android Keystore (Android)
 - 256-bit cryptographically secure keys generated using expo-crypto
 - Keys persist across app updates but not app uninstalls
-- Fallback to temporary keys if secure storage fails
+- **No fallback mechanism**: Encryption failures throw `EncryptionError` for proper handling
 
 ### Performance issues
 
@@ -395,8 +404,58 @@ await initializeStorage();
 
 ### expo-secure-store issues
 
-- **Storage initialization fails**: Check device security settings (passcode/biometrics enabled)
-- **Temporary key warnings**: expo-secure-store unavailable, data won't persist across restarts
+- **Storage initialization fails**: Check device security settings (passcode/biometrics enabled). App will show error screen with `InitializationError`
+- **Encryption errors**: Handle `EncryptionError` by clearing secure storage and prompting re-authentication
 - **Key rotation errors**: Ensure sufficient storage space and device unlock state
 - **iOS Keychain access**: Requires device to be unlocked (`WHEN_UNLOCKED_THIS_DEVICE_ONLY`)
 - **Android Keystore**: May fail on older devices or custom ROMs without hardware security
+
+#### Common Failure Scenarios and Solutions
+
+The following table outlines common `expo-secure-store` failure scenarios and their recommended handling strategies:
+
+| Failure Scenario                 | Core Issue                                                                | Recommended Strategy                                                                                                                                                                  |
+| :------------------------------- | :------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1. Device Lock State**         | App tries to access keychain data while device is locked                  | **Prevention & Graceful Degradation**: Use correct `keychainAccessible` setting (`AFTER_FIRST_UNLOCK`). For background operations, check `AppState` and retry when app becomes active |
+| **2. Security Settings Changed** | User removed PIN/biometrics causing Android Keystore to clear keys        | **Detect & Force Re-auth**: Catch `InitializationError` on startup. Clear stale secure data and force user re-login                                                                   |
+| **3. Platform-Specific Errors**  | Device manufacturer issues (Samsung, Xiaomi) with Keystore implementation | **Monitor & Remote Config**: Use error monitoring (Sentry) with device info. Use feature flags to gracefully disable features on problematic devices                                  |
+| **4. Data Size Limits**          | Attempting to store large data (>few KB) in `SecureStore`                 | **Architectural Fix**: Never store large data directly. Generate encryption key, encrypt large files in `expo-file-system`, store only the **encryption key** in `SecureStore`        |
+| **5. Device Migration**          | User restores app data to new device                                      | **Detect & Force Re-auth**: Hardware-bound keys can't migrate. Catch initialization failure, clear data, guide user to re-login                                                       |
+| **6. System-Level Failures**     | Disk full or OS instability                                               | **Notify User**: Show clear message like "System storage full, please clean up and restart app"                                                                                       |
+
+#### Key Handling Strategies
+
+**Device Lock State**: Use `AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY` setting. For background operations, check `AppState` and retry when app becomes active.
+
+**Security Changes / Device Migration**: Catch `InitializationError`, clear corrupted data, force re-login with user-friendly message.
+
+**Platform-Specific Errors**: Use error monitoring (Sentry) with device context. Implement feature flags for graceful degradation on problematic devices.
+
+**Large Data Encryption**: Never store large data directly in SecureStore. Instead: generate encryption key → encrypt file in `expo-file-system` → store only the key in SecureStore.
+
+**System Failures**: Show clear user messages for storage issues with actionable options (check storage, retry, etc.).
+
+#### Error Recovery Examples
+
+```typescript
+// Basic initialization error handling
+try {
+  await initializeStorage();
+} catch (error) {
+  if (error instanceof InitializationError) {
+    // Log, clear corrupted data, show user-friendly error
+    Storage.secure.clear();
+    setAppError('Storage initialization failed. Please restart the app.');
+  }
+}
+
+// Runtime encryption error handling
+try {
+  Storage.secure.setAuthToken(token);
+} catch (error) {
+  if (error instanceof EncryptionError) {
+    Storage.secure.clearAuth();
+    redirectToLogin('Security settings changed. Please log in again.');
+  }
+}
+```

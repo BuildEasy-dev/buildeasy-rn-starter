@@ -80,6 +80,42 @@ interface IStorageWithTTL extends IStorage {
   setWithTTL<T>(key: string, value: T, ttlSeconds: number): void;
   clearExpired(): void;
 }
+
+interface ISecureStorage extends IStorage {
+  setSecure<T>(key: string, value: T): void;
+  getSecure<T>(key: string, defaultValue?: T): T | null;
+  setAuthToken(token: string): void;
+  getAuthToken(): string | null;
+  setRefreshToken(token: string): void;
+  getRefreshToken(): string | null;
+  setApiKey(service: string, key: string): void;
+  getApiKey(service: string): string | null;
+  setCredentials(username: string, password: string): void;
+  getCredentials(): { username: string; password: string } | null;
+  clearAuth(): void;
+  rotateEncryptionKey(): Promise<void>;
+}
+```
+
+### Error Types
+
+Storage operations may throw typed errors for better error handling:
+
+```typescript
+// Base error class with context information
+class StorageError extends Error {
+  readonly tier: 'preferences' | 'cache' | 'secure' | 'temp' | 'manager';
+  readonly operation: string;
+  readonly key?: string;
+  readonly cause?: Error;
+}
+
+// Specific error types
+class InitializationError extends StorageError {} // Storage initialization failure
+class EncryptionError extends StorageError {} // Encryption/key management failure
+class SerializationError extends StorageError {} // JSON.stringify failure
+class DeserializationError extends StorageError {} // JSON.parse failure (data corruption)
+class IOError extends StorageError {} // Native MMKV read/write failure
 ```
 
 ## MMKV Configuration
@@ -185,66 +221,15 @@ module.exports = (config) => {
 }
 ```
 
-## Usage Examples
+## Usage
 
-### Data Type Mapping
-
-| Data Type        | Storage Tier | Example                |
-| ---------------- | ------------ | ---------------------- |
-| User preferences | preferences  | `theme: 'dark'`        |
-| API responses    | cache        | `userProfile` (7d TTL) |
-| Auth tokens      | secure       | `authToken`            |
-| Form drafts      | temp         | `checkoutForm`         |
-
-### Code Example
-
-```typescript
-import { Storage } from '@/services/storage';
-
-// User preferences (backed up)
-Storage.preferences.set('theme', 'dark');
-Storage.preferences.set('language', 'en');
-
-// Cache with TTL (not backed up)
-Storage.cache.setWithTTL('user_profile', userData, 86400); // 1 day
-
-// Secure storage (encrypted, not backed up)
-Storage.secure.setSecure('auth_token', token);
-
-// Temporary data (cleared on app restart)
-Storage.temp.set('form_draft', formData);
-```
-
-## Performance Benchmarks
-
-| Operation               | MMKV   | AsyncStorage |
-| ----------------------- | ------ | ------------ |
-| Write                   | ~0.3ms | ~10ms        |
-| Read                    | ~0.1ms | ~3ms         |
-| Batch write (100 items) | ~30ms  | ~1000ms      |
+For detailed usage examples, API reference, and best practices, see the [Storage Usage Guide](./storage-usage.md).
 
 ## Data Management Strategy
 
 ### Initialization
 
-```typescript
-// App.tsx or entry point
-import { initializeStorage } from '@/services/storage';
-
-function App() {
-  useEffect(() => {
-    // Initialize storage asynchronously
-    initializeStorage()
-      .then(() => {
-        console.log('Storage initialized successfully');
-      })
-      .catch((error) => {
-        console.error('Failed to initialize storage:', error);
-        // App can still function with degraded storage capabilities
-      });
-  }, []);
-}
-```
+Storage requires async initialization due to encryption key management. The initialization process must handle `InitializationError` appropriately, typically by showing an error screen to users when critical storage failures occur.
 
 ### Backup Restore Handling
 
@@ -304,7 +289,7 @@ await SecureStore.setItemAsync('mmkv_encryption_key', encryptionKey, {
 
 1. **Platform-level Protection**: Encryption keys are protected by the OS security features
 2. **Device-bound Keys**: Keys don't sync across devices for maximum security
-3. **Fallback Mechanism**: Temporary keys are generated if secure storage fails
+3. **Robust Error Handling**: Failures are reported as explicit errors instead of silent fallbacks
 4. **Key Rotation**: Support for rotating encryption keys with data migration
 
 ### Key Rotation Process (Future Feature)
@@ -321,42 +306,55 @@ Planned implementation:
 
 See `SecureStorage.rotateEncryptionKey()` for implementation requirements and TODO.
 
-## Best Practices
+## Error Handling
 
-1. **Choose the right tier**:
-   - Settings that should survive reinstalls → preferences
-   - Data that improves performance → cache
-   - Sensitive credentials → secure
-   - Data for current session only → temp
+### Overview
 
-2. **Set appropriate TTLs**:
-   - User profiles: 7 days
-   - API lists: 1 hour
-   - Auth tokens: Match server expiry
+The storage system implements a robust, typed error handling mechanism that eliminates silent failures and provides rich context for debugging and error recovery.
 
-3. **Handle storage errors**:
+### Error Types
 
-   ```typescript
-   try {
-     Storage.secure.setSecure('token', value);
-   } catch (error) {
-     // Handle encryption failure
-   }
-   ```
+All storage errors extend the base `StorageError` class, which includes contextual information:
 
-4. **Monitor storage usage**:
-   - Track size per tier
-   - Alert on unusual growth
-   - Implement automatic cleanup
+- **tier**: Which storage layer failed (preferences, cache, secure, temp, manager)
+- **operation**: What operation was being performed (read, write, serialize, decrypt, etc.)
+- **key**: The storage key involved (when applicable)
+- **cause**: The underlying error that caused the failure
 
-5. **Test backup/restore**:
-   - Verify preferences survive app reinstalls (true backup)
-   - Ensure temp data is cleared on app restart (effective "no backup")
-   - Validate that expired cache is cleaned up
-   - Test that invalid secure tokens are handled properly
-   - Confirm encrypted data remains encrypted
+#### Specific Error Types
 
-6. **Initialize storage properly**:
-   - Always call `initializeStorage()` on app startup
-   - Handle initialization errors gracefully
-   - Storage operations will fail if not initialized
+| Error Type             | When Thrown                           | Common Scenarios                                   |
+| ---------------------- | ------------------------------------- | -------------------------------------------------- |
+| `InitializationError`  | Storage service fails to initialize   | Secure storage key management fails on app startup |
+| `EncryptionError`      | Encryption/decryption operations fail | Device security settings changed, keystore issues  |
+| `SerializationError`   | `JSON.stringify` fails                | Circular references, invalid data types            |
+| `DeserializationError` | `JSON.parse` fails                    | Data corruption, invalid JSON format               |
+| `IOError`              | Native MMKV operations fail           | Disk full, permissions issues, hardware problems   |
+
+### Error Handling Strategies
+
+For practical error handling examples and implementation patterns, see the [Storage Usage Guide](./storage-usage.md#error-handling).
+
+### Error Recovery Patterns
+
+The system defines standard recovery patterns for different error types:
+
+- **Encryption Errors**: Clear corrupted data and force re-authentication
+- **Data Corruption**: Remove corrupted data and attempt to refetch from source
+- **Storage Full**: Trigger cleanup, retry operations, and potentially degrade functionality
+
+### Error Monitoring
+
+Error monitoring should track error patterns across all storage tiers to identify system health issues. Key metrics include error frequency by tier, operation type, and device characteristics.
+
+## Design Principles
+
+1. **Tier Selection**: Each storage tier serves a specific purpose - preferences for persistent settings, cache for performance optimization, secure for sensitive data, and temp for session-only data
+
+2. **Error Handling**: Use typed errors for precise error recovery strategies and robust system behavior
+
+3. **Initialization**: Storage requires proper async initialization with error handling for secure key management
+
+4. **Monitoring**: Track storage usage patterns and error frequencies across all tiers
+
+For detailed implementation guidelines and practical examples, see the [Storage Usage Guide](./storage-usage.md).
