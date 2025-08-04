@@ -61,7 +61,7 @@ export class CacheStorage extends MMKVAdapter implements IStorageWithTTL {
       return entry.value ?? defaultValue ?? null;
     } catch (error) {
       console.error(`Failed to get cached value for key "${key}":`, error);
-      return defaultValue ?? null;
+      throw error;
     }
   }
 

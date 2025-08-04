@@ -115,11 +115,11 @@ describe('CacheStorage', () => {
       expect(storage.get('key', 'default')).toBe('default');
     });
 
-    it('should handle parse errors gracefully', () => {
+    it('should throw errors for corrupted data', () => {
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       (storage.mmkv.getString as jest.Mock).mockReturnValue('invalid json');
 
-      expect(storage.get('key')).toBeNull();
+      expect(() => storage.get('key')).toThrow();
       expect(consoleSpy).toHaveBeenCalled();
 
       consoleSpy.mockRestore();
