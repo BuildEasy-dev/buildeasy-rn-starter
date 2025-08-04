@@ -1,4 +1,5 @@
 import type { IStorageManager } from './types';
+import { InitializationError, EncryptionError } from './errors';
 import { PreferencesStorage } from './preferences';
 import { CacheStorage } from './cache';
 import { SecureStorage } from './secure';
@@ -38,7 +39,27 @@ export class StorageManager implements IStorageManager {
   }
 
   private static async createInstance(): Promise<StorageManager> {
-    const secureStorage = await SecureStorage.getInstance();
+    let secureStorage: SecureStorage;
+
+    try {
+      secureStorage = await SecureStorage.getInstance();
+    } catch (error) {
+      if (error instanceof EncryptionError) {
+        throw new InitializationError(
+          'Failed to initialize SecureStorage due to encryption key management failure.',
+          {
+            tier: 'manager',
+            cause: error,
+          }
+        );
+      }
+      // Re-throw any other errors as initialization errors
+      throw new InitializationError('Failed to initialize SecureStorage due to unknown error.', {
+        tier: 'manager',
+        cause: error as Error,
+      });
+    }
+
     return new StorageManager(secureStorage);
   }
 

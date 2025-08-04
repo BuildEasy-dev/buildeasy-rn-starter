@@ -13,6 +13,16 @@ export type {
   StorageOptions,
 } from './types';
 
+// Export error types
+export {
+  StorageError,
+  InitializationError,
+  EncryptionError,
+  SerializationError,
+  DeserializationError,
+  IOError,
+} from './types';
+
 // Export individual storage classes if needed
 export { PreferencesStorage } from './preferences';
 export { CacheStorage } from './cache';

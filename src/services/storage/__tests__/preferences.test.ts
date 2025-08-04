@@ -101,19 +101,23 @@ describe('PreferencesStorage', () => {
       expect(storage.mmkv.set).toHaveBeenCalledWith('complexData', JSON.stringify(complexData));
     });
 
-    it('should handle storage errors gracefully', () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    it('should throw IOError when MMKV storage fails', () => {
       (storage.mmkv.set as jest.Mock).mockImplementation(() => {
         throw new Error('Storage error');
       });
 
-      expect(() => storage.set('key', 'value')).toThrow('Storage error');
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to set value for key "key":',
-        expect.any(Error)
+      expect(() => storage.set('key', 'value')).toThrow(
+        'Failed to write to MMKV for key "key" in tier "preferences"'
       );
 
-      consoleSpy.mockRestore();
+      try {
+        storage.set('key', 'value');
+      } catch (error: any) {
+        expect(error.name).toBe('IOError');
+        expect(error.operation).toBe('write');
+        expect(error.tier).toBe('preferences');
+        expect(error.key).toBe('key');
+      }
     });
 
     it('should clear all preferences', () => {

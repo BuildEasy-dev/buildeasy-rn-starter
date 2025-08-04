@@ -1,5 +1,6 @@
 import { MMKVAdapter } from './mmkv-adapter';
 import type { ISecureStorage } from './types';
+import { EncryptionError } from './errors';
 import * as Crypto from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 
@@ -34,33 +35,53 @@ export class SecureStorage extends MMKVAdapter implements ISecureStorage {
   }
 
   private static async getOrCreateEncryptionKey(): Promise<string> {
+    let existingKey: string | null;
+
     try {
       // Try to retrieve existing key from secure storage
-      const existingKey = await SecureStore.getItemAsync(SecureStorage.ENCRYPTION_KEY_NAME);
+      existingKey = await SecureStore.getItemAsync(SecureStorage.ENCRYPTION_KEY_NAME);
+    } catch (error) {
+      throw new EncryptionError('Failed to retrieve encryption key from secure storage.', {
+        operation: 'key_retrieval',
+        cause: error as Error,
+      });
+    }
 
-      if (existingKey) {
-        return existingKey;
-      }
+    if (existingKey) {
+      return existingKey;
+    }
 
-      // Generate a new cryptographically secure key
-      // Using 32 bytes (256 bits) for AES-256 strength
-      const randomBytes = await Crypto.getRandomBytesAsync(32);
-      const newKey = btoa(String.fromCharCode(...randomBytes));
+    // Generate a new cryptographically secure key
+    // Using 32 bytes (256 bits) for AES-256 strength
+    let randomBytes: Uint8Array;
+    try {
+      randomBytes = await Crypto.getRandomBytesAsync(32);
+    } catch (error) {
+      throw new EncryptionError(
+        'Failed to generate cryptographically secure random bytes for encryption key.',
+        {
+          operation: 'key_generation',
+          cause: error as Error,
+        }
+      );
+    }
 
+    const newKey = btoa(String.fromCharCode(...randomBytes));
+
+    try {
       // Store the key securely
       await SecureStore.setItemAsync(SecureStorage.ENCRYPTION_KEY_NAME, newKey, {
         // Use the most secure accessibility option
         keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
       });
-
-      return newKey;
     } catch (error) {
-      console.error('Failed to manage encryption key:', error);
-      // Fallback to generating a temporary key if secure storage fails
-      // This ensures the app can still function, but data won't persist across app restarts
-      console.warn('Using temporary encryption key. Data will not persist across app restarts.');
-      return Crypto.randomUUID();
+      throw new EncryptionError('Failed to store encryption key in secure storage.', {
+        operation: 'key_generation',
+        cause: error as Error,
+      });
     }
+
+    return newKey;
   }
 
   setSecure<T>(key: string, value: T): void {

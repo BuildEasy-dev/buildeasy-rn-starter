@@ -1,5 +1,6 @@
 import { MMKV } from 'react-native-mmkv';
 import type { IStorage, StorageOptions } from './types';
+import { SerializationError, DeserializationError, IOError } from './errors';
 
 export abstract class MMKVAdapter implements IStorage {
   private _mmkv: MMKV | null = null;
@@ -19,25 +20,54 @@ export abstract class MMKVAdapter implements IStorage {
   set<T>(key: string, value: T): void {
     try {
       const serialized = JSON.stringify(value);
-      this.mmkv.set(key, serialized);
+      try {
+        this.mmkv.set(key, serialized);
+      } catch (mmkvError) {
+        throw new IOError(
+          `Failed to write to MMKV for key "${key}" in tier "${this.options.id}".`,
+          {
+            tier: this.options.id as any,
+            operation: 'write',
+            key,
+            cause: mmkvError as Error,
+          }
+        );
+      }
     } catch (error) {
-      console.error(`Failed to set value for key "${key}":`, error);
-      throw error;
+      // If it's already one of our custom errors, re-throw it
+      if (error instanceof IOError) {
+        throw error;
+      }
+      // Otherwise, it's a serialization error
+      throw new SerializationError(key, this.options.id as any, error as Error);
     }
   }
 
   get<T>(key: string): T | null;
   get<T>(key: string, defaultValue: T): T;
   get<T>(key: string, defaultValue?: T): T | null {
+    let rawValue: string | undefined;
+
     try {
-      const value = this.mmkv.getString(key);
-      if (value === undefined) {
-        return defaultValue ?? null;
-      }
-      return JSON.parse(value) as T;
+      rawValue = this.mmkv.getString(key);
     } catch (error) {
-      console.error(`Failed to get value for key "${key}":`, error);
+      throw new IOError(`Failed to read from MMKV for key "${key}" in tier "${this.options.id}".`, {
+        tier: this.options.id as any,
+        operation: 'read',
+        key,
+        cause: error as Error,
+      });
+    }
+
+    // Key doesn't exist - return default value or null
+    if (rawValue === undefined) {
       return defaultValue ?? null;
+    }
+
+    try {
+      return JSON.parse(rawValue) as T;
+    } catch (error) {
+      throw new DeserializationError(key, this.options.id as any, error as Error);
     }
   }
 

@@ -42,3 +42,13 @@ export interface IStorageManager {
   clearAll(): void;
   getStorageSizes(): Record<string, number>;
 }
+
+// Export error types
+export {
+  StorageError,
+  InitializationError,
+  EncryptionError,
+  SerializationError,
+  DeserializationError,
+  IOError,
+} from './errors';

@@ -1,4 +1,5 @@
 import { SecureStorage } from '../secure';
+import { EncryptionError } from '../errors';
 import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
 
@@ -38,9 +39,10 @@ describe('SecureStorage', () => {
     (SecureStorage as any).instance = null;
     (SecureStorage as any).initializationPromise = null;
 
-    // Mock SecureStore to return no existing key by default
+    // Reset mocks to successful defaults
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(null);
     (SecureStore.setItemAsync as jest.Mock).mockResolvedValue(undefined);
+    (Crypto.getRandomBytesAsync as jest.Mock).mockResolvedValue(new Uint8Array(32).fill(42));
 
     storage = await SecureStorage.getInstance();
   });
@@ -85,30 +87,63 @@ describe('SecureStorage', () => {
       expect(SecureStore.setItemAsync).not.toHaveBeenCalled();
     });
 
-    it('should fallback to temporary key if secure storage fails', async () => {
+    it('should throw EncryptionError if secure storage fails during key retrieval', async () => {
       // Reset singleton
       (SecureStorage as any).instance = null;
       (SecureStorage as any).initializationPromise = null;
 
       // Mock secure storage failure
-      (SecureStore.getItemAsync as jest.Mock).mockRejectedValue(new Error('Secure storage error'));
+      const secureStoreError = new Error('Secure storage error');
+      (SecureStore.getItemAsync as jest.Mock).mockRejectedValue(secureStoreError);
 
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
-
-      await SecureStorage.getInstance();
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to manage encryption key:',
-        expect.any(Error)
+      await expect(SecureStorage.getInstance()).rejects.toThrow(EncryptionError);
+      await expect(SecureStorage.getInstance()).rejects.toThrow(
+        'Failed to retrieve encryption key from secure storage.'
       );
-      expect(warnSpy).toHaveBeenCalledWith(
-        'Using temporary encryption key. Data will not persist across app restarts.'
-      );
-      expect(Crypto.randomUUID).toHaveBeenCalled();
 
-      consoleSpy.mockRestore();
-      warnSpy.mockRestore();
+      try {
+        await SecureStorage.getInstance();
+      } catch (error) {
+        expect(error).toBeInstanceOf(EncryptionError);
+        expect((error as EncryptionError).operation).toBe('key_retrieval');
+        expect((error as EncryptionError).cause).toBe(secureStoreError);
+      }
+    });
+
+    it('should throw EncryptionError if random bytes generation fails', async () => {
+      // Reset singleton
+      (SecureStorage as any).instance = null;
+      (SecureStorage as any).initializationPromise = null;
+
+      // Mock no existing key
+      (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(null);
+      // Mock crypto failure
+      const cryptoError = new Error('Crypto error');
+      (Crypto.getRandomBytesAsync as jest.Mock).mockRejectedValue(cryptoError);
+
+      await expect(SecureStorage.getInstance()).rejects.toThrow(EncryptionError);
+      await expect(SecureStorage.getInstance()).rejects.toThrow(
+        'Failed to generate cryptographically secure random bytes'
+      );
+    });
+
+    it('should throw EncryptionError if key storage fails', async () => {
+      // Reset singleton
+      (SecureStorage as any).instance = null;
+      (SecureStorage as any).initializationPromise = null;
+
+      // Mock no existing key and successful crypto
+      (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(null);
+      (Crypto.getRandomBytesAsync as jest.Mock).mockResolvedValue(new Uint8Array(32).fill(42));
+
+      // Mock storage failure
+      const storageError = new Error('Storage failed');
+      (SecureStore.setItemAsync as jest.Mock).mockRejectedValue(storageError);
+
+      await expect(SecureStorage.getInstance()).rejects.toThrow(EncryptionError);
+      await expect(SecureStorage.getInstance()).rejects.toThrow(
+        'Failed to store encryption key in secure storage.'
+      );
     });
   });
 
@@ -241,26 +276,39 @@ describe('SecureStorage', () => {
   });
 
   describe('error handling', () => {
-    it('should handle errors in setSecure', () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    it('should throw IOError when MMKV fails in setSecure', () => {
       (storage.mmkv.set as jest.Mock).mockImplementation(() => {
-        throw new Error('Encryption error');
+        throw new Error('MMKV write error');
       });
 
-      expect(() => storage.setSecure('key', 'value')).toThrow('Encryption error');
-      expect(consoleSpy).toHaveBeenCalled();
+      expect(() => storage.setSecure('key', 'value')).toThrow(
+        'Failed to write to MMKV for key "key" in tier "secure"'
+      );
 
-      consoleSpy.mockRestore();
+      try {
+        storage.setSecure('key', 'value');
+      } catch (error: any) {
+        expect(error.name).toBe('IOError');
+        expect(error.operation).toBe('write');
+        expect(error.tier).toBe('secure');
+      }
     });
 
-    it('should handle parse errors in getSecure', () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    it('should throw DeserializationError for invalid JSON in getSecure', () => {
       (storage.mmkv.getString as jest.Mock).mockReturnValue('invalid json');
 
-      expect(storage.getSecure('key')).toBeNull();
-      expect(consoleSpy).toHaveBeenCalled();
+      expect(() => storage.getSecure('key')).toThrow(
+        'Failed to deserialize value for key "key" in tier "secure". Data may be corrupted.'
+      );
 
-      consoleSpy.mockRestore();
+      try {
+        storage.getSecure('key');
+      } catch (error: any) {
+        expect(error.name).toBe('DeserializationError');
+        expect(error.operation).toBe('deserialize');
+        expect(error.tier).toBe('secure');
+        expect(error.key).toBe('key');
+      }
     });
   });
 });
