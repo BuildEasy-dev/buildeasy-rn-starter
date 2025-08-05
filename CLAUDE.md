@@ -66,6 +66,7 @@ export function MyComponent({ lightColor, darkColor, ...props }) {
 - **TypeScript**: Strict mode enabled
 - **Navigation**: Expo Router v5 (file-based)
 - **Animations**: react-native-reanimated v3
+- **Keyboard Management**: react-native-keyboard-controller for advanced keyboard handling
 
 ## Project Structure
 
@@ -192,3 +193,25 @@ If a commit is rejected:
 - Review changes before staging: `git status` and `git diff`
 
 This ensures intentional commits and prevents accidentally staging unrelated files.
+
+## Development Workflow
+
+### Planning Before Implementation
+
+**Always present your implementation plan before making changes:**
+
+- Outline the steps you'll take to complete the task
+- Describe the files and components you'll create or modify
+- Explain the reasoning behind your approach
+- Wait for user confirmation before proceeding
+
+This ensures alignment with user expectations and prevents unnecessary work.
+
+### Code Quality Checks
+
+**After completing any code changes, always run:**
+
+- `pnpm lint` - Check code quality and style
+- `pnpm typecheck` - Verify TypeScript types are correct
+
+These commands must pass before considering the task complete.
