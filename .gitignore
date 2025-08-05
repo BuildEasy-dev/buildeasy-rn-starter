@@ -45,6 +45,7 @@ coverage/
 # project files
 app-example
 plans/
+dev-notes/
 build-in-public.md
 
 # claude files
