@@ -1,8 +1,8 @@
 import { renderHook } from '@testing-library/react-native';
-import { useThemeColor } from '../useThemeColor';
+import { useThemeColor } from '../use-theme-color';
 
 // Mock the Colors constant
-jest.mock('@/constants/Colors', () => ({
+jest.mock('@/constants/colors', () => ({
   Colors: {
     light: {
       text: '#000000',
@@ -18,13 +18,13 @@ jest.mock('@/constants/Colors', () => ({
 }));
 
 // Mock the useColorScheme hook
-jest.mock('@/hooks/useColorScheme', () => ({
+jest.mock('@/hooks/use-color-scheme', () => ({
   useColorScheme: jest.fn(),
 }));
 
 describe('useThemeColor', () => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const mockUseColorScheme = require('@/hooks/useColorScheme').useColorScheme;
+  const mockUseColorScheme = require('@/hooks/use-color-scheme').useColorScheme;
 
   beforeEach(() => {
     jest.clearAllMocks();

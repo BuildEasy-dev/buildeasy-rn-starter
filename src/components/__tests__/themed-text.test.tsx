@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { ThemedText } from '../base/ThemedText';
+import { ThemedText } from '../base/themed-text';
 
 // Mock the useThemeColor hook
-jest.mock('@/hooks/useThemeColor', () => ({
+jest.mock('@/hooks/use-theme-color', () => ({
   useThemeColor: jest.fn((props: any, colorName: string) => {
     const mockColors: Record<string, string> = {
       text: '#000000',
@@ -63,7 +63,7 @@ describe('ThemedText', () => {
 
   it('calls useThemeColor with correct parameters', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const mockUseThemeColor = require('@/hooks/useThemeColor').useThemeColor;
+    const mockUseThemeColor = require('@/hooks/use-theme-color').useThemeColor;
 
     render(
       <ThemedText lightColor="#FF0000" darkColor="#00FF00">
@@ -76,7 +76,7 @@ describe('ThemedText', () => {
 
   it('calls useThemeColor with default parameters when no colors provided', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const mockUseThemeColor = require('@/hooks/useThemeColor').useThemeColor;
+    const mockUseThemeColor = require('@/hooks/use-theme-color').useThemeColor;
 
     render(<ThemedText>Test</ThemedText>);
 
