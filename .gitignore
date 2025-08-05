@@ -45,6 +45,7 @@ coverage/
 # project files
 app-example
 plans/
+build-in-public.md
 
 # claude files
 .claude/settings.local.json
