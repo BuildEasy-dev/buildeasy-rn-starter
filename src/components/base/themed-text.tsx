@@ -19,21 +19,7 @@ export function ThemedText({
   const defaultColor = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
   const primaryColor = useThemeColor({ light: lightColor, dark: darkColor }, 'primary');
 
-  // Select appropriate color based on type
-  const getColorForType = () => {
-    switch (type) {
-      case 'link':
-        return primaryColor;
-      case 'subtitle':
-      case 'title':
-      case 'defaultSemiBold':
-      case 'default':
-      default:
-        return defaultColor;
-    }
-  };
-
-  const color = getColorForType();
+  const color = type === 'link' ? primaryColor : defaultColor;
 
   return (
     <Text
