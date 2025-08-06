@@ -35,22 +35,12 @@ This project uses **pnpm** as the package manager. For Expo-compatible packages,
 
 ### Theming System
 
-- All UI components should use themed wrappers (`ThemedView`, `ThemedText`)
-- Colors are defined in `src/constants/Colors.ts` with light/dark variants
+- All pages should prioritize using components from `src/components/themed/` directory over React Native native components
+- Theme colors configured in `src/tamagui.config.ts` with Tamagui system
 - Use `useThemeColor` hook to access theme-aware colors
 - Components automatically adapt to system theme changes
 
-### Component Patterns
-
-```typescript
-// Example themed component structure
-import { useThemeColor } from '@/hooks/useThemeColor';
-
-export function MyComponent({ lightColor, darkColor, ...props }) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-  // component implementation
-}
-```
+For detailed theming patterns and configuration, see **[docs/theme-guide.md](docs/theme-guide.md)**.
 
 ### Platform-specific Code
 
@@ -65,6 +55,7 @@ export function MyComponent({ lightColor, darkColor, ...props }) {
 - **Expo SDK**: 53.0.20
 - **TypeScript**: Strict mode enabled
 - **Navigation**: Expo Router v5 (file-based)
+- **UI Framework**: Tamagui for styled components and theming
 - **Animations**: react-native-reanimated v3
 - **Keyboard Management**: react-native-keyboard-controller for advanced keyboard handling
 
@@ -76,10 +67,15 @@ src/              # Source code directory
     (tabs)/       # Tab navigation screens
     _layout.tsx   # Root layout with theme provider
   components/     # Reusable components
-    ui/          # UI-specific components
-  constants/      # App constants (Colors, etc.)
-  hooks/         # Custom React hooks
-assets/          # Images, fonts, and static files (root level)
+    themed/       # Themed wrapper components (use these instead of RN components)
+    ui/           # UI-specific components
+  constants/      # App constants
+  hooks/          # Custom React hooks
+  tamagui.config.ts  # Tamagui theme configuration
+assets/           # Images, fonts, and static files (root level)
+docs/             # Documentation
+  theme-guide.md  # Comprehensive theming guide
+  testing-guide.md # Testing patterns and examples
 ```
 
 ## TypeScript Configuration
@@ -121,12 +117,12 @@ Place tests in `__tests__` directories next to source files:
 src/
   components/
     __tests__/
-      MyComponent.test.tsx
-    MyComponent.tsx
+      my-component.test.tsx
+    my-component.tsx
   hooks/
     __tests__/
-      useMyHook.test.ts
-    useMyHook.ts
+      use-my-hook.test.ts
+    use-my-hook.ts
 ```
 
 For detailed testing patterns, best practices, debugging tips, and comprehensive examples, see **[docs/testing-guide.md](docs/testing-guide.md)**.

@@ -17,11 +17,11 @@ export function ThemedTextInput({
   placeholderDarkColor,
   ...rest
 }: ThemedTextInputProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-  const placeholderTextColor = useThemeColor(
-    { light: placeholderLightColor, dark: placeholderDarkColor },
-    'placeholder'
-  );
+  const color = useThemeColor('text', { light: lightColor, dark: darkColor });
+  const placeholderTextColor = useThemeColor('placeholder', {
+    light: placeholderLightColor,
+    dark: placeholderDarkColor,
+  });
 
   return (
     <TextInput style={[{ color }, style]} placeholderTextColor={placeholderTextColor} {...rest} />

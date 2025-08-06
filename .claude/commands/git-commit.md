@@ -12,4 +12,7 @@ description: Create a git commit
 
 ## Your task
 
-Based on the above changes, create a single git commit and follow Git Commit Standards at `CLAUDE.md`.
+Create a git commit following Git Commit Standards at `CLAUDE.md`.
+
+If files specified in `$ARGUMENTS`: commit only those files
+Otherwise: commit all modified files

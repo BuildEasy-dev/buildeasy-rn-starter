@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { ThemedText } from '../base/themed-text';
+import { ThemedText } from '@/components/themed/themed-text';
 
 // Mock the useThemeColor hook
 jest.mock('@/hooks/use-theme-color', () => ({
