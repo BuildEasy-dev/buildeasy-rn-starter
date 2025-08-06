@@ -8,7 +8,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 
 export function Collapsible({ children, title }: PropsWithChildren & { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const iconColor = useThemeColor({}, 'icon');
+  const iconColor = useThemeColor('icon');
 
   return (
     <ThemedView>
