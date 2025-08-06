@@ -12,6 +12,9 @@ dist/
 web-build/
 expo-env.d.ts
 
+# tamagui
+.tamagui
+
 # Native
 android/
 ios/

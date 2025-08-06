@@ -4,11 +4,12 @@
  */
 
 import { useTheme } from '@tamagui/core';
+import type { ThemeValueFallback } from '@tamagui/core';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-// Supported color names that map to Tamagui theme tokens
-export type ThemeColorName =
+// Legacy color names for backward compatibility
+export type LegacyColorName =
   | 'text'
   | 'background'
   | 'tint'
@@ -18,39 +19,84 @@ export type ThemeColorName =
   | 'placeholder';
 
 // Map legacy color names to Tamagui theme tokens
-const colorMapping: Record<ThemeColorName, string> = {
+const legacyMapping: Record<LegacyColorName, string> = {
   text: 'color',
   background: 'background',
   tint: 'primary',
   icon: 'color',
-  tabIconDefault: 'color',
-  tabIconSelected: 'primary',
+  tabIconDefault: 'tabIconDefault',
+  tabIconSelected: 'tabIconSelected',
   placeholder: 'placeholderColor',
 };
 
-// Fallback colors when Tamagui theme is not available
-const fallbackColors = {
-  light: {
-    text: '#11181C',
-    background: '#ffffff',
-    tint: '#0a7ea4',
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: '#0a7ea4',
-    placeholder: '#8E8E93',
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: '#ffffff',
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: '#ffffff',
-    placeholder: '#636366',
-  },
-};
+// Semantic token aliases for better DX
+export const semanticTokens = {
+  // Text colors
+  text: 'color',
+  textSubtle: 'textSubtle',
+  textMuted: 'textMuted',
+  textDisabled: 'textDisabled',
 
-export function useThemeColor(props: { light?: string; dark?: string }, colorName: ThemeColorName) {
+  // Background colors
+  background: 'background',
+  backgroundHover: 'backgroundHover',
+  backgroundPress: 'backgroundPress',
+  backgroundFocus: 'backgroundFocus',
+  backgroundStrong: 'backgroundStrong',
+  bgSecondary: 'bgSecondary',
+  bgTertiary: 'bgTertiary',
+  bgDisabled: 'bgDisabled',
+
+  // Border colors
+  border: 'borderColor',
+  borderHover: 'borderColorHover',
+  borderFocus: 'borderColorFocus',
+  borderPress: 'borderColorPress',
+  borderSubtle: 'borderSubtle',
+  borderStrong: 'borderStrong',
+
+  // Brand colors
+  primary: 'primary',
+  primaryLight: 'primaryLight',
+  primaryDark: 'primaryDark',
+
+  // Semantic colors
+  success: 'success',
+  successLight: 'successLight',
+  successDark: 'successDark',
+  warning: 'warning',
+  warningLight: 'warningLight',
+  warningDark: 'warningDark',
+  error: 'error',
+  errorLight: 'errorLight',
+  errorDark: 'errorDark',
+  info: 'info',
+  infoLight: 'infoLight',
+  infoDark: 'infoDark',
+
+  // Component specific
+  tabIconDefault: 'tabIconDefault',
+  tabIconSelected: 'tabIconSelected',
+  placeholder: 'placeholderColor',
+
+  // Shadow colors
+  shadow: 'shadowColor',
+  shadowHover: 'shadowColorHover',
+  shadowPress: 'shadowColorPress',
+  shadowFocus: 'shadowColorFocus',
+} as const;
+
+export type SemanticTokenName = keyof typeof semanticTokens;
+export type ThemeTokenName = SemanticTokenName | LegacyColorName | string;
+
+/**
+ * Hook to get theme colors from Tamagui theme
+ * Supports both legacy names and new semantic tokens
+ */
+export function useThemeColor(
+  props: { light?: string; dark?: string },
+  colorName: ThemeTokenName
+): string {
   const colorScheme = useColorScheme() ?? 'light';
   const theme = useTheme();
   const colorFromProps = props[colorScheme];
@@ -60,18 +106,42 @@ export function useThemeColor(props: { light?: string; dark?: string }, colorNam
     return colorFromProps;
   }
 
-  // Try to get color from Tamagui theme
-  try {
-    const tamaguiToken = colorMapping[colorName];
-    const themeColor = theme[tamaguiToken as keyof typeof theme];
-
-    if (themeColor && typeof themeColor === 'object' && 'val' in themeColor) {
-      return themeColor.val as string;
-    }
-  } catch {
-    // Fallback if Tamagui theme is not available
+  // Check if it's a legacy name and map it
+  let tokenName = colorName;
+  if (colorName in legacyMapping) {
+    tokenName = legacyMapping[colorName as LegacyColorName];
+  } else if (colorName in semanticTokens) {
+    tokenName = semanticTokens[colorName as SemanticTokenName];
   }
 
-  // Fallback to static colors for compatibility
-  return fallbackColors[colorScheme][colorName];
+  // Get color from Tamagui theme
+  const themeValue = theme[tokenName as keyof typeof theme] as ThemeValueFallback | undefined;
+
+  if (themeValue) {
+    // Handle Tamagui theme variable
+    if (typeof themeValue === 'object' && 'val' in themeValue) {
+      return themeValue.val as string;
+    }
+    // Handle direct string value
+    if (typeof themeValue === 'string') {
+      return themeValue;
+    }
+  }
+
+  // Fallback to theme.color if token not found
+  const fallbackColor = theme.color;
+  if (fallbackColor && typeof fallbackColor === 'object' && 'val' in fallbackColor) {
+    return fallbackColor.val as string;
+  }
+
+  // Last resort fallback
+  return colorScheme === 'dark' ? '#ECEDEE' : '#11181C';
+}
+
+/**
+ * Direct access to theme tokens without props override
+ * Use this when you need raw theme values
+ */
+export function useThemeToken(tokenName: ThemeTokenName): string {
+  return useThemeColor({}, tokenName);
 }

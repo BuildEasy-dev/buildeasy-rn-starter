@@ -36,7 +36,7 @@ This project uses **pnpm** as the package manager. For Expo-compatible packages,
 ### Theming System
 
 - All UI components should use themed wrappers (`ThemedView`, `ThemedText`)
-- Colors are defined in `src/constants/Colors.ts` with light/dark variants
+- Colors are defined in `src/constants/colors.ts` with light/dark variants
 - Use `useThemeColor` hook to access theme-aware colors
 - Components automatically adapt to system theme changes
 
@@ -44,7 +44,7 @@ This project uses **pnpm** as the package manager. For Expo-compatible packages,
 
 ```typescript
 // Example themed component structure
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 export function MyComponent({ lightColor, darkColor, ...props }) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
@@ -121,12 +121,12 @@ Place tests in `__tests__` directories next to source files:
 src/
   components/
     __tests__/
-      MyComponent.test.tsx
-    MyComponent.tsx
+      my-component.test.tsx
+    my-component.tsx
   hooks/
     __tests__/
-      useMyHook.test.ts
-    useMyHook.ts
+      use-my-hook.test.ts
+    use-my-hook.ts
 ```
 
 For detailed testing patterns, best practices, debugging tips, and comprehensive examples, see **[docs/testing-guide.md](docs/testing-guide.md)**.
