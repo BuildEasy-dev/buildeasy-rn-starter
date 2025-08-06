@@ -13,7 +13,7 @@ export function ThemedSectionList<ItemT, SectionT = any>({
   darkColor,
   ...otherProps
 }: ThemedSectionListProps<ItemT, SectionT>) {
-  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
+  const backgroundColor = useThemeColor('background', { light: lightColor, dark: darkColor });
 
   return <SectionList style={[{ backgroundColor }, style]} {...otherProps} />;
 }

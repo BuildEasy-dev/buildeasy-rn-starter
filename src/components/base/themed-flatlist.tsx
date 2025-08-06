@@ -13,7 +13,7 @@ export function ThemedFlatList<ItemT>({
   darkColor,
   ...otherProps
 }: ThemedFlatListProps<ItemT>) {
-  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
+  const backgroundColor = useThemeColor('background', { light: lightColor, dark: darkColor });
 
   return <FlatList style={[{ backgroundColor }, style]} {...otherProps} />;
 }

@@ -33,7 +33,7 @@ describe('useThemeColor', () => {
   it('returns theme color when no custom color provided', () => {
     mockUseColorScheme.mockReturnValue('light');
 
-    const { result } = renderHook(() => useThemeColor({}, 'text'));
+    const { result } = renderHook(() => useThemeColor('text'));
 
     expect(result.current).toBe('#000000');
   });
@@ -41,7 +41,7 @@ describe('useThemeColor', () => {
   it('returns theme color regardless of color scheme when no custom props', () => {
     mockUseColorScheme.mockReturnValue('dark');
 
-    const { result } = renderHook(() => useThemeColor({}, 'text'));
+    const { result } = renderHook(() => useThemeColor('text'));
 
     expect(result.current).toBe('#000000'); // Should use theme color, not depend on scheme
   });
@@ -49,7 +49,7 @@ describe('useThemeColor', () => {
   it('returns custom light color when provided and theme is light', () => {
     mockUseColorScheme.mockReturnValue('light');
 
-    const { result } = renderHook(() => useThemeColor({ light: '#FF0000' }, 'text'));
+    const { result } = renderHook(() => useThemeColor('text', { light: '#FF0000' }));
 
     expect(result.current).toBe('#FF0000');
   });
@@ -57,7 +57,7 @@ describe('useThemeColor', () => {
   it('returns custom dark color when provided and theme is dark', () => {
     mockUseColorScheme.mockReturnValue('dark');
 
-    const { result } = renderHook(() => useThemeColor({ dark: '#00FF00' }, 'text'));
+    const { result } = renderHook(() => useThemeColor('text', { dark: '#00FF00' }));
 
     expect(result.current).toBe('#00FF00');
   });
@@ -65,7 +65,7 @@ describe('useThemeColor', () => {
   it('falls back to theme default when custom color not provided', () => {
     mockUseColorScheme.mockReturnValue('light');
 
-    const { result } = renderHook(() => useThemeColor({ dark: '#00FF00' }, 'background'));
+    const { result } = renderHook(() => useThemeColor('background', { dark: '#00FF00' }));
 
     expect(result.current).toBe('#FFFFFF');
   });
@@ -73,7 +73,7 @@ describe('useThemeColor', () => {
   it('defaults to light theme when useColorScheme returns null', () => {
     mockUseColorScheme.mockReturnValue(null);
 
-    const { result } = renderHook(() => useThemeColor({}, 'text'));
+    const { result } = renderHook(() => useThemeColor('text'));
 
     expect(result.current).toBe('#000000'); // Should use theme color
   });
@@ -82,7 +82,7 @@ describe('useThemeColor', () => {
     mockUseColorScheme.mockReturnValue('light');
 
     const { result } = renderHook(() =>
-      useThemeColor({ light: '#CUSTOM', dark: '#CUSTOM_DARK' }, 'text')
+      useThemeColor('text', { light: '#CUSTOM', dark: '#CUSTOM_DARK' })
     );
 
     expect(result.current).toBe('#CUSTOM');
@@ -91,9 +91,9 @@ describe('useThemeColor', () => {
   it('works with different semantic token names', () => {
     mockUseColorScheme.mockReturnValue('light');
 
-    const { result: tintResult } = renderHook(() => useThemeColor({}, 'tint'));
-    const { result: backgroundResult } = renderHook(() => useThemeColor({}, 'background'));
-    const { result: iconResult } = renderHook(() => useThemeColor({}, 'icon'));
+    const { result: tintResult } = renderHook(() => useThemeColor('tint'));
+    const { result: backgroundResult } = renderHook(() => useThemeColor('background'));
+    const { result: iconResult } = renderHook(() => useThemeColor('icon'));
 
     expect(tintResult.current).toBe('#007AFF'); // Maps to primary
     expect(backgroundResult.current).toBe('#FFFFFF'); // Maps to background
@@ -103,7 +103,7 @@ describe('useThemeColor', () => {
   it('handles theme updates', () => {
     mockUseColorScheme.mockReturnValue('light');
 
-    const { result, rerender } = renderHook(() => useThemeColor({}, 'text'));
+    const { result, rerender } = renderHook(() => useThemeColor('text'));
 
     expect(result.current).toBe('#000000');
 

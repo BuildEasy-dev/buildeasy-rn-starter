@@ -16,8 +16,8 @@ export function ThemedText({
   ...rest
 }: ThemedTextProps) {
   // Get colors for different types
-  const defaultColor = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-  const primaryColor = useThemeColor({ light: lightColor, dark: darkColor }, 'primary');
+  const defaultColor = useThemeColor('text', { light: lightColor, dark: darkColor });
+  const primaryColor = useThemeColor('primary', { light: lightColor, dark: darkColor });
 
   const color = type === 'link' ? primaryColor : defaultColor;
 

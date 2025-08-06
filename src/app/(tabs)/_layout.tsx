@@ -8,7 +8,7 @@ import TabBarBackground from '@/components/ui/tab-bar-background';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function TabLayout() {
-  const tintColor = useThemeColor({}, 'tint');
+  const tintColor = useThemeColor('tint');
 
   return (
     <Tabs
