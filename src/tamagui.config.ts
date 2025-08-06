@@ -9,20 +9,15 @@ const customThemes = {
   // Extend light theme with semantic tokens
   light: {
     ...config.themes.light,
-    // Brand colors (using Tamagui's blue scale)
-    primary: config.themes.light.blue9,
-
-    // Component-specific tokens (used by semantic tokens)
-    placeholderColor: config.themes.light.gray9,
+    // Brand colors
+    primary: config.themes.light.color,
   },
 
   // Extend dark theme with semantic tokens
   dark: {
     ...config.themes.dark,
     // Brand colors
-    primary: config.themes.dark.blue9,
-    // Component-specific tokens (used by semantic tokens)
-    placeholderColor: config.themes.dark.gray9,
+    primary: config.themes.dark.color,
   },
 };
 
