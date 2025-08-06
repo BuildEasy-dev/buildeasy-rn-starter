@@ -31,23 +31,8 @@ const customThemes = {
     infoLight: config.themes.light.blue6,
     infoDark: config.themes.light.blue11,
 
-    // Component-specific tokens
-    tabIconDefault: config.themes.light.gray9,
-    tabIconSelected: config.themes.light.blue9,
-
-    // Text variants (using color scale)
-    textSubtle: config.themes.light.gray11,
-    textMuted: config.themes.light.gray10,
-    textDisabled: config.themes.light.gray8,
-
-    // Background variants (using color scale)
-    bgSecondary: config.themes.light.gray2,
-    bgTertiary: config.themes.light.gray3,
-    bgDisabled: config.themes.light.gray3,
-
-    // Border variants
-    borderSubtle: config.themes.light.gray4,
-    borderStrong: config.themes.light.gray7,
+    // Component-specific tokens (used by semantic tokens)
+    placeholderColor: config.themes.light.gray9,
   },
 
   // Extend dark theme with semantic tokens
@@ -75,23 +60,8 @@ const customThemes = {
     infoLight: config.themes.dark.blue6,
     infoDark: config.themes.dark.blue11,
 
-    // Component-specific tokens
-    tabIconDefault: config.themes.dark.gray9,
-    tabIconSelected: config.themes.dark.blue9,
-
-    // Text variants
-    textSubtle: config.themes.dark.gray11,
-    textMuted: config.themes.dark.gray10,
-    textDisabled: config.themes.dark.gray8,
-
-    // Background variants
-    bgSecondary: config.themes.dark.gray2,
-    bgTertiary: config.themes.dark.gray3,
-    bgDisabled: config.themes.dark.gray3,
-
-    // Border variants
-    borderSubtle: config.themes.dark.gray4,
-    borderStrong: config.themes.dark.gray7,
+    // Component-specific tokens (used by semantic tokens)
+    placeholderColor: config.themes.dark.gray9,
   },
 };
 
