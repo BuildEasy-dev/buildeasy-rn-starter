@@ -3,7 +3,6 @@ export { ScreenWrapper } from './wrappers/screen-wrapper';
 export type { ScreenWrapperProps } from './wrappers/screen-wrapper';
 export { TabScreenWrapper } from './wrappers/tab-screen-wrapper';
 export type { TabScreenWrapperProps } from './wrappers/tab-screen-wrapper';
-export { ScrollableParallaxView } from './wrappers/scrollable-parallax-view';
 
 // Common Components
 export { SafeAreaWrapper } from './common/safe-area-wrapper';

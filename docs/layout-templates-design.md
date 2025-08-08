@@ -237,7 +237,9 @@ interface TabScreenWrapperProps extends ScreenWrapperProps {
 
 ```typescript
 // app/(tabs)/index.tsx
-import { TabScreenWrapper, ScrollableParallaxView, useScrollToTop } from '@/components/layout';
+import { TabScreenWrapper } from '@/components/layout';
+import { ScrollableParallaxView } from '@/components/parallax-scroll-view';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 
 function ScrollToTopButton() {
   const scrollToTop = useScrollToTop();
@@ -409,7 +411,9 @@ export default function TabLayout() {
 
 ```typescript
 // app/(tabs)/index.tsx
-import { TabScreenWrapper, ScrollableParallaxView, useScrollToTop } from '@/components/layout';
+import { TabScreenWrapper } from '@/components/layout';
+import { ScrollableParallaxView } from '@/components/parallax-scroll-view';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 import { Image, StyleSheet, Pressable } from 'react-native';
 
 function ScrollToTopButton() {
