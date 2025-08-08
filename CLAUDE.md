@@ -11,7 +11,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm ios` - Run on iOS simulator
 - `pnpm web` - Run in web browser
 - `pnpm lint` - Run ESLint to check code quality
-- `pnpm reset-project` - Reset to blank Expo template (destructive)
 - `npx create-expo-module --local` - Create native modules
 
 ### Package Management
@@ -39,6 +38,8 @@ This project uses **pnpm** as the package manager. For Expo-compatible packages,
 - Theme colors configured in `src/tamagui.config.ts` with Tamagui system
 - Use `useThemeColor` hook to access theme-aware colors
 - Components automatically adapt to system theme changes
+- Prefer themed components - They handle theme adaptation automatically
+- Test both modes - Ensure UI looks good in light and dark themes
 
 For detailed theming patterns and configuration, see **[docs/theme-guide.md](docs/theme-guide.md)**.
 

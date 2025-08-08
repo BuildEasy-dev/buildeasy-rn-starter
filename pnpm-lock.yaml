@@ -32,6 +32,9 @@ importers:
       '@tamagui/font-inter':
         specifier: ^1.132.16
         version: 1.132.16(react-dom@19.0.0(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      '@tamagui/stacks':
+        specifier: ^1.132.16
+        version: 1.132.16(react-dom@19.0.0(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       expo:
         specifier: ~53.0.20
         version: 53.0.20(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
@@ -1525,6 +1528,16 @@ packages:
   '@tamagui/generate-themes@1.132.16':
     resolution: {integrity: sha512-JfApEtMukc0dEzo3pQXAB7gljwUrkgoZbcjzCshvSgt9GqpFbpNUuzZB9VjOsUukh80sd6q8dgBrLyI1OM/YrA==}
 
+  '@tamagui/get-button-sized@1.132.16':
+    resolution: {integrity: sha512-nCWekfeDTMfY4y+Fbm4eGPuosi5iOb4FswgeGqErHenJZ43CW/pD5/UERVfbNYo6BWUZNdOX+icVSLF2+7gYCw==}
+    peerDependencies:
+      react: '*'
+
+  '@tamagui/get-token@1.132.16':
+    resolution: {integrity: sha512-2wmOmIOUz7S/8RRIfO9fWRWGSCzYab3NvG/eoguT1ev4HIjNqdxeLgjk4p5y6SVU9+/Esx/O7n6HK6acupQCpQ==}
+    peerDependencies:
+      react: '*'
+
   '@tamagui/helpers-node@1.132.16':
     resolution: {integrity: sha512-n5OcIgutWMyXo+mZqQHoieIJU5M3Q4s8NfoEU6EaV8yrrCsY+PycGej1Jt/hT4dNGnLtDAamxAOwaqgP06Kjsw==}
 
@@ -1576,6 +1589,11 @@ packages:
 
   '@tamagui/simple-hash@1.132.16':
     resolution: {integrity: sha512-udwjZk4XqbNsJNOACyqDsPE7ysYubA2HK4+se6ICJ8XJwi8XeDAR/RY6+ImG8N0O2MlttpDMyPdUbdKyzDXzPw==}
+
+  '@tamagui/stacks@1.132.16':
+    resolution: {integrity: sha512-8KSqF8Yf4CYuQjbLundBLg1yM0bI1PFSrUHZ6y8tpGumNyRzPnwBTpeHMuj5xHpJPceoL2ToUqm0rMK8nUGW4g==}
+    peerDependencies:
+      react: '*'
 
   '@tamagui/static@1.132.16':
     resolution: {integrity: sha512-x68+mkJBNGAw7/JSysYO4Tit8eKcEI+A69+TEIWCdqLF9o5q97Zin5McCMx2Z3jsJvXriYmEjUd7KsEed6SnRw==}
@@ -7799,6 +7817,23 @@ snapshots:
       - react-native
       - supports-color
 
+  '@tamagui/get-button-sized@1.132.16(react-dom@19.0.0(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@tamagui/get-token': 1.132.16(react-dom@19.0.0(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      '@tamagui/web': 1.132.16(react-dom@19.0.0(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      react: 19.0.0
+    transitivePeerDependencies:
+      - react-dom
+      - react-native
+
+  '@tamagui/get-token@1.132.16(react-dom@19.0.0(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@tamagui/web': 1.132.16(react-dom@19.0.0(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      react: 19.0.0
+    transitivePeerDependencies:
+      - react-dom
+      - react-native
+
   '@tamagui/helpers-node@1.132.16':
     dependencies:
       '@tamagui/types': 1.132.16
@@ -7873,6 +7908,15 @@ snapshots:
       - react-native
 
   '@tamagui/simple-hash@1.132.16': {}
+
+  '@tamagui/stacks@1.132.16(react-dom@19.0.0(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@tamagui/core': 1.132.16(react-dom@19.0.0(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      '@tamagui/get-button-sized': 1.132.16(react-dom@19.0.0(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      react: 19.0.0
+    transitivePeerDependencies:
+      - react-dom
+      - react-native
 
   '@tamagui/static@1.132.16(react-dom@19.0.0(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)':
     dependencies:

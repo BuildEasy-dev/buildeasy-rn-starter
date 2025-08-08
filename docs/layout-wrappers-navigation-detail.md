@@ -6,7 +6,7 @@
 
 When using Expo Router, you get file-based routing out of the box, but you often need:
 
-- Consistent padding and safe areas across screens
+- Consistent safe areas across screens
 - Common loading/error states
 - Custom tab bars and headers
 - Themed components that match your design system
@@ -84,7 +84,7 @@ export default function HomeScreen() {
   return (
     <ScreenWrapper
       safeArea="top"          // Only top safe area (tab bar handles bottom)
-      padding={16}             // Consistent padding
+      padding={16}             // Custom padding (no default)
       scrollable              // Content can scroll
       loading={loading}       // Auto shows loading state
       error={error}          // Auto shows error state
