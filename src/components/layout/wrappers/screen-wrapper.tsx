@@ -5,6 +5,7 @@ import {
   Platform,
   type ViewStyle,
   StyleSheet,
+  type ScrollView,
 } from 'react-native';
 import { YStack } from '@tamagui/stacks';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -47,6 +48,9 @@ export interface ScreenWrapperProps {
 
   // Loading customization
   loadingMessage?: string;
+
+  // Scroll ref (internal use)
+  scrollViewRef?: React.RefObject<ScrollView | null>;
 }
 
 export function ScreenWrapper({
@@ -69,6 +73,7 @@ export function ScreenWrapper({
   contentContainerStyle,
   style,
   loadingMessage,
+  scrollViewRef,
 }: ScreenWrapperProps) {
   const [refreshing, setRefreshing] = useState(false);
 
@@ -125,6 +130,7 @@ export function ScreenWrapper({
   // Scrollable wrapper
   const scrollableContent = scrollable ? (
     <ThemedScrollView
+      ref={scrollViewRef}
       style={[{ flex: 1 }, style]}
       lightColor={backgroundColor?.light}
       darkColor={backgroundColor?.dark}

@@ -1,18 +1,29 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, Pressable } from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
-import { ScreenWrapper } from '@/components/layout';
+import { TabScreenWrapper, ScrollableParallaxView, useScrollToTop } from '@/components/layout';
+
+function ScrollToTopButton() {
+  const scrollToTop = useScrollToTop();
+
+  const handlePress = () => {
+    scrollToTop?.triggerScrollToTop();
+  };
+
+  return (
+    <Pressable onPress={handlePress} style={styles.scrollButton}>
+      <ThemedText style={styles.scrollButtonText}>↑ Scroll to Top</ThemedText>
+    </Pressable>
+  );
+}
 
 export default function HomeScreen() {
-  // Example showing two different ways to use ScreenWrapper:
-  // Option 1: Keep the existing ParallaxScrollView design
   return (
-    <ScreenWrapper>
-      <ParallaxScrollView
+    <TabScreenWrapper safeArea={false} scrollToTopOnPress>
+      <ScrollableParallaxView
         headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
         headerImage={
           <Image
@@ -57,15 +68,29 @@ export default function HomeScreen() {
         </ThemedView>
 
         <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">✨ New: ScreenWrapper</ThemedText>
+          <ThemedText type="subtitle">✨ New: TabScreenWrapper</ThemedText>
           <ThemedText>
-            This screen now uses <ThemedText type="defaultSemiBold">ScreenWrapper</ThemedText> from{' '}
-            <ThemedText type="defaultSemiBold">@/components/layout</ThemedText>. It provides
-            consistent safe areas, theming, and state management.
+            This screen now uses <ThemedText type="defaultSemiBold">TabScreenWrapper</ThemedText>{' '}
+            from <ThemedText type="defaultSemiBold">@/components/layout</ThemedText>. It provides
+            tab-specific features like scroll-to-top on tab press, badge support, and optimized safe
+            areas.
           </ThemedText>
         </ThemedView>
-      </ParallaxScrollView>
-    </ScreenWrapper>
+
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText type="subtitle">🚀 Scroll to Top Demo</ThemedText>
+          <ThemedText>Try the scroll-to-top functionality:</ThemedText>
+          <ThemedText>
+            • <ThemedText type="defaultSemiBold">Automatic</ThemedText>: Scroll down, then tap the
+            Home tab again
+          </ThemedText>
+          <ThemedText>
+            • <ThemedText type="defaultSemiBold">Manual</ThemedText>: Use the button below
+          </ThemedText>
+          <ScrollToTopButton />
+        </ThemedView>
+      </ScrollableParallaxView>
+    </TabScreenWrapper>
   );
 }
 
@@ -85,5 +110,16 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  scrollButton: {
+    marginTop: 12,
+    padding: 12,
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  scrollButtonText: {
+    color: 'white',
+    fontWeight: '600',
   },
 });
