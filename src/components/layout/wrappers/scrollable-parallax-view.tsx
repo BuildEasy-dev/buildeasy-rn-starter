@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import ParallaxScrollView, { type ParallaxScrollViewRef } from '@/components/parallax-scroll-view';
-import { useScrollToTop } from './tab-screen-wrapper';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 
 type ParallaxScrollViewProps = React.ComponentProps<typeof ParallaxScrollView>;
 
