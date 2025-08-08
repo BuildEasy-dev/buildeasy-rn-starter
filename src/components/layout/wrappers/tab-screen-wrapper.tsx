@@ -1,23 +1,9 @@
-import React, { useRef, useEffect, createContext, useContext } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { ScrollView } from 'react-native';
 import { ScreenWrapper, type ScreenWrapperProps } from './screen-wrapper';
-
-// Context to provide scroll function to child components
-export interface ScrollToTopContextType {
-  registerScrollHandler: (
-    scrollTo: (options?: { x?: number; y?: number; animated?: boolean }) => void
-  ) => void;
-  triggerScrollToTop: () => void;
-}
-
-const ScrollToTopContext = createContext<ScrollToTopContextType | null>(null);
-
-export const useScrollToTop = () => {
-  const context = useContext(ScrollToTopContext);
-  return context;
-};
+import { ScrollToTopContext } from '@/contexts/scroll-to-top-context';
 
 export interface TabScreenWrapperProps extends ScreenWrapperProps {
   // Tab-specific features

@@ -6,7 +6,8 @@ import { ExternalLink } from '@/components/external-link';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { TabScreenWrapper, ScrollableParallaxView } from '@/components/layout';
+import { TabScreenWrapper } from '@/components/layout';
+import { ScrollableParallaxView } from '@/components/parallax-scroll-view';
 
 export default function TabTwoScreen() {
   // Example: Using TabScreenWrapper with ParallaxScrollView for enhanced tab functionality

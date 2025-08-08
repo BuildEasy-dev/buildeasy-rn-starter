@@ -4,7 +4,9 @@ import { Platform, StyleSheet, Pressable } from 'react-native';
 import { HelloWave } from '@/components/hello-wave';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
-import { TabScreenWrapper, ScrollableParallaxView, useScrollToTop } from '@/components/layout';
+import { TabScreenWrapper } from '@/components/layout';
+import { ScrollableParallaxView } from '@/components/parallax-scroll-view';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 
 function ScrollToTopButton() {
   const scrollToTop = useScrollToTop();
