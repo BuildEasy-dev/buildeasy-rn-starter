@@ -13,7 +13,6 @@ module.exports = function (api) {
           disableExtraction: process.env.NODE_ENV === 'development',
         },
       ],
-      'babel-plugin-transform-inline-environment-variables',
       // Keep reanimated plugin at the end if exists
     ],
   };
