@@ -4,6 +4,7 @@
       "WebFetch(domain:docs.expo.dev)",
       "Bash(git checkout:*)",
       "Bash(pnpm lint:*)",
+      "Bash(pnpm list:*)",
       "Bash(pnpm build:*)",
       "Bash(pnpm submit:*)",
       "Bash(git push:*)",
