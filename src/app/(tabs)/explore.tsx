@@ -6,14 +6,13 @@ import { ExternalLink } from '@/components/external-link';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ScreenWrapper } from '@/components/layout';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
+import { TabScreenWrapper, ScrollableParallaxView } from '@/components/layout';
 
 export default function TabTwoScreen() {
-  // Example: Using ScreenWrapper with ParallaxScrollView (Option 1)
+  // Example: Using TabScreenWrapper with ParallaxScrollView for enhanced tab functionality
   return (
-    <ScreenWrapper>
-      <ParallaxScrollView
+    <TabScreenWrapper safeArea={false} scrollToTopOnPress>
+      <ScrollableParallaxView
         headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
         headerImage={
           <IconSymbol
@@ -45,18 +44,20 @@ export default function TabTwoScreen() {
           </ExternalLink>
         </Collapsible>
 
-        <Collapsible title="ScreenWrapper + ParallaxScrollView">
+        <Collapsible title="TabScreenWrapper + ParallaxScrollView">
           <ThemedText>
-            This screen demonstrates <ThemedText type="defaultSemiBold">ScreenWrapper</ThemedText>{' '}
-            wrapping <ThemedText type="defaultSemiBold">ParallaxScrollView</ThemedText> for the best
-            of both worlds:
+            This screen demonstrates{' '}
+            <ThemedText type="defaultSemiBold">TabScreenWrapper</ThemedText> wrapping{' '}
+            <ThemedText type="defaultSemiBold">ParallaxScrollView</ThemedText> for the best of both
+            worlds:
           </ThemedText>
           <ThemedText>
             • <ThemedText type="defaultSemiBold">Parallax header animation</ThemedText> from
             ParallaxScrollView
           </ThemedText>
           <ThemedText>
-            • <ThemedText type="defaultSemiBold">Safe area handling</ThemedText> from ScreenWrapper
+            • <ThemedText type="defaultSemiBold">Tab-optimized safe areas</ThemedText> and
+            scroll-to-top functionality
           </ThemedText>
           <ThemedText>
             • <ThemedText type="defaultSemiBold">Theme integration</ThemedText> and consistent
@@ -127,8 +128,8 @@ export default function TabTwoScreen() {
             ),
           })}
         </Collapsible>
-      </ParallaxScrollView>
-    </ScreenWrapper>
+      </ScrollableParallaxView>
+    </TabScreenWrapper>
   );
 }
 
