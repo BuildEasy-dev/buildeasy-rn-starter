@@ -118,7 +118,6 @@ The project already has:
 ```typescript
 interface EnhancedTabOptions {
   variant?: 'default' | 'compact' | 'floating';
-  showBadges?: boolean;
   animateIcons?: boolean;
   customHeight?: number;
 }
@@ -183,7 +182,6 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <IconSymbol name="house.fill" color={color} />,
-          tabBarBadge: 3, // Now supported
         }}
       />
     </Tabs>
@@ -211,66 +209,57 @@ interface ScreenWrapperProps {
 }
 ```
 
-**Implementation:**
+#### TabScreenWrapper
+
+**Purpose:** Enhanced wrapper specifically for tab screens with scroll-to-top functionality
+
+**Props:**
 
 ```typescript
-// components/layout/wrappers/screen-wrapper.tsx
-import { View, ScrollView, RefreshControl } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, YStack } from 'tamagui';
-import { useThemeColor } from '@/hooks/use-theme-color';
-import { LoadingState, ErrorState } from '../common';
+interface TabScreenWrapperProps extends ScreenWrapperProps {
+  // Tab-specific features
+  tabName?: string;
+  scrollToTopOnPress?: boolean;
 
-export function ScreenWrapper({
-  children,
-  safeArea = false,
-  padding = false,
-  scrollable = false,
-  loading = false,
-  error,
-  onRefresh,
-  backgroundColor,
-}: ScreenWrapperProps) {
-  const bgColor = backgroundColor ?? useThemeColor('background');
-  const paddingValue = typeof padding === 'number' ? padding : padding ? 16 : 0;
+  // Override safeArea default for tab screens
+  safeArea?: boolean | 'top' | 'bottom' | 'both';
+}
+```
 
-  const content = (
-    <YStack
-      flex={1}
-      backgroundColor={bgColor}
-      padding={paddingValue}
-    >
-      {loading && <LoadingState />}
-      {error && !loading && <ErrorState error={error} />}
-      {!loading && !error && children}
-    </YStack>
+**TabScreenWrapper Key Features:**
+
+- **Scroll-to-Top**: Automatically scrolls to top when the tab is pressed again
+- **Context Integration**: Provides `useScrollToTop` hook for child components
+- **Safe Area Defaults**: Defaults to `safeArea='top'` since tab bar handles bottom
+- **Tab Navigation**: Listens to tab press events and triggers scroll-to-top
+
+**Usage:**
+
+```typescript
+// app/(tabs)/index.tsx
+import { TabScreenWrapper, ScrollableParallaxView, useScrollToTop } from '@/components/layout';
+
+function ScrollToTopButton() {
+  const scrollToTop = useScrollToTop();
+
+  if (!scrollToTop) return null;
+
+  return (
+    <Pressable onPress={() => scrollToTop.triggerScrollToTop()}>
+      <Text>Scroll to Top</Text>
+    </Pressable>
   );
+}
 
-  const scrollableContent = scrollable ? (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: bgColor }}
-      refreshControl={
-        onRefresh ? (
-          <RefreshControl refreshing={false} onRefresh={onRefresh} />
-        ) : undefined
-      }
-    >
-      {content}
-    </ScrollView>
-  ) : content;
-
-  if (safeArea) {
-    const edges = safeArea === true ? ['top', 'bottom'] :
-                 safeArea === 'both' ? ['top', 'bottom'] : [safeArea];
-
-    return (
-      <SafeAreaView style={{ flex: 1 }} edges={edges}>
-        {scrollableContent}
-      </SafeAreaView>
-    );
-  }
-
-  return scrollableContent;
+export default function HomeScreen() {
+  return (
+    <TabScreenWrapper safeArea={false} scrollToTopOnPress>
+      <ScrollableParallaxView>
+        <Content />
+        <ScrollToTopButton />
+      </ScrollableParallaxView>
+    </TabScreenWrapper>
+  );
 }
 ```
 
@@ -384,8 +373,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={createEnhancedTabOptions({
-        variant: 'default',
-        showBadges: true
+        variant: 'default'
       })}
     >
       <Tabs.Screen
@@ -398,7 +386,6 @@ export default function TabLayout() {
               color={color}
             />
           ),
-          tabBarBadge: 3, // Shows notification count
         }}
       />
       <Tabs.Screen
@@ -418,48 +405,53 @@ export default function TabLayout() {
 }
 ```
 
-### Screen with Wrapper
+### Tab Screen with Wrapper
 
 ```typescript
 // app/(tabs)/index.tsx
-import { ScreenWrapper, ListLayout, Card } from '@/components/layout';
-import { useState, useEffect } from 'react';
+import { TabScreenWrapper, ScrollableParallaxView, useScrollToTop } from '@/components/layout';
+import { Image, StyleSheet, Pressable } from 'react-native';
 
-export default function HomeScreen() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchPosts = async () => {
-    setLoading(true);
-    try {
-      const data = await api.getPosts();
-      setPosts(data);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+function ScrollToTopButton() {
+  const scrollToTop = useScrollToTop();
 
   return (
-    <ScreenWrapper
-      safeArea="top"
-      loading={loading}
-      onRefresh={fetchPosts}
+    <Pressable
+      onPress={() => scrollToTop?.triggerScrollToTop()}
+      style={styles.scrollButton}
     >
-      <ListLayout
-        data={posts}
-        renderItem={(post) => (
-          <Card variant="elevated">
-            <Text>{post.title}</Text>
-            <Text>{post.content}</Text>
-          </Card>
-        )}
-        contentPadding={16}
-      />
-    </ScreenWrapper>
+      <Text style={styles.scrollButtonText}>Scroll to Top</Text>
+    </Pressable>
+  );
+}
+
+export default function HomeScreen() {
+  return (
+    <TabScreenWrapper safeArea={false} scrollToTopOnPress>
+      <ScrollableParallaxView
+        headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+        headerImage={
+          <Image
+            source={require('@/assets/images/partial-react-logo.png')}
+            style={styles.reactLogo}
+          />
+        }
+      >
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">Welcome!</ThemedText>
+          <HelloWave />
+        </ThemedView>
+
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+          <ThemedText>
+            Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
+            Press <ThemedText type="defaultSemiBold">⌘ + d</ThemedText> to open developer tools.
+          </ThemedText>
+          <ScrollToTopButton />
+        </ThemedView>
+      </ScrollableParallaxView>
+    </TabScreenWrapper>
   );
 }
 ```
@@ -528,8 +520,7 @@ export default function HomeScreen() {
 // After (enhanced)
 <Tabs
   screenOptions={createEnhancedTabOptions({
-    variant: 'default',
-    showBadges: true
+    variant: 'default'
   })}
 >
 ```
@@ -562,7 +553,7 @@ export default function HomeScreen() {
    - Consistent spacing and theming
 
 3. **Enhances Functionality**
-   - Badge support for tabs
+   - Scroll-to-top functionality for tab screens
    - Additional tab variants
    - Better state management
 
@@ -587,7 +578,7 @@ export default function HomeScreen() {
 
 ### New Additions
 
-1. **Badge Support**: Add notification counts to tabs
+1. **TabScreenWrapper**: Enhanced tab screens with scroll-to-top functionality
 2. **Screen States**: Consistent loading/error handling
 3. **Layout Variants**: Floating, compact tab styles
 4. **Content Components**: List, Grid, Card layouts

@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet , Pressable } from 'react-native';
+import { Platform, StyleSheet, Pressable } from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
 import { ThemedText } from '@/components/themed/themed-text';
@@ -21,8 +21,6 @@ function ScrollToTopButton() {
 }
 
 export default function HomeScreen() {
-  // Example showing two different ways to use TabScreenWrapper:
-  // Option 1: Keep the existing ParallaxScrollView design with tab-specific enhancements
   return (
     <TabScreenWrapper safeArea={false} scrollToTopOnPress>
       <ScrollableParallaxView

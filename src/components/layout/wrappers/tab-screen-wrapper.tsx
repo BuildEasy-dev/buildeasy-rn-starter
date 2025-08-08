@@ -23,8 +23,6 @@ export interface TabScreenWrapperProps extends ScreenWrapperProps {
   // Tab-specific features
   tabName?: string;
   scrollToTopOnPress?: boolean;
-  badgeCount?: number;
-  onBadgeChange?: (count: number) => void;
 
   // Override safeArea default for tab screens
   safeArea?: boolean | 'top' | 'bottom' | 'both';
@@ -34,8 +32,6 @@ export function TabScreenWrapper({
   children,
   tabName,
   scrollToTopOnPress = true,
-  badgeCount,
-  onBadgeChange,
   safeArea = 'top', // Default to 'top' for tab screens (bottom handled by tab bar)
   ...screenWrapperProps
 }: TabScreenWrapperProps) {
@@ -82,13 +78,6 @@ export function TabScreenWrapper({
 
     return unsubscribe;
   }, [navigation, scrollToTopOnPress, tabName, routeName]);
-
-  // Handle badge count changes
-  useEffect(() => {
-    if (badgeCount !== undefined && onBadgeChange) {
-      onBadgeChange(badgeCount);
-    }
-  }, [badgeCount, onBadgeChange]);
 
   // Pass scroll ref to ScreenWrapper if it's scrollable
   const modifiedProps = {
