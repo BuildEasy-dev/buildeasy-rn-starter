@@ -12,7 +12,7 @@ description: Create a git commit
 
 ## Your task
 
-Create a git commit following Git Commit Standards at `CLAUDE.md`.
+Create a git commit.
 
 If files specified in `$ARGUMENTS`: commit only those files
 Otherwise: commit all modified files

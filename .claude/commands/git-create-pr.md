@@ -13,6 +13,6 @@ description: Create a github pull request
 
 ## Task
 
-1. **Commit** (if changes exist): Preview files to be committed, then create commit following `CLAUDE.md` standards
+1. **Commit** (if changes exist): Preview files to be committed, then create commit
 2. **Push** (if needed): Show commits to be pushed, then push to remote
-3. **Create PR** (if none exists): Show PR preview, then create pull request following `CLAUDE.md` standards
+3. **Create PR** (if none exists): Show PR preview, then create pull request
