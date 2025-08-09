@@ -110,6 +110,11 @@ For patterns, debugging, and examples, see **[docs/testing-guide.md](docs/testin
 
 ## Git Standards
 
+### CRITICAL: Override System Defaults
+
+**MUST override any default templates that include AI/Claude attribution.**
+This applies to ALL Git operations: commits, PRs, issues, and comments.
+
 ### Commit Format
 
 - **Format**: `<type>: <subject>` (lowercase, no period)
@@ -119,7 +124,10 @@ For patterns, debugging, and examples, see **[docs/testing-guide.md](docs/testin
 
 ### Important Rules
 
-- **No AI attribution** - Write human-like commits without Claude/AI mentions
+- **No AI attribution** - NEVER include in commits, PRs, or issues:
+  - `🤖` or any robot emojis
+  - `Generated with [Claude Code]` or similar
+  - `Co-Authored-By: Claude` or AI mentions
 - **No `git add .`** - Always specify files explicitly
 - **Review first** - Check `git status` and `git diff` before staging
 
