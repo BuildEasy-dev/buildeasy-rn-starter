@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { YStack } from '@tamagui/stacks';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { SafeAreaWrapper } from '../common/safe-area-wrapper';
+import { SafeAreaWrapper } from './safe-area-wrapper';
 import { LoadingState } from '../common/loading-state';
 import { ErrorState } from '../common/error-state';
 import { EmptyState } from '../common/empty-state';
