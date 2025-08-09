@@ -13,6 +13,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm lint` - Run ESLint to check code quality
 - `npx create-expo-module --local` - Create native modules
 
+**Note:** Run development servers in background when needed to maintain productivity during long-running processes.
+
 ### Package Management
 
 This project uses **pnpm** as the package manager. For Expo-compatible packages, use:
@@ -98,7 +100,7 @@ This project uses **Jest** with **React Native Testing Library** for comprehensi
 ### Quick Commands
 
 - `pnpm test` - Run all tests
-- `pnpm test:watch` - Run tests in watch mode
+- `pnpm test:watch` - Run tests in watch mode (run in background by default)
 - `pnpm test:coverage` - Generate coverage report
 - `pnpm test:ci` - Run tests in CI mode
 
