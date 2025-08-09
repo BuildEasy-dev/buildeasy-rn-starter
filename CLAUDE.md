@@ -11,7 +11,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm ios` - Run on iOS simulator
 - `pnpm web` - Run in web browser
 - `pnpm lint` - Run ESLint to check code quality
+- `pnpm typecheck` - Verify TypeScript types
+- `pnpm format` - Auto-format code with Prettier
+- `pnpm format:check` - Check code formatting without changes
 - `npx create-expo-module --local` - Create native modules
+- `pnpm prebuild` - Generate native projects (iOS/Android)
+- `pnpm prebuild:clean` - Clean prebuild with fresh native projects
 
 **Note:** Run development servers in background when needed to maintain productivity during long-running processes.
 
@@ -31,8 +36,9 @@ This project uses **pnpm** as the package manager. For Expo-compatible packages,
 - Routes are defined by file structure in the `src/app/` directory
 - `_layout.tsx` files define navigation structure
 - `(tabs)/` directory implements tab navigation
-- Dynamic routes use `[param]` syntax
+- Dynamic routes use `[param]` syntax (e.g., `[id].tsx`)
 - Stack navigation is automatic based on nesting
+- Typed routes are enabled - use `href` prop with autocomplete
 
 ### Theming System
 
@@ -61,6 +67,8 @@ For detailed theming patterns and configuration, see **[docs/theme-guide.md](doc
 - **UI Framework**: Tamagui for styled components and theming
 - **Animations**: react-native-reanimated v3
 - **Keyboard Management**: react-native-keyboard-controller for advanced keyboard handling
+- **Storage**: react-native-mmkv for fast key-value storage
+- **Gesture Handling**: react-native-gesture-handler v2
 
 ## Project Structure
 
@@ -72,6 +80,7 @@ src/              # Source code directory
   components/     # Reusable components
     themed/       # Themed wrapper components (use these instead of RN components)
     ui/           # UI-specific components
+    layout/       # Layout wrappers and templates
   constants/      # App constants
   hooks/          # Custom React hooks
   tamagui.config.ts  # Tamagui theme configuration
@@ -79,6 +88,9 @@ assets/           # Images, fonts, and static files (root level)
 docs/             # Documentation
   theme-guide.md  # Comprehensive theming guide
   testing-guide.md # Testing patterns and examples
+  storage-usage.md # MMKV storage patterns
+  layout-guide.md # Layout system documentation
+plugins/          # Expo config plugins
 ```
 
 ## TypeScript Configuration
@@ -103,6 +115,8 @@ This project uses **Jest** with **React Native Testing Library** for comprehensi
 - `pnpm test:watch` - Run tests in watch mode (run in background by default)
 - `pnpm test:coverage` - Generate coverage report
 - `pnpm test:ci` - Run tests in CI mode
+- `pnpm test:update` - Update test snapshots
+- `pnpm test [pattern]` - Run tests matching pattern (e.g., `pnpm test button`)
 
 ### Framework Overview
 
@@ -214,3 +228,39 @@ This ensures alignment with user expectations and prevents unnecessary work.
 - `pnpm typecheck` - Verify TypeScript types are correct
 
 These commands must pass before considering the task complete.
+
+## Build & Deployment
+
+### EAS Build Commands
+
+**Preview/Testing Builds:**
+
+- `pnpm build:preview` - Build for both platforms
+- `pnpm build:preview:ios` - iOS preview build
+- `pnpm build:preview:android` - Android preview build
+
+**Production Builds:**
+
+- `pnpm build:prod` - Production build for both platforms
+- `pnpm build:prod:ios` - iOS production build
+- `pnpm build:prod:android` - Android production build
+
+**Local Builds (requires Xcode/Android Studio):**
+
+- `pnpm build:local:preview` - Local preview build
+- `pnpm build:local:prod` - Local production build
+
+**Submission:**
+
+- `pnpm submit:ios` - Submit to App Store
+- `pnpm submit:android` - Submit to Google Play
+
+### Environment Configuration
+
+The app supports three environments configured via `EXPO_PUBLIC_ENV`:
+
+- `development` - Local development with dev suffix
+- `preview` - Testing/UAT with preview suffix
+- `production` - Production release
+
+Bundle IDs and app names are automatically suffixed based on environment.
