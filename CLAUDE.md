@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Quick Reference
+
+```
+Dev: pnpm start | pnpm ios | pnpm android | pnpm web
+Quality: pnpm lint (required) | pnpm typecheck (required) | pnpm format
+Test: pnpm test | pnpm test:watch | pnpm test:coverage
+Build: pnpm build:preview | pnpm build:prod | pnpm submit:ios/android
+```
+
 ## Commands
 
 ### Development
@@ -10,8 +19,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm android` - Run on Android device/emulator
 - `pnpm ios` - Run on iOS simulator
 - `pnpm web` - Run in web browser
-- `pnpm lint` - Run ESLint to check code quality
-- `pnpm typecheck` - Verify TypeScript types
+- `pnpm lint` - Run ESLint (**must pass before completion**)
+- `pnpm typecheck` - Verify TypeScript (**must pass before completion**)
 - `pnpm format` - Auto-format code with Prettier
 - `pnpm format:check` - Check code formatting without changes
 - `npx create-expo-module --local` - Create native modules
@@ -42,12 +51,15 @@ This project uses **pnpm** as the package manager. For Expo-compatible packages,
 
 ### Theming System
 
-- All pages should prioritize using components from `src/components/themed/` directory over React Native native components
-- Theme colors configured in `src/tamagui.config.ts` with Tamagui system
-- Use `useThemeColor` hook to access theme-aware colors
-- Components automatically adapt to system theme changes
-- Prefer themed components - They handle theme adaptation automatically
-- Test both modes - Ensure UI looks good in light and dark themes
+**IMPORTANT: Always use `@/components/themed/*` components instead of React Native components:**
+
+- `ThemedView` instead of `View`
+- `ThemedText` instead of `Text`
+- `ThemedScrollView` instead of `ScrollView`
+- `ThemedTextInput` instead of `TextInput`
+- `ThemedFlatList`, `ThemedSectionList`, `ThemedSafeAreaView`
+
+These components automatically handle theme adaptation (dark/light mode) and maintain consistent styling across the app. Only use React Native components directly when absolutely necessary.
 
 For detailed theming patterns and configuration, see **[docs/theme-guide.md](docs/theme-guide.md)**.
 
@@ -64,85 +76,37 @@ For detailed theming patterns and configuration, see **[docs/theme-guide.md](doc
 - **Expo SDK**: 53.0.20
 - **TypeScript**: Strict mode enabled
 - **Navigation**: Expo Router v5 (file-based)
-- **UI Framework**: Tamagui for styled components and theming
+- **UI Framework**: Tamagui for theming and styled components
 - **Animations**: react-native-reanimated v3
-- **Keyboard Management**: react-native-keyboard-controller for advanced keyboard handling
+- **Keyboard**: react-native-keyboard-controller for advanced input
 - **Storage**: react-native-mmkv for fast key-value storage
-- **Gesture Handling**: react-native-gesture-handler v2
+- **Gestures**: react-native-gesture-handler v2
 
 ## Project Structure
 
 ```
-src/              # Source code directory
-  app/            # Application screens and navigation
-    (tabs)/       # Tab navigation screens
-    _layout.tsx   # Root layout with theme provider
-  components/     # Reusable components
-    themed/       # Themed wrapper components (use these instead of RN components)
-    ui/           # UI-specific components
-    layout/       # Layout wrappers and templates
-  constants/      # App constants
-  hooks/          # Custom React hooks
-  tamagui.config.ts  # Tamagui theme configuration
-assets/           # Images, fonts, and static files (root level)
-docs/             # Documentation
-  theme-guide.md  # Comprehensive theming guide
-  testing-guide.md # Testing patterns and examples
-  storage-usage.md # MMKV storage patterns
-  layout-guide.md # Layout system documentation
-plugins/          # Expo config plugins
+src/
+  app/              # Screens & navigation (file-based routing)
+  components/       # Reusable components (themed/, ui/, layout/)
+  hooks/            # Custom React hooks
+  constants/        # App constants & config
+  tamagui.config.ts # Theme configuration
+docs/               # Guides: theme, testing, storage, layout, EAS
 ```
 
-## TypeScript Configuration
+## Conventions
 
-- Path alias: `@/*` maps to `src/*` directory with fallback to project root
-- Strict mode is enabled
-- All components should have proper TypeScript types
-
-## File Naming Conventions
-
-- Use kebab-case for all file names
-- Avoid capital letters in file names
-- Examples: `user-profile.tsx`, `theme-provider.ts`, `auth-context.tsx`
+- **TypeScript**: Strict mode, `@/*` → `src/*` path alias
+- **File naming**: kebab-case only (e.g., `user-profile.tsx`, `auth-context.tsx`)
+- **Components**: Always use typed props
 
 ## Testing
 
-This project uses **Jest** with **React Native Testing Library** for comprehensive testing.
+- **Commands**: `pnpm test` | `pnpm test:watch` | `pnpm test:coverage` | `pnpm test:update`
+- **Structure**: Tests in `__tests__/` folders next to source files
+- **Framework**: Jest with jest-expo preset + React Native Testing Library
 
-### Quick Commands
-
-- `pnpm test` - Run all tests
-- `pnpm test:watch` - Run tests in watch mode (run in background by default)
-- `pnpm test:coverage` - Generate coverage report
-- `pnpm test:ci` - Run tests in CI mode
-- `pnpm test:update` - Update test snapshots
-- `pnpm test [pattern]` - Run tests matching pattern (e.g., `pnpm test button`)
-
-### Framework Overview
-
-- **Jest** with jest-expo preset for React Native compatibility
-- **React Native Testing Library** for component and hook testing
-- **TypeScript** support with path aliases (@/\* imports)
-- **Automatic mocking** of Expo modules and React Native components
-- **Coverage reporting** with configurable thresholds (80% default)
-
-### Test Structure
-
-Place tests in `__tests__` directories next to source files:
-
-```
-src/
-  components/
-    __tests__/
-      my-component.test.tsx
-    my-component.tsx
-  hooks/
-    __tests__/
-      use-my-hook.test.ts
-    use-my-hook.ts
-```
-
-For detailed testing patterns, best practices, debugging tips, and comprehensive examples, see **[docs/testing-guide.md](docs/testing-guide.md)**.
+For patterns, debugging, and examples, see **[docs/testing-guide.md](docs/testing-guide.md)**.
 
 ## Git Standards
 
@@ -160,28 +124,6 @@ For detailed testing patterns, best practices, debugging tips, and comprehensive
 - **Review first** - Check `git status` and `git diff` before staging
 
 For detailed commit guidelines and troubleshooting, see **[docs/commitlint-guide.md](docs/commitlint-guide.md)**.
-
-## Development Workflow
-
-### Planning Before Implementation
-
-**Always present your implementation plan before making changes:**
-
-- Outline the steps you'll take to complete the task
-- Describe the files and components you'll create or modify
-- Explain the reasoning behind your approach
-- Wait for user confirmation before proceeding
-
-This ensures alignment with user expectations and prevents unnecessary work.
-
-### Code Quality Checks
-
-**After completing any code changes, always run:**
-
-- `pnpm lint` - Check code quality and style
-- `pnpm typecheck` - Verify TypeScript types are correct
-
-These commands must pass before considering the task complete.
 
 ## Build & Deployment
 
