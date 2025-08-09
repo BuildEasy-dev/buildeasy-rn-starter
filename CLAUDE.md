@@ -144,68 +144,22 @@ src/
 
 For detailed testing patterns, best practices, debugging tips, and comprehensive examples, see **[docs/testing-guide.md](docs/testing-guide.md)**.
 
-## Git Commit Standards
+## Git Standards
 
-### Important: Human-like Commits Only
+### Commit Format
 
-**NEVER include Claude Code collaboration information in any Git operations:**
+- **Format**: `<type>: <subject>` (lowercase, no period)
+- **Types**: `feat` | `fix` | `docs` | `style` | `refactor` | `test` | `chore`
+- **Validation**: `pnpm commitlint` (auto-runs on commit)
+- **Examples**: `feat: add auth flow`, `fix: resolve android crash`
 
-- NO "Generated with Claude Code" messages
-- NO "Co-Authored-By: Claude" signatures
-- NO AI/bot attribution in commits, PRs, tags, or releases
-- Write commits as if they were human-written
+### Important Rules
 
-### Commit Message Format
+- **No AI attribution** - Write human-like commits without Claude/AI mentions
+- **No `git add .`** - Always specify files explicitly
+- **Review first** - Check `git status` and `git diff` before staging
 
-Keep messages concise while preserving key information:
-
-```
-<type>: <subject>
-
-[optional body for complex changes]
-```
-
-Types:
-
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, etc.)
-- `refactor`: Code restructuring without feature changes
-- `test`: Adding or updating tests
-- `chore`: Maintenance tasks
-
-Examples:
-
-- `feat: add user authentication flow`
-- `fix: resolve navigation crash on Android`
-- `refactor: simplify theme provider implementation`
-- `chore: update expo to v53`
-
-### Commit Message Validation
-
-This project uses commitlint to automatically validate commit messages:
-
-- **Automatic validation**: Git hooks check every commit message
-- **Manual validation**: Run `pnpm commitlint` to check the last commit
-- **Check multiple commits**: Run `pnpm commitlint:last` to check the last 10 commits
-
-If a commit is rejected:
-
-1. The message must follow the format: `<type>: <subject>`
-2. Type must be one of the allowed types above
-3. Subject cannot be empty and must start with lowercase
-4. Fix the message and try again
-
-### Git Add Guidelines
-
-**NEVER use `git add .` to add all files:**
-
-- Always specify individual files: `git add src/component.tsx`
-- Add multiple specific files: `git add file1.tsx file2.ts`
-- Review changes before staging: `git status` and `git diff`
-
-This ensures intentional commits and prevents accidentally staging unrelated files.
+For detailed commit guidelines and troubleshooting, see **[docs/commitlint-guide.md](docs/commitlint-guide.md)**.
 
 ## Development Workflow
 
@@ -231,36 +185,16 @@ These commands must pass before considering the task complete.
 
 ## Build & Deployment
 
-### EAS Build Commands
+### Quick Commands
 
-**Preview/Testing Builds:**
+- **Preview**: `pnpm build:preview` (all platforms) or `:ios`/`:android`
+- **Production**: `pnpm build:prod` (all platforms) or `:ios`/`:android`
+- **Submit**: `pnpm submit:ios` or `pnpm submit:android`
 
-- `pnpm build:preview` - Build for both platforms
-- `pnpm build:preview:ios` - iOS preview build
-- `pnpm build:preview:android` - Android preview build
+### Environments
 
-**Production Builds:**
-
-- `pnpm build:prod` - Production build for both platforms
-- `pnpm build:prod:ios` - iOS production build
-- `pnpm build:prod:android` - Android production build
-
-**Local Builds (requires Xcode/Android Studio):**
-
-- `pnpm build:local:preview` - Local preview build
-- `pnpm build:local:prod` - Local production build
-
-**Submission:**
-
-- `pnpm submit:ios` - Submit to App Store
-- `pnpm submit:android` - Submit to Google Play
-
-### Environment Configuration
-
-The app supports three environments configured via `EXPO_PUBLIC_ENV`:
-
-- `development` - Local development with dev suffix
-- `preview` - Testing/UAT with preview suffix
+- `development` - Local dev (with suffix)
+- `preview` - Testing/UAT (with suffix)
 - `production` - Production release
 
-Bundle IDs and app names are automatically suffixed based on environment.
+For complete build scripts see `package.json`. For EAS setup and configuration, see **[docs/eas-integration-design.md](docs/eas-integration-design.md)**.
