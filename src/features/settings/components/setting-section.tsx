@@ -1,8 +1,8 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { SettingsConfig } from '@/constants/settings';
 
 type ViewStyle = 'default' | 'card';
 
@@ -12,91 +12,66 @@ interface SettingSectionProps {
   viewStyle?: ViewStyle;
 }
 
-export function SettingSection({ title, children, viewStyle = 'default' }: SettingSectionProps) {
+const renderChildren = (children: React.ReactNode) => {
   const childrenArray = React.Children.toArray(children);
-  const cardBorderColor = useThemeColor('gray4');
+  return childrenArray.map((child, index) => {
+    if (React.isValidElement(child)) {
+      const props = child.props as any;
+      return React.cloneElement(child as React.ReactElement<any>, {
+        ...props,
+        isLast: index === childrenArray.length - 1,
+        key: child.key || index,
+      });
+    }
+    return child;
+  });
+};
 
-  if (viewStyle === 'card') {
-    return (
-      <ThemedView style={{ marginBottom: 16 }}>
-        <ThemedView
-          style={{
-            paddingHorizontal: 16,
-            paddingBottom: 8,
-          }}
-        >
-          <ThemedText
-            style={{
-              fontSize: 12,
-              fontWeight: '600',
-              opacity: 0.6,
-              textTransform: 'uppercase',
-              letterSpacing: 0.5,
-            }}
-          >
-            {title}
-          </ThemedText>
-        </ThemedView>
-        <ThemedView
-          lightColor="#ffffff"
-          darkColor="#1c1c1e"
-          style={{
-            marginHorizontal: SettingsConfig.UI.CARD_MARGIN_HORIZONTAL,
-            borderRadius: SettingsConfig.UI.CARD_BORDER_RADIUS,
-            borderWidth: 1,
-            borderColor: cardBorderColor,
-            overflow: 'hidden',
-          }}
-        >
-          {childrenArray.map((child, index) => {
-            if (React.isValidElement(child)) {
-              const props = child.props as any;
-              return React.cloneElement(child as React.ReactElement<any>, {
-                ...props,
-                isLast: index === childrenArray.length - 1,
-                key: child.key || index,
-              });
-            }
-            return child;
-          })}
-        </ThemedView>
-      </ThemedView>
-    );
-  }
+export function SettingSection({ title, children, viewStyle = 'default' }: SettingSectionProps) {
+  const cardBorderColor = useThemeColor('gray4');
+  const isCardStyle = viewStyle === 'card';
+
+  const titleComponent = <ThemedText style={styles.titleText}>{title}</ThemedText>;
+
+  const childrenContent = isCardStyle ? (
+    <ThemedView
+      lightColor="#ffffff"
+      darkColor="#1c1c1e"
+      style={[styles.cardContent, { borderColor: cardBorderColor }]}
+    >
+      {renderChildren(children)}
+    </ThemedView>
+  ) : (
+    renderChildren(children)
+  );
 
   return (
-    <ThemedView style={{ marginBottom: 16 }}>
-      <ThemedView
-        lightColor="#f8f9fa"
-        darkColor="#1a1a1a"
-        style={{
-          paddingHorizontal: 16,
-          paddingVertical: 8,
-        }}
-      >
-        <ThemedText
-          style={{
-            fontSize: 12,
-            fontWeight: '600',
-            opacity: 0.6,
-            textTransform: 'uppercase',
-            letterSpacing: 0.5,
-          }}
-        >
-          {title}
-        </ThemedText>
-      </ThemedView>
-      {childrenArray.map((child, index) => {
-        if (React.isValidElement(child)) {
-          const props = child.props as any;
-          return React.cloneElement(child as React.ReactElement<any>, {
-            ...props,
-            isLast: index === childrenArray.length - 1,
-            key: child.key || index,
-          });
-        }
-        return child;
-      })}
+    <ThemedView style={styles.container}>
+      <ThemedView style={styles.titleContainer}>{titleComponent}</ThemedView>
+      {childrenContent}
     </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 16,
+  },
+  titleText: {
+    fontSize: 12,
+    fontWeight: '600',
+    opacity: 0.6,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  titleContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  cardContent: {
+    marginHorizontal: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+});

@@ -32,7 +32,7 @@ export default function SettingsPage() {
       scrollToTopOnPress
       safeArea="top"
       headerTitle="Settings"
-      headerTitleAlign="left"
+      headerTitleAlign="center"
       padding={8}
     >
       {/* Appearance Section */}
