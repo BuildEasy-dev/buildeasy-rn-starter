@@ -13,6 +13,7 @@ interface SettingItemProps {
   value?: boolean;
   onValueChange?: (value: boolean) => void;
   onPress?: () => void;
+  isLast?: boolean;
 }
 
 export function SettingItem({
@@ -23,6 +24,7 @@ export function SettingItem({
   value,
   onValueChange,
   onPress,
+  isLast = false,
 }: SettingItemProps) {
   const tintColor = useThemeColor('tint');
   const borderColor = useThemeColor('gray4'); // Border separator color
@@ -59,7 +61,7 @@ export function SettingItem({
           alignItems: 'center',
           paddingVertical: 12,
           paddingRight: 16,
-          borderBottomWidth: 1,
+          borderBottomWidth: isLast ? 0 : 1,
           borderBottomColor: borderColor,
         }}
       >

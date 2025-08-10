@@ -8,6 +8,8 @@ interface SettingSectionProps {
 }
 
 export function SettingSection({ title, children }: SettingSectionProps) {
+  const childrenArray = React.Children.toArray(children);
+
   return (
     <ThemedView style={{ marginBottom: 16 }}>
       <ThemedView
@@ -30,7 +32,17 @@ export function SettingSection({ title, children }: SettingSectionProps) {
           {title}
         </ThemedText>
       </ThemedView>
-      {children}
+      {childrenArray.map((child, index) => {
+        if (React.isValidElement(child)) {
+          const props = child.props as any;
+          return React.cloneElement(child as React.ReactElement<any>, {
+            ...props,
+            isLast: index === childrenArray.length - 1,
+            key: child.key || index,
+          });
+        }
+        return child;
+      })}
     </ThemedView>
   );
 }
