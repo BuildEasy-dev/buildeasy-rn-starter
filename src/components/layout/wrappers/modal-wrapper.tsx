@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { StyleSheet } from 'react-native';
-import { ScreenWrapper } from '@/components/layout';
+import { ScreenWrapper } from './screen-wrapper';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedScrollView } from '@/components/themed/themed-scroll-view';
@@ -86,7 +86,7 @@ export function ModalWrapper({
   );
 
   return (
-    <ScreenWrapper safeArea="top">
+    <ScreenWrapper safeArea="both">
       {hasHeaderProps && <ModalHeader />}
       {content}
     </ScreenWrapper>
