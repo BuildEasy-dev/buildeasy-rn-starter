@@ -46,7 +46,7 @@ export function TabScreenWrapper({
   scrollToTopOnPress = true,
   safeArea = false, // Default to false - let inner components handle tab bar spacing
   scrollable = false,
-  padding = 16,
+  padding = 0,
   renderHeader,
   headerTitle,
   headerTitleAlign = 'center',
@@ -206,8 +206,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
+    padding: 16,
     minHeight: 44,
   },
   headerLeft: {
