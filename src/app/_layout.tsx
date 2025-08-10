@@ -6,7 +6,7 @@ import 'react-native-reanimated';
 
 import { AppProviders } from '@/providers/app-providers';
 import { initializeStorage, InitializationError } from '@/services/storage';
-import { createModalScreenOptions } from '@/components/layout/navigation/create-screen-options';
+import { createModalScreenOptions } from '@/components/layout/navigation';
 
 export default function RootLayout() {
   const [loaded] = useFonts({
