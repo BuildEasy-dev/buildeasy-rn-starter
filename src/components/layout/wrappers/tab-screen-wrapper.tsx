@@ -30,6 +30,9 @@ export interface TabScreenWrapperProps extends Omit<ScreenWrapperProps, 'scrolla
   scrollable?: boolean;
   padding?: number; // Only applies when scrollable=true
 
+  // Custom header - if provided, replaces the entire default header
+  renderHeader?: () => ReactNode;
+
   // Header configuration - header will be shown if any of these props are provided
   headerTitle?: string;
   headerTitleAlign?: 'left' | 'center' | 'right';
@@ -44,6 +47,7 @@ export function TabScreenWrapper({
   safeArea = false, // Default to false - let inner components handle tab bar spacing
   scrollable = false,
   padding = 16,
+  renderHeader,
   headerTitle,
   headerTitleAlign = 'center',
   headerLeft,
@@ -58,7 +62,7 @@ export function TabScreenWrapper({
   const bottom = useBottomTabOverflow();
 
   // Auto-determine if header should be shown based on header props
-  const hasHeaderProps = !!(headerTitle || headerLeft || headerRight);
+  const hasHeaderProps = !!(renderHeader || headerTitle || headerLeft || headerRight);
 
   // Helper function to render header button
   const renderHeaderButton = (config: ReactNode | HeaderButtonConfig | undefined) => {
@@ -85,26 +89,34 @@ export function TabScreenWrapper({
   };
 
   // Tab Header Component
-  const TabHeader = () => (
-    <ThemedView style={styles.header}>
-      {/* Left Button */}
-      {headerLeft && (
-        <ThemedView style={styles.headerLeft}>{renderHeaderButton(headerLeft)}</ThemedView>
-      )}
+  const TabHeader = () => {
+    // If custom header is provided, use it instead of default header
+    if (renderHeader) {
+      return <>{renderHeader()}</>;
+    }
 
-      {/* Title */}
-      {headerTitle && (
-        <ThemedText style={[styles.headerTitle, { textAlign: headerTitleAlign }]}>
-          {headerTitle}
-        </ThemedText>
-      )}
+    // Otherwise, render default header
+    return (
+      <ThemedView style={styles.header}>
+        {/* Left Button */}
+        {headerLeft && (
+          <ThemedView style={styles.headerLeft}>{renderHeaderButton(headerLeft)}</ThemedView>
+        )}
 
-      {/* Right Button */}
-      {headerRight && (
-        <ThemedView style={styles.headerRight}>{renderHeaderButton(headerRight)}</ThemedView>
-      )}
-    </ThemedView>
-  );
+        {/* Title */}
+        {headerTitle && (
+          <ThemedText style={[styles.headerTitle, { textAlign: headerTitleAlign }]}>
+            {headerTitle}
+          </ThemedText>
+        )}
+
+        {/* Right Button */}
+        {headerRight && (
+          <ThemedView style={styles.headerRight}>{renderHeaderButton(headerRight)}</ThemedView>
+        )}
+      </ThemedView>
+    );
+  };
 
   // Get current route name from navigation state
   const routeName = useNavigationState((state: any) => {
