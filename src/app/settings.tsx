@@ -145,28 +145,6 @@ export default function SettingsPage() {
         />
       </SettingSection>
 
-      {/* Account Section */}
-      <SettingSection title="Account">
-        <SettingItem
-          icon="person.crop.circle"
-          title="Account Information"
-          subtitle="Manage personal profile and preferences"
-          onPress={() => router.push('/user-profile')}
-        />
-
-        <SettingItem
-          icon="lock.fill"
-          title="Privacy Settings"
-          subtitle="Data usage and privacy controls"
-        />
-
-        <SettingItem
-          icon="creditcard.fill"
-          title="Subscription Management"
-          subtitle="View and manage paid subscriptions"
-        />
-      </SettingSection>
-
       {/* Support Section */}
       <SettingSection title="Support">
         <SettingItem

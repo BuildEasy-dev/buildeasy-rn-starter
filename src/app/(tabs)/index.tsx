@@ -105,13 +105,6 @@ export default function HomeScreen() {
           </Pressable>
 
           <Pressable
-            onPress={() => router.push('/user-profile')}
-            style={[styles.modalButton, { backgroundColor: '#007AFF' }]}
-          >
-            <ThemedText style={styles.modalButtonText}>👤 User Profile (Modal Page)</ThemedText>
-          </Pressable>
-
-          <Pressable
             onPress={() => router.push('/settings')}
             style={[styles.modalButton, { backgroundColor: '#FF9500' }]}
           >

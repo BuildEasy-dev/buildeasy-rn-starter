@@ -40,9 +40,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
 
-        {/* Modal Pages - 统一模态呈现，平台特定动画 */}
         <Stack.Screen name="create-post" options={createModalScreenOptions()} />
-        <Stack.Screen name="user-profile" options={createModalScreenOptions()} />
         <Stack.Screen name="settings" options={createModalScreenOptions()} />
       </Stack>
       <StatusBar style="auto" />
