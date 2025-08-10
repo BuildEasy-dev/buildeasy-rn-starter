@@ -4,7 +4,7 @@
 
 Implementation tasks for creating reusable layout template components that enhance Expo Router's file-based navigation system while building upon existing components (HapticTab, TabBarBackground, IconSymbol).
 
-## Progress Summary (Updated: 2025-01-08)
+## Progress Summary (Updated: 2025-01-10)
 
 **✅ PHASE 1 COMPLETED** - Core Foundation Components
 
@@ -13,7 +13,14 @@ Implementation tasks for creating reusable layout template components that enhan
 - **Integration**: Successfully integrated with existing tab screens
 - **Dependencies**: Added @tamagui/stacks for enhanced layout primitives
 
-**🎯 Next Priority**: Phase 2 Navigation Enhancement (ModalWrapper, EnhancedTabConfig)
+**✅ PHASE 2 PARTIALLY COMPLETED** - Modal System Implementation
+
+- **Commit**: `3092f06` - feat: add gemini cli workflows and improve modal wrapper
+- **New Components**: ModalWrapper + ModalHeaderButton with smart header detection
+- **Features**: Auto header detection, 6 button variants, flexible configuration
+- **Integration**: Uses existing IconSymbol, ThemedView, ScreenWrapper components
+
+**🎯 Next Priority**: Phase 2 Navigation Enhancement (EnhancedTabConfig, StackHeaderConfig)
 
 ## Phase 1: Core Foundation Components
 
@@ -28,14 +35,14 @@ Implementation tasks for creating reusable layout template components that enhan
   - Keyboard avoiding behavior
   - Theme-aware background colors
 
-- [ ] **ModalWrapper** (`src/components/layout/wrappers/modal-wrapper.tsx`)
-  - Modal header with title and close button
-  - Variants: center, bottom, fullscreen
-  - Swipe-to-close for bottom sheets
-  - Drag handle for bottom sheets
-  - Backdrop press handling
-  - Max height constraints
-  - Content padding options
+- [x] **ModalWrapper** (`src/components/layout/wrappers/modal-wrapper.tsx`) ✅
+  - ✅ Smart header detection based on props
+  - ✅ Flexible header configuration (left/right/title)
+  - ✅ Configurable title alignment (left/center/right)
+  - ✅ Integrated ModalHeaderButton component
+  - ✅ Scrollable/non-scrollable content support
+  - ✅ Uses ScreenWrapper for consistent safe area handling
+  - ✅ Theme-aware styling with ThemedView/ThemedScrollView
 
 - [x] **TabScreenWrapper** (`src/components/layout/wrappers/tab-screen-wrapper.tsx`) ✅
   - Extends ScreenWrapper functionality
@@ -73,6 +80,22 @@ Implementation tasks for creating reusable layout template components that enhan
 ## Phase 2: Navigation Enhancement
 
 ### 3. Enhanced Navigation Configurations
+
+- [x] **ModalHeaderButton** (`src/components/layout/wrappers/modal-header-button.tsx`) ✅
+  - ✅ 6 predefined variants: cancel, back, close, done, save, next
+  - ✅ Automatic router.back() navigation for most variants
+  - ✅ Icon support using existing IconSymbol component
+  - ✅ Theme-aware colors with useThemeColor hook
+  - ✅ Disabled state handling with visual feedback
+  - ✅ Smart default actions with customizable overrides
+  - ✅ Consistent iOS-style button styling
+
+- [x] **CreateModalOptions** (`src/components/layout/navigation/create-options.tsx`) ✅
+  - ✅ Standardized modal screen options for ModalWrapper
+  - ✅ Platform-specific animations (slide_from_bottom on iOS, slide_from_right on Android)
+  - ✅ Automatic header hiding (since ModalWrapper provides custom header)
+  - ✅ Gesture-enabled swipe to dismiss
+  - ✅ Modal presentation style configuration
 
 - [ ] **EnhancedTabConfig** (`src/components/layout/navigation/enhanced-tab-config.tsx`)
   - Build on existing HapticTab component
@@ -240,11 +263,11 @@ Implementation tasks for creating reusable layout template components that enhan
 1. **High Priority** (Core functionality)
    - ✅ ScreenWrapper
    - ✅ TabScreenWrapper
-   - EnhancedTabConfig
+   - ✅ ModalWrapper + ModalHeaderButton
    - ✅ LoadingState, ErrorState, EmptyState
+   - EnhancedTabConfig
 
 2. **Medium Priority** (Enhanced UX)
-   - ModalWrapper
    - ListLayout
    - Card components
    - StackHeaderConfig
@@ -265,7 +288,19 @@ Implementation tasks for creating reusable layout template components that enhan
 - ✅ Platform-specific features work correctly
 - ✅ Documentation complete with examples
 
-## Notes
+## Implementation Notes
+
+### Recent Updates (2025-01-10)
+
+**ModalWrapper System** - Fully implemented with smart header detection:
+
+- **Smart Logic**: Headers only render when headerTitle, headerLeft, or headerRight props are provided
+- **Button System**: ModalHeaderButton with 6 variants (cancel, back, close, done, save, next)
+- **Integration**: Uses existing IconSymbol, ThemedView, ScreenWrapper for consistency
+- **Navigation**: Automatic router.back() behavior with customizable overrides
+- **Theming**: Full theme support with useThemeColor integration
+
+### General Guidelines
 
 - Build on existing components, don't replace them
 - Maintain backward compatibility

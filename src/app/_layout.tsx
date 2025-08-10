@@ -6,6 +6,7 @@ import 'react-native-reanimated';
 
 import { AppProviders } from '@/providers/app-providers';
 import { initializeStorage, InitializationError } from '@/services/storage';
+import { createModalScreenOptions } from '@/components/layout/navigation/create-options';
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -38,6 +39,9 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
+
+        <Stack.Screen name="create-post" options={createModalScreenOptions()} />
+        <Stack.Screen name="settings" options={createModalScreenOptions()} />
       </Stack>
       <StatusBar style="auto" />
     </AppProviders>

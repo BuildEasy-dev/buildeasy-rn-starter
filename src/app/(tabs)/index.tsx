@@ -1,10 +1,11 @@
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, Pressable } from 'react-native';
+import { router } from 'expo-router';
 
 import { HelloWave } from '@/components/hello-wave';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
-import { TabScreenWrapper } from '@/components/layout';
+import { TabScreenWrapper } from '@/components/layout/wrappers';
 import { ScrollableParallaxView } from '@/components/parallax-scroll-view';
 import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 
@@ -91,6 +92,25 @@ export default function HomeScreen() {
           </ThemedText>
           <ScrollToTopButton />
         </ThemedView>
+
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText type="subtitle">📱 Modal Pages Demo</ThemedText>
+          <ThemedText>Test Expo Router modal pages:</ThemedText>
+
+          <Pressable
+            onPress={() => router.push('/create-post')}
+            style={[styles.modalButton, { backgroundColor: '#34C759' }]}
+          >
+            <ThemedText style={styles.modalButtonText}>📝 Create Post (Modal Page)</ThemedText>
+          </Pressable>
+
+          <Pressable
+            onPress={() => router.push('/settings')}
+            style={[styles.modalButton, { backgroundColor: '#FF9500' }]}
+          >
+            <ThemedText style={styles.modalButtonText}>⚙️ Settings (Modal Page)</ThemedText>
+          </Pressable>
+        </ThemedView>
       </ScrollableParallaxView>
     </TabScreenWrapper>
   );
@@ -123,5 +143,16 @@ const styles = StyleSheet.create({
   scrollButtonText: {
     color: 'white',
     fontWeight: '600',
+  },
+  modalButton: {
+    marginTop: 12,
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
   },
 });

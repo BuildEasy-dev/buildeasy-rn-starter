@@ -2,6 +2,14 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Important Instructions
+
+**When responding to inquiry questions (e.g., "What do you think?", "What's your suggestion?", "What's your approach?"):**
+
+- ALWAYS provide analysis/suggestions/approach first
+- DO NOT write code directly without user consent
+- Wait for approval before implementing code changes
+
 ## Quick Reference
 
 ```
@@ -27,7 +35,7 @@ Build: pnpm build:preview | pnpm build:prod | pnpm submit:ios/android
 - `pnpm prebuild` - Generate native projects (iOS/Android)
 - `pnpm prebuild:clean` - Clean prebuild with fresh native projects
 
-**Note:** Run development servers in background when needed to maintain productivity during long-running processes.
+**Note:** Only auto-run `pnpm lint` and `pnpm typecheck`. DO NOT auto-run dev servers - provide testing instructions instead. Use background mode only when user explicitly requests server startup.
 
 ### Package Management
 
