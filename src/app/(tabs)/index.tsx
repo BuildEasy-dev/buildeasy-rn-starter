@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { HelloWave } from '@/components/hello-wave';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
-import { TabScreenWrapper } from '@/components/layout';
+import { TabScreenWrapper } from '@/components/layout/wrappers';
 import { ScrollableParallaxView } from '@/components/parallax-scroll-view';
 import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 

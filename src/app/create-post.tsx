@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, Alert } from 'react-native';
 import { router } from 'expo-router';
-import { ModalWrapper } from '@/components/layout';
+import { ModalWrapper } from '@/components/layout/wrappers';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { useThemeColor } from '@/hooks/use-theme-color';
