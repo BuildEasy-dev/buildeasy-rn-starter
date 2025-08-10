@@ -47,7 +47,7 @@ export function SettingItem({
         style={{
           marginLeft: 16,
           marginRight: 12,
-          paddingVertical: 12,
+          paddingVertical: 10,
         }}
       >
         <IconSymbol name={icon} size={24} color={tintColor} />
@@ -58,24 +58,35 @@ export function SettingItem({
           flex: 1,
           flexDirection: 'row',
           alignItems: 'center',
-          paddingVertical: 12,
-          paddingRight: 16,
-          borderBottomWidth: isLast ? 0 : 1,
-          borderBottomColor: borderColor,
         }}
       >
-        <View style={{ flex: 1 }}>
-          <ThemedText style={{ fontSize: 16, fontWeight: '500' }}>{title}</ThemedText>
-          {subtitle && (
-            <ThemedText style={{ fontSize: 14, opacity: 0.6, marginTop: 2 }}>{subtitle}</ThemedText>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderBottomWidth: isLast ? 0 : 1,
+            borderBottomColor: borderColor,
+            paddingVertical: 10,
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <ThemedText style={{ fontSize: 16, fontWeight: '500' }}>{title}</ThemedText>
+            {subtitle && (
+              <ThemedText style={{ fontSize: 14, opacity: 0.6, marginTop: 2 }}>
+                {subtitle}
+              </ThemedText>
+            )}
+          </View>
+
+          {type === 'toggle' ? (
+            <Switch value={value} onValueChange={onValueChange} trackColor={switchTrackColor} />
+          ) : (
+            <IconSymbol name="chevron.right" size={16} color={chevronColor} />
           )}
         </View>
 
-        {type === 'toggle' ? (
-          <Switch value={value} onValueChange={onValueChange} trackColor={switchTrackColor} />
-        ) : (
-          <IconSymbol name="chevron.right" size={16} color={chevronColor} />
-        )}
+        <View style={{ width: 16 }} />
       </View>
     </Pressable>
   );
