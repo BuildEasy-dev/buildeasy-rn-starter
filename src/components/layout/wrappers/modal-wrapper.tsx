@@ -13,7 +13,7 @@ type HeaderButtonConfig = {
   disabled?: boolean;
 };
 
-interface ModalWrapperProps {
+export interface ModalWrapperProps {
   children: ReactNode;
 
   // Header configuration - header will be shown if any of these props are provided
