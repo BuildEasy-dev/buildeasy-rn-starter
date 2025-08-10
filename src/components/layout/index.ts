@@ -3,6 +3,7 @@ export { ScreenWrapper } from './wrappers/screen-wrapper';
 export type { ScreenWrapperProps } from './wrappers/screen-wrapper';
 export { TabScreenWrapper } from './wrappers/tab-screen-wrapper';
 export type { TabScreenWrapperProps } from './wrappers/tab-screen-wrapper';
+export { ModalWrapper } from './wrappers/modal-wrapper';
 
 // Common Components
 export { SafeAreaWrapper } from './wrappers/safe-area-wrapper';
