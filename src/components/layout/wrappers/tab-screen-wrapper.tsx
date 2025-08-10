@@ -88,7 +88,9 @@ export function TabScreenWrapper({
   const TabHeader = () => (
     <ThemedView style={styles.header}>
       {/* Left Button */}
-      <ThemedView style={styles.headerLeft}>{renderHeaderButton(headerLeft)}</ThemedView>
+      {headerLeft && (
+        <ThemedView style={styles.headerLeft}>{renderHeaderButton(headerLeft)}</ThemedView>
+      )}
 
       {/* Title */}
       {headerTitle && (
@@ -98,7 +100,9 @@ export function TabScreenWrapper({
       )}
 
       {/* Right Button */}
-      <ThemedView style={styles.headerRight}>{renderHeaderButton(headerRight)}</ThemedView>
+      {headerRight && (
+        <ThemedView style={styles.headerRight}>{renderHeaderButton(headerRight)}</ThemedView>
+      )}
     </ThemedView>
   );
 
@@ -190,7 +194,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 32,
     paddingVertical: 12,
     minHeight: 44,
   },
@@ -200,7 +204,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: '600',
     textAlign: 'center',
   },
