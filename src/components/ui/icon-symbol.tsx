@@ -35,6 +35,10 @@ const MAPPING = {
   'questionmark.circle': 'help',
   'envelope.fill': 'mail',
   'star.fill': 'star',
+  globe: 'language',
+  xmark: 'close',
+  'lock.shield.fill': 'security',
+  'doc.text.fill': 'article',
 } as IconMapping;
 
 /**
