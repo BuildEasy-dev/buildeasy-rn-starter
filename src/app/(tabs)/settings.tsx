@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Linking, Platform } from 'react-native';
-import { ModalWrapper } from '@/components/layout/wrappers';
+import { TabScreenWrapper } from '@/components/layout/wrappers';
 import { SettingSection, SettingItem, AppFooter } from '@/features/settings/components';
 import { Config } from '@/constants/config';
 
@@ -24,11 +24,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <ModalWrapper
-      headerTitle="Settings"
-      headerLeft={{ variant: 'back' }}
-      headerRight={{ variant: 'done' }}
-    >
+    <TabScreenWrapper scrollable scrollToTopOnPress safeArea="top" headerTitle="Settings">
       {/* Appearance Section */}
       <SettingSection title="Appearance">
         <SettingItem
@@ -138,6 +134,6 @@ export default function SettingsPage() {
 
       {/* Footer */}
       <AppFooter />
-    </ModalWrapper>
+    </TabScreenWrapper>
   );
 }

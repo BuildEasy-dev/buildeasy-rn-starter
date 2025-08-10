@@ -41,7 +41,6 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
 
         <Stack.Screen name="create-post" options={createModalScreenOptions()} />
-        <Stack.Screen name="settings" options={createModalScreenOptions()} />
       </Stack>
       <StatusBar style="auto" />
     </AppProviders>

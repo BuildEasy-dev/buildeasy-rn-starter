@@ -46,7 +46,7 @@ export function SettingItem({
         style={{
           marginLeft: 16,
           marginRight: 12,
-          paddingVertical: 16,
+          paddingVertical: 12,
         }}
       >
         <IconSymbol name={icon} size={24} color={tintColor} />
@@ -57,7 +57,7 @@ export function SettingItem({
           flex: 1,
           flexDirection: 'row',
           alignItems: 'center',
-          paddingVertical: 16,
+          paddingVertical: 12,
           paddingRight: 16,
           borderBottomWidth: 1,
           borderBottomColor: borderColor,

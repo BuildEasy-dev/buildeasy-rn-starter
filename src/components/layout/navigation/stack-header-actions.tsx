@@ -23,22 +23,21 @@ function BaseHeaderAction({ iconName, onPress, color }: BaseHeaderActionProps) {
 }
 
 const ACTION_CONFIG = {
-  Settings: { icon: 'gear', defaultAction: () => router.push('/settings') },
-  Close: { icon: 'xmark', defaultAction: () => router.back() },
-  Search: { icon: 'magnifyingglass', defaultAction: undefined },
-  Add: { icon: 'plus', defaultAction: undefined },
-  Edit: { icon: 'pencil', defaultAction: undefined },
-  Share: { icon: 'square.and.arrow.up', defaultAction: undefined },
-  Save: { icon: 'checkmark', defaultAction: undefined },
+  Settings: { icon: 'gear' },
+  Close: { icon: 'xmark' },
+  Search: { icon: 'magnifyingglass' },
+  Add: { icon: 'plus' },
+  Edit: { icon: 'pencil' },
+  Share: { icon: 'square.and.arrow.up' },
+  Save: { icon: 'checkmark' },
   More: {
     icon: Platform.OS === 'ios' ? 'ellipsis.circle' : 'ellipsis',
-    defaultAction: undefined,
   },
 } as const;
 
 interface OptionalColorProps {
   color?: string;
-  onPress?: () => void;
+  onPress: () => void;
 }
 
 export function useHeaderActions() {
@@ -46,15 +45,15 @@ export function useHeaderActions() {
 
   return Object.entries(ACTION_CONFIG).reduce(
     (actions, [name, config]) => {
-      actions[name as keyof typeof ACTION_CONFIG] = (props?: OptionalColorProps) => (
+      actions[name as keyof typeof ACTION_CONFIG] = (props: OptionalColorProps) => (
         <BaseHeaderAction
           iconName={config.icon}
           color={props?.color || tintColor}
-          onPress={props?.onPress || config.defaultAction}
+          onPress={props.onPress}
         />
       );
       return actions;
     },
-    {} as Record<keyof typeof ACTION_CONFIG, (props?: OptionalColorProps) => React.JSX.Element>
+    {} as Record<keyof typeof ACTION_CONFIG, (props: OptionalColorProps) => React.JSX.Element>
   );
 }
