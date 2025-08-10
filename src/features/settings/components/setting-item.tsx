@@ -1,6 +1,5 @@
 import React from 'react';
-import { Switch, Pressable } from 'react-native';
-import { ThemedView } from '@/components/themed/themed-view';
+import { Switch, Pressable, View } from 'react-native';
 import { ThemedText } from '@/components/themed/themed-text';
 import { IconSymbol, IconSymbolName } from '@/components/ui/icon-symbol';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -44,7 +43,7 @@ export function SettingItem({
         backgroundColor: 'transparent',
       }}
     >
-      <ThemedView
+      <View
         style={{
           marginLeft: 16,
           marginRight: 12,
@@ -52,9 +51,9 @@ export function SettingItem({
         }}
       >
         <IconSymbol name={icon} size={24} color={tintColor} />
-      </ThemedView>
+      </View>
 
-      <ThemedView
+      <View
         style={{
           flex: 1,
           flexDirection: 'row',
@@ -65,19 +64,19 @@ export function SettingItem({
           borderBottomColor: borderColor,
         }}
       >
-        <ThemedView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
           <ThemedText style={{ fontSize: 16, fontWeight: '500' }}>{title}</ThemedText>
           {subtitle && (
             <ThemedText style={{ fontSize: 14, opacity: 0.6, marginTop: 2 }}>{subtitle}</ThemedText>
           )}
-        </ThemedView>
+        </View>
 
         {type === 'toggle' ? (
           <Switch value={value} onValueChange={onValueChange} trackColor={switchTrackColor} />
         ) : (
           <IconSymbol name="chevron.right" size={16} color={chevronColor} />
         )}
-      </ThemedView>
+      </View>
     </Pressable>
   );
 }

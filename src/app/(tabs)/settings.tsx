@@ -4,6 +4,9 @@ import { TabScreenWrapper } from '@/components/layout/wrappers';
 import { SettingSection, SettingItem, AppFooter } from '@/features/settings/components';
 import { Config } from '@/constants/config';
 
+// Settings page UI configuration - set to 'card' for modern card style, 'default' for traditional flat style
+const SECTION_VIEW_STYLE = 'card' as const;
+
 export default function SettingsPage() {
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
@@ -24,9 +27,16 @@ export default function SettingsPage() {
   };
 
   return (
-    <TabScreenWrapper scrollable scrollToTopOnPress safeArea="top" headerTitle="Settings">
+    <TabScreenWrapper
+      scrollable
+      scrollToTopOnPress
+      safeArea="top"
+      headerTitle="Settings"
+      headerTitleAlign="left"
+      padding={8}
+    >
       {/* Appearance Section */}
-      <SettingSection title="Appearance">
+      <SettingSection title="Appearance" viewStyle={SECTION_VIEW_STYLE}>
         <SettingItem
           icon="moon.fill"
           title="Dark Mode"
@@ -38,7 +48,7 @@ export default function SettingsPage() {
       </SettingSection>
 
       {/* Notifications Section */}
-      <SettingSection title="Notifications">
+      <SettingSection title="Notifications" viewStyle={SECTION_VIEW_STYLE}>
         <SettingItem
           icon="bell.fill"
           title="Push Notifications"
@@ -68,7 +78,7 @@ export default function SettingsPage() {
       </SettingSection>
 
       {/* Support Section */}
-      <SettingSection title="Support">
+      <SettingSection title="Support" viewStyle={SECTION_VIEW_STYLE}>
         <SettingItem
           icon="questionmark.circle"
           title="Help Center"
@@ -92,7 +102,7 @@ export default function SettingsPage() {
       </SettingSection>
 
       {/* About Section */}
-      <SettingSection title="About">
+      <SettingSection title="About" viewStyle={SECTION_VIEW_STYLE}>
         <SettingItem
           icon="globe"
           title="Website"
@@ -116,7 +126,7 @@ export default function SettingsPage() {
       </SettingSection>
 
       {/* Legal Section */}
-      <SettingSection title="Legal">
+      <SettingSection title="Legal" viewStyle={SECTION_VIEW_STYLE}>
         <SettingItem
           icon="lock.shield.fill"
           title="Privacy Policy"
