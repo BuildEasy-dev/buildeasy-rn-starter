@@ -55,7 +55,7 @@ export function SettingSection({ title, children, viewStyle = 'default' }: Setti
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: 8,
   },
   titleText: {
     fontSize: 12,
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 2,
   },
   cardContent: {
     marginHorizontal: 12,

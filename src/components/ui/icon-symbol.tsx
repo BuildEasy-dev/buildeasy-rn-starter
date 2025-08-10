@@ -24,6 +24,7 @@ const MAPPING = {
   'heart.circle': 'favorite',
   'doc.text': 'description',
   'bell.circle': 'notifications',
+  gear: 'settings',
   'gear.circle': 'settings',
   'moon.fill': 'dark-mode',
   'bell.fill': 'notifications',
