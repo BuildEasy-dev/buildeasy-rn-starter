@@ -50,7 +50,7 @@ src/components/layout/
 │   ├── loading-state.tsx
 │   ├── error-state.tsx
 │   └── safe-area-wrapper.tsx
-└── index.ts
+└── index.tsx
 
 // Current project components (already exist)
 src/components/

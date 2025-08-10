@@ -196,7 +196,7 @@ Implementation tasks for creating reusable layout template components that enhan
   - Navigation type extensions
   - **COMPLETED**: ThemedColor interface in `src/components/types.ts`
 
-- [x] **Index Export** (`src/components/layout/index.ts`) ✅
+- [x] **Index Export** (`src/components/layout/index.tsx`) ✅
   - Clean export structure
   - Grouped exports by category
 
