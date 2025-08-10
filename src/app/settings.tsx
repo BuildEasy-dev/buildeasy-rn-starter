@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Linking, Platform } from 'react-native';
 import { ModalWrapper } from '@/components/layout/wrappers';
-import { SettingSection } from '@/components/settings/setting-section';
-import { SettingItem } from '@/components/settings/setting-item';
-import { AppFooter } from '@/components/settings/app-footer';
+import { SettingSection, SettingItem, AppFooter } from '@/features/settings/components';
 import { Config } from '@/constants/config';
 
 export default function SettingsPage() {
