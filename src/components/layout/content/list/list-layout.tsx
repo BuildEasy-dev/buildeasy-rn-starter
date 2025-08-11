@@ -48,8 +48,7 @@ export interface ListLayoutProps<T>
   ListFooterComponent?: React.ComponentType<any> | React.ReactElement | null;
 }
 
-// Base ListLayout component
-function BaseListLayout<T>({
+export function ListLayout<T>({
   data,
   renderItem,
   loading = false,
@@ -181,18 +180,12 @@ function BaseListLayout<T>({
   );
 }
 
-// Export the base version (without scroll-to-top by default)
-export function ListLayout<T>(props: ListLayoutProps<T>) {
-  return <BaseListLayout {...props} enableScrollToTop={false} />;
-}
-
 /**
- * A ListLayout that automatically integrates with TabScreenWrapper's scroll-to-top functionality
- * Similar to ScrollableParallaxView, this provides a convenient wrapper for list components
- * that need scroll-to-top behavior without manually handling the context registration.
+ * A ListLayout that automatically enables scroll-to-top functionality.
+ * This provides a convenient wrapper for list components that need scroll-to-top behavior.
  */
 export function ScrollableListLayout<T>(props: ListLayoutProps<T>) {
-  return <BaseListLayout {...props} enableScrollToTop={true} />;
+  return <ListLayout {...props} enableScrollToTop={true} />;
 }
 
 const styles = StyleSheet.create({
