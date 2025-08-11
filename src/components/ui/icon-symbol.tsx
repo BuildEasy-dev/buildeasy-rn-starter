@@ -40,6 +40,16 @@ const MAPPING = {
   xmark: 'close',
   'lock.shield.fill': 'security',
   'doc.text.fill': 'article',
+  'square.stack': 'dynamic-feed',
+  'checkmark.seal.fill': 'verified',
+  ellipsis: 'more-horiz',
+  'bubble.left': 'chat-bubble-outline',
+  'arrow.2.squarepath': 'repeat',
+  heart: 'favorite-border',
+  'heart.fill': 'favorite',
+  bookmark: 'bookmark-border',
+  'bookmark.fill': 'bookmark',
+  'square.and.arrow.up': 'share',
 } as IconMapping;
 
 /**

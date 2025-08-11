@@ -21,7 +21,6 @@ export default function TabLayout() {
         options={{
           title: 'Explore',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-          tabBarBadge: 5,
         }}
       />
       <Tabs.Screen
@@ -29,6 +28,7 @@ export default function TabLayout() {
         options={{
           title: 'Feed',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="square.stack" color={color} />,
+          tabBarBadge: 5,
         }}
       />
       <Tabs.Screen

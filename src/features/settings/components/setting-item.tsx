@@ -26,7 +26,7 @@ export function SettingItem({
   isLast = false,
 }: SettingItemProps) {
   const tintColor = useThemeColor('tint');
-  const borderColor = useThemeColor('gray4'); // Border separator color
+  const borderColor = useThemeColor('separator'); // Border separator color
   const chevronColor = useThemeColor('gray8'); // Chevron arrow color
   const switchTrackColor = {
     false: useThemeColor('gray6'), // Switch track color when off

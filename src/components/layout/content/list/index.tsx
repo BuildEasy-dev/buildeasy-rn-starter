@@ -1,4 +1,4 @@
-export { ListLayout, ScrollableListView } from './list-layout';
+export { ListLayout, ScrollableListLayout } from './list-layout';
 export type { ListLayoutProps } from './list-layout';
 
 export { ListItem } from './list-item';

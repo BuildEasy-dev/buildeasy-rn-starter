@@ -5,7 +5,9 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { ListEmptyState } from './list-empty-state';
 import { ListErrorState } from './list-error-state';
 import { LoadingState } from '../../common/loading-state';
+import { Separator } from '@/components/ui/separator';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
+import type { ThemedColor } from '@/components/types';
 import { useTabBarScrollProps } from '@/hooks/use-tab-bar-scroll-props';
 
 export interface ListLayoutProps<T>
@@ -38,7 +40,7 @@ export interface ListLayoutProps<T>
   // Styling
   containerStyle?: ViewStyle;
   contentContainerStyle?: ViewStyle;
-  separatorColor?: string;
+  separatorColor?: ThemedColor;
   showSeparator?: boolean;
 
   // Header and footer
@@ -73,12 +75,9 @@ function BaseListLayout<T>({
   enableScrollToTop = false,
   ...flatListProps
 }: ListLayoutProps<T> & { enableScrollToTop?: boolean }) {
-  const defaultSeparatorColor = useThemeColor('border');
   const backgroundColor = useThemeColor('background');
   const refreshTintColor = useThemeColor('tint');
   const { bottomInset, scrollIndicatorInsets } = useTabBarScrollProps();
-
-  const finalSeparatorColor = separatorColor || defaultSeparatorColor;
 
   // Empty component with all props
   const renderEmptyComponent = useCallback(() => {
@@ -112,12 +111,10 @@ function BaseListLayout<T>({
   const ItemSeparatorComponent = useMemo(() => {
     if (!showSeparator) return undefined;
 
-    const SeparatorComponent = () => (
-      <ThemedView style={[styles.separator, { backgroundColor: finalSeparatorColor }]} />
-    );
+    const SeparatorComponent = () => <Separator color={separatorColor} />;
     SeparatorComponent.displayName = 'ItemSeparator';
     return SeparatorComponent;
-  }, [showSeparator, finalSeparatorColor]);
+  }, [showSeparator, separatorColor]);
 
   // Refresh control
   const refreshControl = useMemo(() => {
@@ -194,7 +191,7 @@ export function ListLayout<T>(props: ListLayoutProps<T>) {
  * Similar to ScrollableParallaxView, this provides a convenient wrapper for list components
  * that need scroll-to-top behavior without manually handling the context registration.
  */
-export function ScrollableListView<T>(props: ListLayoutProps<T>) {
+export function ScrollableListLayout<T>(props: ListLayoutProps<T>) {
   return <BaseListLayout {...props} enableScrollToTop={true} />;
 }
 
@@ -217,10 +214,6 @@ const styles = StyleSheet.create({
   },
   emptyContentContainer: {
     flexGrow: 1,
-  },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    marginLeft: 16,
   },
   loadingMoreContainer: {
     paddingVertical: 20,

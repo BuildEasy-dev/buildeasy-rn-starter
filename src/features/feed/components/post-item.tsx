@@ -18,7 +18,7 @@ export function PostItem({ post, onLike, onRepost, onReply, onBookmark, onShare 
   const tintColor = useThemeColor('tint');
   const textColor = useThemeColor('text');
   const secondaryTextColor = useThemeColor('tabIconDefault');
-  const borderColor = useThemeColor('border');
+  const borderColor = useThemeColor('separator');
 
   const formatTime = (date: Date) => {
     const now = new Date();
@@ -39,7 +39,7 @@ export function PostItem({ post, onLike, onRepost, onReply, onBookmark, onShare 
   };
 
   return (
-    <ThemedView style={[styles.container, { borderBottomColor: borderColor }]}>
+    <ThemedView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.avatar}>
           <ThemedText style={styles.avatarText}>
@@ -160,12 +160,11 @@ export function PostItem({ post, onLike, onRepost, onReply, onBookmark, onShare 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingVertical: 6,
   },
   header: {
     flexDirection: 'row',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   avatar: {
     width: 40,
@@ -220,7 +219,7 @@ const styles = StyleSheet.create({
   },
   content: {
     marginLeft: 52,
-    marginBottom: 12,
+    marginBottom: 6,
   },
   postText: {
     fontSize: 15,
@@ -228,8 +227,8 @@ const styles = StyleSheet.create({
   },
   quotePost: {
     marginLeft: 52,
-    marginBottom: 12,
-    padding: 12,
+    marginBottom: 6,
+    padding: 8,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 12,
   },
