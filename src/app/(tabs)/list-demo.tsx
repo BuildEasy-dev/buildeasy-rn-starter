@@ -61,6 +61,10 @@ export default function ListDemoScreen() {
   const [showEmpty, setShowEmpty] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const tintColor = useThemeColor('tint');
+  const switchTrackColor = {
+    false: useThemeColor('gray6'),
+    true: tintColor,
+  };
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -135,12 +139,7 @@ export default function ListDemoScreen() {
       </ThemedText>
       <View style={styles.toggleContainer}>
         <ThemedText>Show empty state</ThemedText>
-        <Switch
-          value={showEmpty}
-          onValueChange={toggleEmptyState}
-          trackColor={{ false: '#767577', true: tintColor }}
-          thumbColor={showEmpty ? '#fff' : '#f4f3f4'}
-        />
+        <Switch value={showEmpty} onValueChange={toggleEmptyState} trackColor={switchTrackColor} />
       </View>
     </ThemedView>
   );
