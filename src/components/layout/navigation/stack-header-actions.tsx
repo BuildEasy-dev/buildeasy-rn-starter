@@ -1,4 +1,3 @@
-import { router } from 'expo-router';
 import { Platform, Pressable } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useThemeColor } from '@/hooks/use-theme-color';

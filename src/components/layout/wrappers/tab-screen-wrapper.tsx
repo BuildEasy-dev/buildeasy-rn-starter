@@ -5,6 +5,7 @@ import type { ScrollView } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { ScreenWrapper, type ScreenWrapperProps } from './screen-wrapper';
 import { ScrollToTopContext } from '@/contexts/scroll-to-top-context';
+import { TabBarInsetProvider } from '@/contexts/tab-bar-inset-context';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedScrollView } from '@/components/themed/themed-scroll-view';
@@ -197,7 +198,7 @@ export function TabScreenWrapper({
 
   return (
     <ScrollToTopContext.Provider value={{ registerScrollHandler, triggerScrollToTop }}>
-      {content}
+      <TabBarInsetProvider bottom={bottom}>{content}</TabBarInsetProvider>
     </ScrollToTopContext.Provider>
   );
 }
