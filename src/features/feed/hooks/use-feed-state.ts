@@ -9,6 +9,10 @@ export function useFeedState() {
   const [error, setError] = useState<Error | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
 
+  // Debug states for testing ListLayout empty/error states
+  const [debugEmptyState, setDebugEmptyState] = useState(false);
+  const [debugErrorState, setDebugErrorState] = useState(false);
+
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
     setError(null);
@@ -113,11 +117,30 @@ export function useFeedState() {
     handleRefresh();
   }, [handleRefresh]);
 
+  // Debug handlers
+  const toggleEmptyState = useCallback(() => {
+    setDebugEmptyState((prev) => !prev);
+    if (!debugEmptyState) {
+      setDebugErrorState(false); // Only one debug state at a time
+    }
+  }, [debugEmptyState]);
+
+  const toggleErrorState = useCallback(() => {
+    setDebugErrorState((prev) => !prev);
+    if (!debugErrorState) {
+      setDebugEmptyState(false); // Only one debug state at a time
+    }
+  }, [debugErrorState]);
+
+  // Override data and error for debug states
+  const finalPosts = debugEmptyState || debugErrorState ? [] : posts;
+  const finalError = debugErrorState ? new Error('Debug error state') : error;
+
   return {
-    posts,
+    posts: finalPosts,
     refreshing,
     loading,
-    error,
+    error: finalError,
     loadingMore,
     handleRefresh,
     handleLike,
@@ -127,5 +150,10 @@ export function useFeedState() {
     handleShare,
     handleLoadMore,
     handleRetry,
+    // Debug controls
+    debugEmptyState,
+    debugErrorState,
+    toggleEmptyState,
+    toggleErrorState,
   };
 }

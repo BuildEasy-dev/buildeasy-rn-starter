@@ -99,10 +99,10 @@ export function TabScreenWrapper({
     // Otherwise, render default header
     return (
       <ThemedView style={styles.header}>
-        {/* Left Button */}
-        {headerLeft && (
-          <ThemedView style={styles.headerLeft}>{renderHeaderButton(headerLeft)}</ThemedView>
-        )}
+        {/* Left Button - always render container to maintain title centering */}
+        <ThemedView style={styles.headerLeft}>
+          {headerLeft && renderHeaderButton(headerLeft)}
+        </ThemedView>
 
         {/* Title */}
         {headerTitle && (
@@ -111,10 +111,10 @@ export function TabScreenWrapper({
           </ThemedText>
         )}
 
-        {/* Right Button */}
-        {headerRight && (
-          <ThemedView style={styles.headerRight}>{renderHeaderButton(headerRight)}</ThemedView>
-        )}
+        {/* Right Button - always render container to maintain title centering */}
+        <ThemedView style={styles.headerRight}>
+          {headerRight && renderHeaderButton(headerRight)}
+        </ThemedView>
       </ThemedView>
     );
   };
