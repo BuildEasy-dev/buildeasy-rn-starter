@@ -15,29 +15,36 @@ interface PostItemProps {
   onShare: (post: Post) => void;
 }
 
-export function PostItem({ post, onLike, onRepost, onReply, onBookmark, onShare }: PostItemProps) {
+const formatTime = (date: Date) => {
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const days = Math.floor(hours / 24);
+
+  if (days > 0) return `${days}d`;
+  if (hours > 0) return `${hours}h`;
+  const minutes = Math.floor(diff / (1000 * 60));
+  return minutes > 0 ? `${minutes}m` : 'now';
+};
+
+const formatNumber = (num: number) => {
+  if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+  if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+  return num.toString();
+};
+
+function PostItemComponent({
+  post,
+  onLike,
+  onRepost,
+  onReply,
+  onBookmark,
+  onShare,
+}: PostItemProps) {
   const tintColor = useThemeColor('tint');
   const textColor = useThemeColor('text');
   const secondaryTextColor = useThemeColor('tabIconDefault');
   const borderColor = useThemeColor('separator');
-
-  const formatTime = (date: Date) => {
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) return `${days}d`;
-    if (hours > 0) return `${hours}h`;
-    const minutes = Math.floor(diff / (1000 * 60));
-    return minutes > 0 ? `${minutes}m` : 'now';
-  };
-
-  const formatNumber = (num: number) => {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
-    return num.toString();
-  };
 
   return (
     <ThemedView style={styles.container}>
@@ -155,6 +162,8 @@ export function PostItem({ post, onLike, onRepost, onReply, onBookmark, onShare 
     </ThemedView>
   );
 }
+
+export const PostItem = React.memo(PostItemComponent);
 
 const styles = StyleSheet.create({
   container: {
