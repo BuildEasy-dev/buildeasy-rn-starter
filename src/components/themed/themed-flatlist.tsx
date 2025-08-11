@@ -1,27 +1,16 @@
-import React, { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
+import React, { forwardRef } from 'react';
 import { FlatList, type FlatListProps } from 'react-native';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { useScrollToTop } from '@/hooks/use-scroll-to-top';
+import { withScrollToTop } from '@/hooks/with-scroll-to-top';
 
 export type ThemedFlatListProps<ItemT> = FlatListProps<ItemT> & {
   lightColor?: string;
   darkColor?: string;
-  enableScrollToTop?: boolean;
 };
 
-export interface ScrollToTopFlatListRef {
-  scrollToTop: (animated?: boolean) => void;
-}
-
 function ThemedFlatListComponent<ItemT>(
-  {
-    style,
-    lightColor,
-    darkColor,
-    enableScrollToTop = false,
-    ...otherProps
-  }: ThemedFlatListProps<ItemT>,
+  { style, lightColor, darkColor, ...otherProps }: ThemedFlatListProps<ItemT>,
   ref: React.Ref<FlatList<ItemT>>
 ) {
   const backgroundColor = useThemeColor('background', { light: lightColor, dark: darkColor });
@@ -53,41 +42,4 @@ export const ThemedFlatList = forwardRef(ThemedFlatListComponent) as <ItemT>(
  * - For mixed content layouts (use ScrollToTopScrollView instead)
  * - When you need section headers or complex grouping
  */
-function ScrollToTopFlatListComponent<ItemT>(
-  { enableScrollToTop = true, ...props }: ThemedFlatListProps<ItemT>,
-  ref: React.Ref<ScrollToTopFlatListRef>
-) {
-  const flatListRef = useRef<FlatList<ItemT>>(null);
-  const scrollToTopContext = useScrollToTop();
-
-  // Expose scrollToTop method via ref
-  useImperativeHandle(
-    ref,
-    () => ({
-      scrollToTop: (animated = true) => {
-        flatListRef.current?.scrollToOffset({ offset: 0, animated });
-      },
-    }),
-    []
-  );
-
-  // Register scroll handler with scroll-to-top context
-  useEffect(() => {
-    if (!enableScrollToTop || !scrollToTopContext) return;
-
-    const scrollHandler = (options?: { x?: number; y?: number; animated?: boolean }) => {
-      flatListRef.current?.scrollToOffset({
-        offset: 0,
-        animated: options?.animated ?? true,
-      });
-    };
-
-    scrollToTopContext.registerScrollHandler(scrollHandler);
-  }, [scrollToTopContext, enableScrollToTop]);
-
-  return <ThemedFlatList ref={flatListRef} enableScrollToTop={enableScrollToTop} {...props} />;
-}
-
-export const ScrollToTopFlatList = forwardRef(ScrollToTopFlatListComponent) as <ItemT>(
-  props: ThemedFlatListProps<ItemT> & { ref?: React.Ref<ScrollToTopFlatListRef> }
-) => React.ReactElement;
+export const ScrollToTopFlatList = withScrollToTop(ThemedFlatList);

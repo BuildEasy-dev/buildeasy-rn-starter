@@ -1,21 +1,16 @@
-import React, { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
+import React, { forwardRef } from 'react';
 import { ScrollView, type ScrollViewProps } from 'react-native';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { useScrollToTop } from '@/hooks/use-scroll-to-top';
+import { withScrollToTop } from '@/hooks/with-scroll-to-top';
 
 export type ThemedScrollViewProps = ScrollViewProps & {
   lightColor?: string;
   darkColor?: string;
-  enableScrollToTop?: boolean;
 };
 
-export interface ScrollToTopScrollViewRef {
-  scrollToTop: (animated?: boolean) => void;
-}
-
 export const ThemedScrollView = forwardRef<ScrollView, ThemedScrollViewProps>(
-  ({ style, lightColor, darkColor, enableScrollToTop = false, ...otherProps }, ref) => {
+  ({ style, lightColor, darkColor, ...otherProps }, ref) => {
     const backgroundColor = useThemeColor('background', { light: lightColor, dark: darkColor });
 
     return <ScrollView ref={ref} style={[{ backgroundColor }, style]} {...otherProps} />;
@@ -43,45 +38,4 @@ ThemedScrollView.displayName = 'ThemedScrollView';
  * - For grouped/sectioned data (use ScrollToTopSectionList instead)
  * - For performance-critical lists with many items
  */
-export const ScrollToTopScrollView = forwardRef<ScrollToTopScrollViewRef, ThemedScrollViewProps>(
-  ({ enableScrollToTop = true, ...props }, ref) => {
-    const scrollViewRef = useRef<ScrollView>(null);
-    const scrollToTopContext = useScrollToTop();
-
-    // Expose scrollToTop method via ref
-    useImperativeHandle(
-      ref,
-      () => ({
-        scrollToTop: (animated = true) => {
-          scrollViewRef.current?.scrollTo({
-            x: 0,
-            y: 0,
-            animated,
-          });
-        },
-      }),
-      []
-    );
-
-    // Register scroll handler with scroll-to-top context
-    useEffect(() => {
-      if (!enableScrollToTop || !scrollToTopContext) return;
-
-      const scrollHandler = (options?: { x?: number; y?: number; animated?: boolean }) => {
-        scrollViewRef.current?.scrollTo({
-          x: 0,
-          y: 0,
-          animated: options?.animated ?? true,
-        });
-      };
-
-      scrollToTopContext.registerScrollHandler(scrollHandler);
-    }, [scrollToTopContext, enableScrollToTop]);
-
-    return (
-      <ThemedScrollView ref={scrollViewRef} enableScrollToTop={enableScrollToTop} {...props} />
-    );
-  }
-);
-
-ScrollToTopScrollView.displayName = 'ScrollToTopScrollView';
+export const ScrollToTopScrollView = withScrollToTop(ThemedScrollView);

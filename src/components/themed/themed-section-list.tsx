@@ -1,27 +1,16 @@
-import React, { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
+import React, { forwardRef } from 'react';
 import { SectionList, type SectionListProps } from 'react-native';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { useScrollToTop } from '@/hooks/use-scroll-to-top';
+import { withScrollToTop } from '@/hooks/with-scroll-to-top';
 
 export type ThemedSectionListProps<ItemT, SectionT = any> = SectionListProps<ItemT, SectionT> & {
   lightColor?: string;
   darkColor?: string;
-  enableScrollToTop?: boolean;
 };
 
-export interface ScrollToTopSectionListRef {
-  scrollToTop: (animated?: boolean) => void;
-}
-
 function ThemedSectionListComponent<ItemT, SectionT = any>(
-  {
-    style,
-    lightColor,
-    darkColor,
-    enableScrollToTop = false,
-    ...otherProps
-  }: ThemedSectionListProps<ItemT, SectionT>,
+  { style, lightColor, darkColor, ...otherProps }: ThemedSectionListProps<ItemT, SectionT>,
   ref: React.Ref<SectionList<ItemT, SectionT>>
 ) {
   const backgroundColor = useThemeColor('background', { light: lightColor, dark: darkColor });
@@ -55,54 +44,4 @@ export const ThemedSectionList = forwardRef(ThemedSectionListComponent) as <Item
  * - For mixed content layouts (use ScrollToTopScrollView instead)
  * - When sections are not needed for your data structure
  */
-function ScrollToTopSectionListComponent<ItemT, SectionT = any>(
-  { enableScrollToTop = true, ...props }: ThemedSectionListProps<ItemT, SectionT>,
-  ref: React.Ref<ScrollToTopSectionListRef>
-) {
-  const sectionListRef = useRef<SectionList<ItemT, SectionT>>(null);
-  const scrollToTopContext = useScrollToTop();
-
-  // Expose scrollToTop method via ref
-  useImperativeHandle(
-    ref,
-    () => ({
-      scrollToTop: (animated = true) => {
-        sectionListRef.current?.scrollToLocation({
-          sectionIndex: 0,
-          itemIndex: 0,
-          animated,
-        });
-      },
-    }),
-    []
-  );
-
-  // Register scroll handler with scroll-to-top context
-  useEffect(() => {
-    if (!enableScrollToTop || !scrollToTopContext) return;
-
-    const scrollHandler = (options?: { x?: number; y?: number; animated?: boolean }) => {
-      // For SectionList, scroll to top by going to first section, first item
-      sectionListRef.current?.scrollToLocation({
-        sectionIndex: 0,
-        itemIndex: 0,
-        animated: options?.animated ?? true,
-      });
-    };
-
-    scrollToTopContext.registerScrollHandler(scrollHandler);
-  }, [scrollToTopContext, enableScrollToTop]);
-
-  return (
-    <ThemedSectionList ref={sectionListRef} enableScrollToTop={enableScrollToTop} {...props} />
-  );
-}
-
-export const ScrollToTopSectionList = forwardRef(ScrollToTopSectionListComponent) as <
-  ItemT,
-  SectionT = any,
->(
-  props: ThemedSectionListProps<ItemT, SectionT> & {
-    ref?: React.Ref<ScrollToTopSectionListRef>;
-  }
-) => React.ReactElement;
+export const ScrollToTopSectionList = withScrollToTop(ThemedSectionList);

@@ -1,19 +1,11 @@
-import React, { useCallback, useMemo, useRef, useEffect } from 'react';
-import {
-  FlatList,
-  FlatListProps,
-  ListRenderItem,
-  RefreshControl,
-  StyleSheet,
-  ViewStyle,
-} from 'react-native';
-import { ThemedView } from '@/components/themed';
+import React, { useCallback, useMemo } from 'react';
+import { FlatListProps, ListRenderItem, RefreshControl, StyleSheet, ViewStyle } from 'react-native';
+import { ThemedView, ThemedFlatList, ScrollToTopFlatList } from '@/components/themed';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { ListEmptyState } from './list-empty-state';
 import { LoadingState } from '../../common/loading-state';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { useTabBarScrollProps } from '@/hooks/use-tab-bar-scroll-props';
-import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 
 export interface ListLayoutProps<T>
   extends Omit<FlatListProps<T>, 'refreshControl' | 'ListEmptyComponent'> {
@@ -48,7 +40,7 @@ export interface ListLayoutProps<T>
   ListFooterComponent?: React.ComponentType<any> | React.ReactElement | null;
 }
 
-// Base ListLayout component without scroll-to-top integration
+// Base ListLayout component
 function BaseListLayout<T>({
   data,
   renderItem,
@@ -76,26 +68,8 @@ function BaseListLayout<T>({
   const backgroundColor = useThemeColor('background');
   const refreshTintColor = useThemeColor('tint');
   const { bottomInset, scrollIndicatorInsets } = useTabBarScrollProps();
-  const flatListRef = useRef<FlatList<T>>(null);
-  const scrollToTopContext = useScrollToTop();
 
   const finalSeparatorColor = separatorColor || defaultSeparatorColor;
-
-  // Register scroll handler with context (only if enableScrollToTop is true)
-  useEffect(() => {
-    if (!enableScrollToTop) return;
-
-    if (scrollToTopContext && flatListRef.current) {
-      const scrollHandler = (options?: { x?: number; y?: number; animated?: boolean }) => {
-        flatListRef.current?.scrollToOffset({
-          offset: options?.y || 0,
-          animated: options?.animated ?? true,
-        });
-      };
-
-      scrollToTopContext.registerScrollHandler(scrollHandler);
-    }
-  }, [scrollToTopContext, data, enableScrollToTop]);
 
   // Empty component with all props
   const renderEmptyComponent = useCallback(() => {
@@ -159,30 +133,35 @@ function BaseListLayout<T>({
     );
   }
 
+  const commonProps = {
+    data: data || [],
+    renderItem,
+    refreshControl,
+    ListEmptyComponent: renderEmptyComponent,
+    ListHeaderComponent,
+    ListFooterComponent: renderFooterComponent,
+    ItemSeparatorComponent,
+    onEndReached: data && data.length > 0 ? onEndReached : undefined,
+    onEndReachedThreshold,
+    contentContainerStyle: [
+      styles.contentContainer,
+      (!data || data.length === 0) && styles.emptyContentContainer,
+      { paddingBottom: bottomInset },
+      contentContainerStyle,
+    ],
+    scrollIndicatorInsets,
+    showsVerticalScrollIndicator: false,
+    keyboardShouldPersistTaps: 'handled' as const,
+    ...flatListProps,
+  };
+
   return (
     <ThemedView style={[styles.container, { backgroundColor }, containerStyle]}>
-      <FlatList
-        ref={flatListRef}
-        data={data || []}
-        renderItem={renderItem}
-        refreshControl={refreshControl}
-        ListEmptyComponent={renderEmptyComponent}
-        ListHeaderComponent={ListHeaderComponent}
-        ListFooterComponent={renderFooterComponent}
-        ItemSeparatorComponent={ItemSeparatorComponent}
-        onEndReached={data && data.length > 0 ? onEndReached : undefined}
-        onEndReachedThreshold={onEndReachedThreshold}
-        contentContainerStyle={[
-          styles.contentContainer,
-          (!data || data.length === 0) && styles.emptyContentContainer,
-          { paddingBottom: bottomInset },
-          contentContainerStyle,
-        ]}
-        scrollIndicatorInsets={scrollIndicatorInsets}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        {...flatListProps}
-      />
+      {enableScrollToTop ? (
+        <ScrollToTopFlatList {...(commonProps as any)} />
+      ) : (
+        <ThemedFlatList {...(commonProps as any)} />
+      )}
     </ThemedView>
   );
 }
