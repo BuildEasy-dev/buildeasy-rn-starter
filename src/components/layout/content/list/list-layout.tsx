@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { ListRenderItem, RefreshControl, StyleSheet, ViewStyle } from 'react-native';
-import { ListRenderItem as FlashListRenderItem } from '@shopify/flash-list';
+import { ListRenderItem as FlashListRenderItem, ContentStyle } from '@shopify/flash-list';
 import { ThemedView, ThemedFlashList, ScrollToTopFlashList } from '@/components/themed';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { ListEmptyState } from './list-empty-state';
@@ -56,7 +56,7 @@ export interface ListLayoutProps<T> {
 
   // Styling
   containerStyle?: ViewStyle;
-  contentContainerStyle?: ViewStyle;
+  contentContainerStyle?: ContentStyle;
   separatorColor?: ThemedColor;
   showSeparator?: boolean;
 
@@ -95,6 +95,16 @@ export function ListLayout<T>({
   const backgroundColor = useThemeColor('background');
   const refreshTintColor = useThemeColor('tint');
   const { bottomInset, scrollIndicatorInsets } = useTabBarScrollProps();
+
+  // Combine contentContainerStyle with required bottom padding
+  // Note: FlashList contentContainerStyle doesn't support flexGrow, so we handle
+  // empty state styling through the parent container
+  const finalContentContainerStyle = useMemo((): ContentStyle => {
+    return {
+      paddingBottom: bottomInset,
+      ...contentContainerStyle,
+    };
+  }, [bottomInset, contentContainerStyle]);
 
   // Empty component with all props
   const renderEmptyComponent = useCallback(() => {
@@ -176,12 +186,7 @@ export function ListLayout<T>({
     ItemSeparatorComponent,
     onEndReached: data && data.length > 0 ? onEndReached : undefined,
     onEndReachedThreshold,
-    contentContainerStyle: [
-      styles.contentContainer,
-      (!data || data.length === 0) && styles.emptyContentContainer,
-      { paddingBottom: bottomInset },
-      contentContainerStyle,
-    ],
+    contentContainerStyle: finalContentContainerStyle,
     scrollIndicatorInsets,
     showsVerticalScrollIndicator: false,
     keyboardShouldPersistTaps: 'handled' as const,
@@ -222,12 +227,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  contentContainer: {
-    flexGrow: 1,
-  },
-  emptyContentContainer: {
-    flexGrow: 1,
   },
   loadingMoreContainer: {
     paddingVertical: 20,
