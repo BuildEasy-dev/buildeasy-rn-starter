@@ -1,19 +1,36 @@
 import React, { useCallback, useMemo } from 'react';
-import { FlatListProps, ListRenderItem, RefreshControl, StyleSheet, ViewStyle } from 'react-native';
-import { ThemedView, ThemedFlatList, ScrollToTopFlatList } from '@/components/themed';
+import { ListRenderItem, RefreshControl, StyleSheet, ViewStyle } from 'react-native';
+import { ListRenderItem as FlashListRenderItem } from '@shopify/flash-list';
+import { ThemedView, ThemedFlashList, ScrollToTopFlashList } from '@/components/themed';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { ListEmptyState } from './list-empty-state';
 import { ListErrorState } from './list-error-state';
-import { LoadingState } from '../../common/loading-state';
+import { LoadingState } from '@/components/layout/common/loading-state';
 import { Separator } from '@/components/ui/separator';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import type { ThemedColor } from '@/components/types';
 import { useTabBarScrollProps } from '@/hooks/use-tab-bar-scroll-props';
 
-export interface ListLayoutProps<T>
-  extends Omit<FlatListProps<T>, 'refreshControl' | 'ListEmptyComponent'> {
+/**
+ * Props for ListLayout component.
+ *
+ * This component uses FlashList by default, which is suitable for:
+ * - Lists with many items (>20)
+ * - Complex item layouts (cards, media content)
+ * - Dynamic content with varying item sizes
+ *
+ * Consider alternatives when:
+ * - Need specific FlatList features not available in FlashList
+ * - Working with simple, uniform items in small lists
+ * - Require precise control over item measurement and rendering
+ */
+export interface ListLayoutProps<T> {
   data: T[] | null | undefined;
-  renderItem: ListRenderItem<T>;
+  renderItem: ListRenderItem<T> | FlashListRenderItem<T>;
+  keyExtractor?: (item: T, index: number) => string;
+
+  // FlashList specific props
+  estimatedItemSize?: number;
 
   // Loading and refresh states
   loading?: boolean;
@@ -51,6 +68,7 @@ export interface ListLayoutProps<T>
 export function ListLayout<T>({
   data,
   renderItem,
+  estimatedItemSize,
   loading = false,
   refreshing = false,
   onRefresh,
@@ -72,7 +90,7 @@ export function ListLayout<T>({
   ListHeaderComponent,
   ListFooterComponent,
   enableScrollToTop = false,
-  ...flatListProps
+  ...listProps
 }: ListLayoutProps<T> & { enableScrollToTop?: boolean }) {
   const backgroundColor = useThemeColor('background');
   const refreshTintColor = useThemeColor('tint');
@@ -147,7 +165,8 @@ export function ListLayout<T>({
     );
   }
 
-  const commonProps = {
+  // FlashList props
+  const flashListProps = {
     data: data || [],
     renderItem,
     refreshControl,
@@ -166,15 +185,17 @@ export function ListLayout<T>({
     scrollIndicatorInsets,
     showsVerticalScrollIndicator: false,
     keyboardShouldPersistTaps: 'handled' as const,
-    ...flatListProps,
+    // FlashList uses estimatedItemSize for item height estimation
+    estimatedItemSize: estimatedItemSize || 100,
+    ...listProps,
   };
 
   return (
     <ThemedView style={[styles.container, { backgroundColor }, containerStyle]}>
       {enableScrollToTop ? (
-        <ScrollToTopFlatList {...(commonProps as any)} />
+        <ScrollToTopFlashList {...(flashListProps as any)} />
       ) : (
-        <ThemedFlatList {...(commonProps as any)} />
+        <ThemedFlashList {...(flashListProps as any)} />
       )}
     </ThemedView>
   );

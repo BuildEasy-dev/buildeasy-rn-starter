@@ -37,6 +37,7 @@ export default function FeedScreen() {
   return (
     <TabScreenWrapper safeArea="top" scrollToTopOnPress headerTitle="Feed">
       <ScrollableListLayout
+        estimatedItemSize={120}
         data={posts}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
