@@ -25,10 +25,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="list-demo"
+        name="feed"
         options={{
-          title: 'List Demo',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.text" color={color} />,
+          title: 'Feed',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="square.stack" color={color} />,
         }}
       />
       <Tabs.Screen
