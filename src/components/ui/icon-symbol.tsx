@@ -24,6 +24,7 @@ const MAPPING = {
   'heart.circle': 'favorite',
   'doc.text': 'description',
   'bell.circle': 'notifications',
+  gear: 'settings',
   'gear.circle': 'settings',
   'moon.fill': 'dark-mode',
   'bell.fill': 'notifications',
@@ -35,6 +36,10 @@ const MAPPING = {
   'questionmark.circle': 'help',
   'envelope.fill': 'mail',
   'star.fill': 'star',
+  globe: 'language',
+  xmark: 'close',
+  'lock.shield.fill': 'security',
+  'doc.text.fill': 'article',
 } as IconMapping;
 
 /**

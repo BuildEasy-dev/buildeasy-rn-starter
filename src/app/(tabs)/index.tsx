@@ -103,13 +103,6 @@ export default function HomeScreen() {
           >
             <ThemedText style={styles.modalButtonText}>📝 Create Post (Modal Page)</ThemedText>
           </Pressable>
-
-          <Pressable
-            onPress={() => router.push('/settings')}
-            style={[styles.modalButton, { backgroundColor: '#FF9500' }]}
-          >
-            <ThemedText style={styles.modalButtonText}>⚙️ Settings (Modal Page)</ThemedText>
-          </Pressable>
         </ThemedView>
       </ScrollableParallaxView>
     </TabScreenWrapper>
