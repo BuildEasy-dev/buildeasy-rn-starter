@@ -12,7 +12,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { ListEmptyState } from './list-empty-state';
 import { LoadingState } from '../../common/loading-state';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
-import { useTabBarInset } from '@/contexts/tab-bar-inset-context';
+import { useTabBarScrollProps } from '@/hooks/use-tab-bar-scroll-props';
 
 export interface ListLayoutProps<T>
   extends Omit<FlatListProps<T>, 'refreshControl' | 'ListEmptyComponent'> {
@@ -72,7 +72,7 @@ export function ListLayout<T>({
   const defaultSeparatorColor = useThemeColor('border');
   const backgroundColor = useThemeColor('background');
   const refreshTintColor = useThemeColor('tint');
-  const bottomInset = useTabBarInset(); // Automatically gets value from TabScreenWrapper context
+  const { bottomInset, scrollIndicatorInsets } = useTabBarScrollProps();
 
   const finalSeparatorColor = separatorColor || defaultSeparatorColor;
 
@@ -156,7 +156,7 @@ export function ListLayout<T>({
           { paddingBottom: bottomInset },
           contentContainerStyle,
         ]}
-        scrollIndicatorInsets={{ bottom: bottomInset }}
+        scrollIndicatorInsets={scrollIndicatorInsets}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         {...flatListProps}

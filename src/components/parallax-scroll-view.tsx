@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { ThemedView } from '@/components/themed/themed-view';
-import { useBottomTabOverflow } from '@/components/ui/tab-bar-background';
+import { useTabBarScrollProps } from '@/hooks/use-tab-bar-scroll-props';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 
@@ -29,7 +29,7 @@ const ParallaxScrollView = forwardRef<ParallaxScrollViewRef, Props>(
     const colorScheme = useColorScheme() ?? 'light';
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
     const scrollOffset = useScrollViewOffset(scrollRef);
-    const bottom = useBottomTabOverflow();
+    const { scrollIndicatorInsets, bottomPadding } = useTabBarScrollProps();
 
     // Expose scrollTo method via ref
     useImperativeHandle(
@@ -68,8 +68,8 @@ const ParallaxScrollView = forwardRef<ParallaxScrollViewRef, Props>(
         <Animated.ScrollView
           ref={scrollRef}
           scrollEventThrottle={16}
-          scrollIndicatorInsets={{ bottom }}
-          contentContainerStyle={{ paddingBottom: bottom }}
+          scrollIndicatorInsets={scrollIndicatorInsets}
+          contentContainerStyle={bottomPadding}
         >
           <Animated.View
             style={[
