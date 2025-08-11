@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef, useEffect } from 'react';
 import {
   FlatList,
   FlatListProps,
@@ -13,6 +13,7 @@ import { ListEmptyState } from './list-empty-state';
 import { LoadingState } from '../../common/loading-state';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { useTabBarScrollProps } from '@/hooks/use-tab-bar-scroll-props';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 
 export interface ListLayoutProps<T>
   extends Omit<FlatListProps<T>, 'refreshControl' | 'ListEmptyComponent'> {
@@ -47,7 +48,8 @@ export interface ListLayoutProps<T>
   ListFooterComponent?: React.ComponentType<any> | React.ReactElement | null;
 }
 
-export function ListLayout<T>({
+// Base ListLayout component without scroll-to-top integration
+function BaseListLayout<T>({
   data,
   renderItem,
   loading = false,
@@ -67,14 +69,33 @@ export function ListLayout<T>({
   showSeparator = true,
   ListHeaderComponent,
   ListFooterComponent,
+  enableScrollToTop = false,
   ...flatListProps
-}: ListLayoutProps<T>) {
+}: ListLayoutProps<T> & { enableScrollToTop?: boolean }) {
   const defaultSeparatorColor = useThemeColor('border');
   const backgroundColor = useThemeColor('background');
   const refreshTintColor = useThemeColor('tint');
   const { bottomInset, scrollIndicatorInsets } = useTabBarScrollProps();
+  const flatListRef = useRef<FlatList<T>>(null);
+  const scrollToTopContext = useScrollToTop();
 
   const finalSeparatorColor = separatorColor || defaultSeparatorColor;
+
+  // Register scroll handler with context (only if enableScrollToTop is true)
+  useEffect(() => {
+    if (!enableScrollToTop) return;
+
+    if (scrollToTopContext && flatListRef.current) {
+      const scrollHandler = (options?: { x?: number; y?: number; animated?: boolean }) => {
+        flatListRef.current?.scrollToOffset({
+          offset: options?.y || 0,
+          animated: options?.animated ?? true,
+        });
+      };
+
+      scrollToTopContext.registerScrollHandler(scrollHandler);
+    }
+  }, [scrollToTopContext, data, enableScrollToTop]);
 
   // Empty component with all props
   const renderEmptyComponent = useCallback(() => {
@@ -141,6 +162,7 @@ export function ListLayout<T>({
   return (
     <ThemedView style={[styles.container, { backgroundColor }, containerStyle]}>
       <FlatList
+        ref={flatListRef}
         data={data || []}
         renderItem={renderItem}
         refreshControl={refreshControl}
@@ -148,7 +170,7 @@ export function ListLayout<T>({
         ListHeaderComponent={ListHeaderComponent}
         ListFooterComponent={renderFooterComponent}
         ItemSeparatorComponent={ItemSeparatorComponent}
-        onEndReached={onEndReached}
+        onEndReached={data && data.length > 0 ? onEndReached : undefined}
         onEndReachedThreshold={onEndReachedThreshold}
         contentContainerStyle={[
           styles.contentContainer,
@@ -165,6 +187,20 @@ export function ListLayout<T>({
   );
 }
 
+// Export the base version (without scroll-to-top by default)
+export function ListLayout<T>(props: ListLayoutProps<T>) {
+  return <BaseListLayout {...props} enableScrollToTop={false} />;
+}
+
+/**
+ * A ListLayout that automatically integrates with TabScreenWrapper's scroll-to-top functionality
+ * Similar to ScrollableParallaxView, this provides a convenient wrapper for list components
+ * that need scroll-to-top behavior without manually handling the context registration.
+ */
+export function ScrollableListView<T>(props: ListLayoutProps<T>) {
+  return <BaseListLayout {...props} enableScrollToTop={true} />;
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -178,7 +214,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   emptyContentContainer: {
-    flex: 1,
+    flexGrow: 1,
   },
   separator: {
     height: StyleSheet.hairlineWidth,

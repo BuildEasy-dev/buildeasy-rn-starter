@@ -60,10 +60,11 @@ export function ListEmptyState({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 32,
+    paddingVertical: 48,
+    minHeight: 300,
   },
   content: {
     alignItems: 'center',

@@ -147,10 +147,19 @@ export function TabScreenWrapper({
     if (!scrollToTopOnPress) return;
 
     const unsubscribe = navigation.addListener('tabPress', (e: any) => {
-      // Only handle if this is the current tab
+      // Trigger scroll to top when the current tab is pressed
       const currentTabName = tabName || routeName;
-      if (e.target?.split('-')[0] === currentTabName) {
-        triggerScrollToTop();
+
+      // Extract tab name from target - handle routes with hyphens like "list-demo"
+      const targetFull = e.target || '';
+      const targetParts = targetFull.split('-');
+      // Remove the last part (UUID) and join the rest
+      const targetTabName = targetParts.slice(0, -1).join('-');
+
+      // Check if the pressed tab matches the current screen
+      if (targetTabName === currentTabName) {
+        // Small delay to ensure the tab switch is complete
+        setTimeout(() => triggerScrollToTop(), 50);
       }
     });
 

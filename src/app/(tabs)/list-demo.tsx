@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { StyleSheet, View, Switch } from 'react-native';
-import { ListLayout, ListItem } from '@/components/layout';
+import { ScrollableListView, ListItem } from '@/components/layout';
 import { TabScreenWrapper } from '@/components/layout/wrappers';
 import { ThemedText, ThemedView } from '@/components/themed';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -146,8 +146,8 @@ export default function ListDemoScreen() {
   );
 
   return (
-    <TabScreenWrapper safeArea="top">
-      <ListLayout
+    <TabScreenWrapper safeArea="top" scrollToTopOnPress>
+      <ScrollableListView
         data={showEmpty ? [] : data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
