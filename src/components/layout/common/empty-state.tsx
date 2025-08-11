@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable, ViewStyle } from 'react-native';
 import { YStack } from '@tamagui/stacks';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
@@ -13,6 +13,7 @@ interface EmptyStateProps {
   actionLabel?: string;
   onAction?: () => void;
   fullScreen?: boolean;
+  containerStyle?: ViewStyle;
 }
 
 export function EmptyState({
@@ -22,17 +23,18 @@ export function EmptyState({
   actionLabel,
   onAction,
   fullScreen = true,
+  containerStyle,
 }: EmptyStateProps) {
   const textColor = useThemeColor('text');
   const backgroundColor = useThemeColor('background');
   const primaryColor = useThemeColor('primary');
 
-  const containerStyle = fullScreen
+  const baseContainerStyle = fullScreen
     ? [styles.fullScreenContainer, { backgroundColor }]
     : styles.inlineContainer;
 
   return (
-    <ThemedView style={containerStyle}>
+    <ThemedView style={[baseContainerStyle, containerStyle]}>
       <YStack space="$4" alignItems="center" maxWidth={300}>
         <ThemedView style={styles.iconContainer}>
           <IconSymbol name={icon} size={48} color={textColor} style={{ opacity: 0.3 }} />

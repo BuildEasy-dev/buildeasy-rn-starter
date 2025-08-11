@@ -1,8 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Pressable, ViewStyle } from 'react-native';
-import { ThemedView, ThemedText } from '@/components/themed';
-import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { ViewStyle } from 'react-native';
+import { EmptyState } from '@/components/layout/common';
+import { type IconSymbolName } from '@/components/ui/icon-symbol';
 
 export interface ListEmptyStateProps {
   title?: string;
@@ -13,6 +12,10 @@ export interface ListEmptyStateProps {
   containerStyle?: ViewStyle;
 }
 
+/**
+ * List-specific empty state component.
+ * Wraps the common EmptyState with list-optimized defaults.
+ */
 export function ListEmptyState({
   title = 'No items found',
   message,
@@ -21,82 +24,15 @@ export function ListEmptyState({
   actionLabel = 'Try Again',
   containerStyle,
 }: ListEmptyStateProps) {
-  const textColor = useThemeColor('text');
-  const secondaryTextColor = useThemeColor('tabIconDefault');
-  const tintColor = useThemeColor('tint');
-  const backgroundColor = useThemeColor('background');
-
   return (
-    <ThemedView style={[styles.container, { backgroundColor }, containerStyle]}>
-      <View style={styles.content}>
-        {icon && (
-          <View style={styles.iconContainer}>
-            <IconSymbol name={icon} size={64} color={secondaryTextColor} style={{ opacity: 0.5 }} />
-          </View>
-        )}
-
-        <ThemedText style={[styles.title, { color: textColor }]}>{title}</ThemedText>
-
-        {message && (
-          <ThemedText style={[styles.message, { color: secondaryTextColor }]}>{message}</ThemedText>
-        )}
-
-        {onAction && (
-          <Pressable
-            onPress={onAction}
-            style={({ pressed }) => [
-              styles.button,
-              { backgroundColor: tintColor },
-              pressed && styles.buttonPressed,
-            ]}
-          >
-            <ThemedText style={styles.buttonText}>{actionLabel}</ThemedText>
-          </Pressable>
-        )}
-      </View>
-    </ThemedView>
+    <EmptyState
+      title={title}
+      message={message}
+      icon={icon}
+      actionLabel={actionLabel}
+      onAction={onAction}
+      fullScreen={false}
+      containerStyle={containerStyle}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 32,
-    paddingVertical: 48,
-    minHeight: 300,
-  },
-  content: {
-    alignItems: 'center',
-    maxWidth: 300,
-  },
-  iconContainer: {
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  message: {
-    fontSize: 14,
-    textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 24,
-  },
-  button: {
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginTop: 8,
-  },
-  buttonPressed: {
-    opacity: 0.8,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
