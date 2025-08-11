@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Pressable } from 'react-native';
 import { ThemedText, ThemedView } from '@/components/themed';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { TextAvatar } from '@/components/ui/avatar';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import type { Post } from '../types/post.types';
 
@@ -41,10 +42,8 @@ export function PostItem({ post, onLike, onRepost, onReply, onBookmark, onShare 
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.avatar}>
-          <ThemedText style={styles.avatarText}>
-            {post.author.name.charAt(0).toUpperCase()}
-          </ThemedText>
+        <View style={styles.avatarContainer}>
+          <TextAvatar name={post.author.name} />
         </View>
         <View style={styles.headerContent}>
           <View style={styles.authorInfo}>
@@ -166,19 +165,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 4,
   },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#1DA1F2',
-    justifyContent: 'center',
-    alignItems: 'center',
+  avatarContainer: {
     marginRight: 12,
-  },
-  avatarText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
   },
   headerContent: {
     flex: 1,
