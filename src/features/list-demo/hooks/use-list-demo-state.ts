@@ -6,16 +6,25 @@ export function useListDemoState() {
   const [data, setData] = useState<DemoItem[]>(DEMO_DATA);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
   const [showEmpty, setShowEmpty] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
+    setError(null);
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setData(DEMO_DATA);
-    setShowEmpty(false);
-    setRefreshing(false);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setData(DEMO_DATA);
+      setShowEmpty(false);
+      setShowError(false);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to refresh'));
+    } finally {
+      setRefreshing(false);
+    }
   }, []);
 
   const handleItemPress = useCallback((item: DemoItem) => {
@@ -25,12 +34,31 @@ export function useListDemoState() {
 
   const handleEmptyAction = useCallback(() => {
     setLoading(true);
+    setError(null);
     setTimeout(() => {
       setData(DEMO_DATA);
       setShowEmpty(false);
+      setShowError(false);
       setLoading(false);
     }, 1000);
   }, []);
+
+  const handleRetry = useCallback(() => {
+    setError(null);
+    setShowError(false);
+    handleRefresh();
+  }, [handleRefresh]);
+
+  const toggleErrorState = useCallback(() => {
+    setShowError(!showError);
+    if (!showError) {
+      setError(new Error('Demo error: Something went wrong while loading data'));
+      setData([]);
+    } else {
+      setError(null);
+      setData(DEMO_DATA);
+    }
+  }, [showError]);
 
   const handleLoadMore = useCallback(() => {
     if (loadingMore || data.length >= 20) return;
@@ -52,6 +80,8 @@ export function useListDemoState() {
     setShowEmpty(!showEmpty);
     if (!showEmpty) {
       setData([]);
+      setError(null);
+      setShowError(false);
     } else {
       setData(DEMO_DATA);
     }
@@ -61,12 +91,16 @@ export function useListDemoState() {
     data,
     refreshing,
     loading,
+    error: showError ? error : null,
     showEmpty,
+    showError,
     loadingMore,
     handleRefresh,
     handleItemPress,
     handleEmptyAction,
+    handleRetry,
     handleLoadMore,
     toggleEmptyState,
+    toggleErrorState,
   };
 }

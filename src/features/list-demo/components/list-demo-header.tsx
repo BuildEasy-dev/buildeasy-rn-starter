@@ -5,10 +5,17 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 
 interface ListDemoHeaderProps {
   showEmpty: boolean;
+  showError: boolean;
   onToggleEmptyState: () => void;
+  onToggleErrorState: () => void;
 }
 
-export function ListDemoHeader({ showEmpty, onToggleEmptyState }: ListDemoHeaderProps) {
+export function ListDemoHeader({
+  showEmpty,
+  showError,
+  onToggleEmptyState,
+  onToggleErrorState,
+}: ListDemoHeaderProps) {
   const tintColor = useThemeColor('tint');
   const switchTrackColor = {
     false: useThemeColor('gray6'),
@@ -28,6 +35,14 @@ export function ListDemoHeader({ showEmpty, onToggleEmptyState }: ListDemoHeader
         <Switch
           value={showEmpty}
           onValueChange={onToggleEmptyState}
+          trackColor={switchTrackColor}
+        />
+      </View>
+      <View style={styles.toggleContainer}>
+        <ThemedText>Show error state</ThemedText>
+        <Switch
+          value={showError}
+          onValueChange={onToggleErrorState}
           trackColor={switchTrackColor}
         />
       </View>

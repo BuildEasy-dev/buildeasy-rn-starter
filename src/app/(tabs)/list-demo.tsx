@@ -13,13 +13,17 @@ export default function ListDemoScreen() {
     data,
     refreshing,
     loading,
+    error,
     showEmpty,
+    showError,
     loadingMore,
     handleRefresh,
     handleItemPress,
     handleEmptyAction,
+    handleRetry,
     handleLoadMore,
     toggleEmptyState,
+    toggleErrorState,
   } = useListDemoState();
 
   const renderItem = useCallback(
@@ -38,18 +42,25 @@ export default function ListDemoScreen() {
   );
 
   const ListHeader = () => (
-    <ListDemoHeader showEmpty={showEmpty} onToggleEmptyState={toggleEmptyState} />
+    <ListDemoHeader
+      showEmpty={showEmpty}
+      showError={showError}
+      onToggleEmptyState={toggleEmptyState}
+      onToggleErrorState={toggleErrorState}
+    />
   );
 
   return (
     <TabScreenWrapper safeArea="top" scrollToTopOnPress>
       <ScrollableListView
-        data={showEmpty ? [] : data}
+        data={showEmpty || showError ? [] : data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshing={refreshing}
         onRefresh={handleRefresh}
         loading={loading}
+        error={error}
+        onRetry={handleRetry}
         loadingMore={loadingMore}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.3}

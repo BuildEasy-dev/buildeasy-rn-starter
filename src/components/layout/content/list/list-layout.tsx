@@ -3,6 +3,7 @@ import { FlatListProps, ListRenderItem, RefreshControl, StyleSheet, ViewStyle } 
 import { ThemedView, ThemedFlatList, ScrollToTopFlatList } from '@/components/themed';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { ListEmptyState } from './list-empty-state';
+import { ListErrorState } from './list-error-state';
 import { LoadingState } from '../../common/loading-state';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { useTabBarScrollProps } from '@/hooks/use-tab-bar-scroll-props';
@@ -16,6 +17,11 @@ export interface ListLayoutProps<T>
   loading?: boolean;
   refreshing?: boolean;
   onRefresh?: () => void | Promise<void>;
+
+  // Error state
+  error?: Error | string | null;
+  errorMessage?: string;
+  onRetry?: () => void;
 
   // Empty state
   emptyMessage?: string;
@@ -47,6 +53,9 @@ function BaseListLayout<T>({
   loading = false,
   refreshing = false,
   onRefresh,
+  error,
+  errorMessage,
+  onRetry,
   emptyMessage,
   emptyTitle = 'No items found',
   emptyIcon,
@@ -133,6 +142,15 @@ function BaseListLayout<T>({
     );
   }
 
+  // Handle error state
+  if (error && !data?.length && !loading && !refreshing) {
+    return (
+      <ThemedView style={[styles.errorContainer, containerStyle]}>
+        <ListErrorState error={error} message={errorMessage} onRetry={onRetry} />
+      </ThemedView>
+    );
+  }
+
   const commonProps = {
     data: data || [],
     renderItem,
@@ -185,6 +203,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
