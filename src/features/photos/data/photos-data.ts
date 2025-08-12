@@ -736,7 +736,7 @@ export function generatePhotoPosts(): PhotoPost[] {
 
 // Simulate API call with delay
 export async function fetchPhotoPosts(page: number = 1): Promise<PhotoPost[]> {
-  await new Promise((resolve) => setTimeout(resolve, 800)); // Simulate network delay
+  await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate network delay (increased for testing)
 
   const allPosts = generatePhotoPosts();
   const postsPerPage = 18; // 6x3 grid per page for more content
