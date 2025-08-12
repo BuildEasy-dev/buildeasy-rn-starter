@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Pressable, Image, Dimensions, Modal } from 'react-native';
+import { StyleSheet, View, Pressable, Dimensions, Modal } from 'react-native';
+import { Image } from 'expo-image';
 import { ThemedText, ThemedSafeAreaView } from '@/components/themed';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TextAvatar } from '@/components/ui/avatar';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { DEFAULT_BLURHASH } from '../utils/image-utils';
 import type { PhotoPost } from '../types/photo.types';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -96,6 +98,11 @@ export function PhotoDetailItem({
         <View style={styles.imageContainer}>
           <Image
             source={{ uri: post.image.url }}
+            contentFit="contain"
+            transition={400}
+            cachePolicy="memory-disk"
+            placeholder={{ blurhash: DEFAULT_BLURHASH }}
+            placeholderContentFit="cover"
             style={[
               styles.image,
               { width: imageWidth, height: imageHeight },

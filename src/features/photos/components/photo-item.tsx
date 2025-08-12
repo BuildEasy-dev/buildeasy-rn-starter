@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Pressable, Image, Dimensions } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { StyleSheet, View, Pressable, Dimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { ThemedText, ThemedView } from '@/components/themed';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TextAvatar } from '@/components/ui/avatar';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { getOptimizedImageUrl, IMAGE_SIZES, DEFAULT_BLURHASH } from '../utils/image-utils';
 import type { PhotoPost } from '../types/photo.types';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -48,6 +50,11 @@ export function PhotoItem({
   onUserPress,
 }: PhotoItemProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Use medium quality image for feed
+  const feedImageUrl = useMemo(() => {
+    return getOptimizedImageUrl(post.image.url, IMAGE_SIZES.FEED);
+  }, [post.image.url]);
   const tintColor = useThemeColor('tint');
   const textColor = useThemeColor('text');
   const secondaryTextColor = useThemeColor('tabIconDefault');
@@ -88,8 +95,13 @@ export function PhotoItem({
       {/* Photo */}
       <View style={styles.imageContainer}>
         <Image
-          source={{ uri: post.image.url }}
-          style={[styles.image, { height: imageHeight }, !imageLoaded && styles.imageLoading]}
+          source={{ uri: feedImageUrl }}
+          style={[styles.image, { height: imageHeight }]}
+          contentFit="cover"
+          transition={300}
+          cachePolicy="memory-disk"
+          placeholder={{ blurhash: DEFAULT_BLURHASH }}
+          placeholderContentFit="cover"
           onLoad={() => setImageLoaded(true)}
           accessibilityLabel={post.image.alt}
         />

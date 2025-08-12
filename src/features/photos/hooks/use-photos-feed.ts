@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchPhotoPosts, togglePhotoLike, togglePhotoBookmark } from '../data/photos-data';
+import { preloadImages, getOptimizedImageUrl, IMAGE_SIZES } from '../utils/image-utils';
 import type { PhotoPost, PhotoFeedState } from '../types/photo.types';
 
 export function usePhotosFeed() {
@@ -26,6 +27,18 @@ export function usePhotosFeed() {
 
     try {
       const newPosts = await fetchPhotoPosts(page);
+
+      // Preload thumbnail images for better scrolling performance
+      if (newPosts.length > 0) {
+        const thumbnailUrls = newPosts.map((post) =>
+          getOptimizedImageUrl(post.image.url, IMAGE_SIZES.THUMBNAIL)
+        );
+        // Preload next batch of images in background
+        preloadImages(thumbnailUrls.slice(0, 9)); // Preload first 9 images immediately
+        setTimeout(() => {
+          preloadImages(thumbnailUrls.slice(9)); // Preload rest after a delay
+        }, 100);
+      }
 
       setState((prev) => ({
         ...prev,

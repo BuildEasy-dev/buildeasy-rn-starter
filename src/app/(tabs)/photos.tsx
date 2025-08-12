@@ -49,15 +49,18 @@ export default function PhotosScreen() {
     setViewMode((prev) => (prev === 'grid' ? 'list' : 'grid'));
   };
 
-  const renderPhoto = ({ item }: { item: any }) => (
-    <PhotoItem
-      post={item}
-      onLike={toggleLike}
-      onComment={handleComment}
-      onShare={handleShare}
-      onBookmark={toggleBookmark}
-      onUserPress={handleUserPress}
-    />
+  const renderPhoto = React.useCallback(
+    ({ item }: { item: any }) => (
+      <PhotoItem
+        post={item}
+        onLike={toggleLike}
+        onComment={handleComment}
+        onShare={handleShare}
+        onBookmark={toggleBookmark}
+        onUserPress={handleUserPress}
+      />
+    ),
+    [toggleLike, handleComment, handleShare, toggleBookmark, handleUserPress]
   );
 
   const renderFooter = () => {
@@ -130,7 +133,7 @@ export default function PhotosScreen() {
             data={posts}
             renderItem={renderPhoto}
             keyExtractor={(item: any) => item.id}
-            estimatedItemSize={400}
+            estimatedItemSize={500}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={
               posts.length === 0
@@ -143,6 +146,9 @@ export default function PhotosScreen() {
             onEndReachedThreshold={0.3}
             ListFooterComponent={renderFooter}
             ListEmptyComponent={renderEmpty}
+            drawDistance={1000}
+            removeClippedSubviews={true}
+            overScrollMode="never"
           />
         )}
 
