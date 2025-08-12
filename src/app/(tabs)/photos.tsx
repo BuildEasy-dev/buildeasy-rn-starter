@@ -143,6 +143,8 @@ export default function PhotosScreen() {
             onEndReached={loadMore}
             refreshing={refreshing}
             onRefresh={refresh}
+            loading={loading}
+            hasMore={hasMore}
           />
         ) : (
           <ScrollToTopFlashList

@@ -63,13 +63,11 @@ export function usePhotosFeed() {
   }, [loadPosts]);
 
   const loadMore = useCallback(() => {
-    setState((prev) => {
-      if (!prev.loading && !prev.refreshing && prev.hasMore) {
-        loadPosts(prev.lastPage + 1);
-      }
-      return prev;
-    });
-  }, [loadPosts]);
+    // Check state directly and call loadPosts if conditions are met
+    if (!state.loading && !state.refreshing && state.hasMore) {
+      loadPosts(state.lastPage + 1);
+    }
+  }, [loadPosts, state.loading, state.refreshing, state.hasMore, state.lastPage]);
 
   const toggleLike = useCallback(async (postId: string) => {
     // Optimistic update
