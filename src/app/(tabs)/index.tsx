@@ -104,18 +104,6 @@ export default function HomeScreen() {
             <ThemedText style={styles.modalButtonText}>📝 Create Post (Modal Page)</ThemedText>
           </Pressable>
         </ThemedView>
-
-        <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">🎨 Component Examples</ThemedText>
-          <ThemedText>Explore UI component examples:</ThemedText>
-
-          <Pressable
-            onPress={() => router.push('/card-examples')}
-            style={[styles.modalButton, { backgroundColor: '#007AFF' }]}
-          >
-            <ThemedText style={styles.modalButtonText}>🃏 Card Component Examples</ThemedText>
-          </Pressable>
-        </ThemedView>
       </ScrollableParallaxView>
     </TabScreenWrapper>
   );
