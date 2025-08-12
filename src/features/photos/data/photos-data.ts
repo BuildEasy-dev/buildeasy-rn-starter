@@ -53,7 +53,7 @@ const SAMPLE_PHOTOS: Omit<PhotoPost, 'id' | 'timestamp'>[] = [
     },
     stats: {
       likes: 892,
-      comments: 45,
+      comments: 5,
       shares: 12,
     },
     tags: ['architecture', 'city', 'urban', 'photography'],
@@ -136,7 +136,7 @@ const SAMPLE_PHOTOS: Omit<PhotoPost, 'id' | 'timestamp'>[] = [
     },
     stats: {
       likes: 756,
-      comments: 67,
+      comments: 3,
       shares: 23,
     },
     tags: ['art', 'streetart', 'mural', 'creative'],
@@ -215,7 +215,7 @@ const SAMPLE_PHOTOS: Omit<PhotoPost, 'id' | 'timestamp'>[] = [
     caption: 'Monday motivation ☕ Starting the week right with the perfect brew',
     stats: {
       likes: 1653,
-      comments: 87,
+      comments: 9,
       shares: 34,
     },
     tags: ['coffee', 'monday', 'latte', 'cafe'],
@@ -241,7 +241,7 @@ const SAMPLE_PHOTOS: Omit<PhotoPost, 'id' | 'timestamp'>[] = [
     caption: 'Less is more ✨ Creating spaces that breathe',
     stats: {
       likes: 987,
-      comments: 45,
+      comments: 8,
       shares: 67,
     },
     tags: ['interior', 'minimalism', 'home', 'design'],
@@ -292,7 +292,7 @@ const SAMPLE_PHOTOS: Omit<PhotoPost, 'id' | 'timestamp'>[] = [
     caption: 'Currently reading: The Seven Husbands of Evelyn Hugo 📚 What are you reading?',
     stats: {
       likes: 743,
-      comments: 156,
+      comments: 7,
       shares: 23,
     },
     tags: ['books', 'reading', 'literature', 'cozy'],
@@ -535,7 +535,7 @@ const SAMPLE_PHOTOS: Omit<PhotoPost, 'id' | 'timestamp'>[] = [
     caption: 'New setup, new possibilities 💻 Ready to create something amazing!',
     stats: {
       likes: 987,
-      comments: 67,
+      comments: 4,
       shares: 34,
     },
     tags: ['tech', 'workspace', 'laptop', 'productivity'],
@@ -703,7 +703,7 @@ function generateAdditionalPhotos(count: number): Omit<PhotoPost, 'id' | 'timest
       caption: CAPTIONS[Math.floor(Math.random() * CAPTIONS.length)],
       stats: {
         likes: Math.floor(Math.random() * 5000) + 100,
-        comments: Math.floor(Math.random() * 300) + 10,
+        comments: Math.floor(Math.random() * 20) + 1,
         shares: Math.floor(Math.random() * 100) + 5,
       },
       tags: ['lifestyle', 'photography', 'inspiration', 'daily'],

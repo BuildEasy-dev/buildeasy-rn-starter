@@ -42,7 +42,7 @@ const PhotoGridItem = memo(
 
     // Only show overlays for special items
     const showMultipleIndicator = item.stats.comments > 10;
-    const showPopularOverlay = item.stats.likes > 1000;
+    const showPopularOverlay = item.isLiked;
 
     return (
       <Pressable
