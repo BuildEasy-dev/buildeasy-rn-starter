@@ -1,4 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { PropsWithChildren } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
@@ -15,11 +16,13 @@ export function AppProviders({ children }: PropsWithChildren) {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <KeyboardProvider>
-          <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme ?? 'light'}>
-            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-              {children}
-            </ThemeProvider>
-          </TamaguiProvider>
+          <ActionSheetProvider>
+            <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme ?? 'light'}>
+              <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+                {children}
+              </ThemeProvider>
+            </TamaguiProvider>
+          </ActionSheetProvider>
         </KeyboardProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

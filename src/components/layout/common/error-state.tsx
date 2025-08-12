@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable, ViewStyle } from 'react-native';
 import { YStack } from '@tamagui/stacks';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
@@ -11,21 +11,28 @@ interface ErrorStateProps {
   message?: string;
   onRetry?: () => void;
   fullScreen?: boolean;
+  containerStyle?: ViewStyle;
 }
 
-export function ErrorState({ error, message, onRetry, fullScreen = true }: ErrorStateProps) {
+export function ErrorState({
+  error,
+  message,
+  onRetry,
+  fullScreen = true,
+  containerStyle,
+}: ErrorStateProps) {
   const backgroundColor = useThemeColor('background');
   const errorColor = useThemeColor('red10');
 
   const errorMessage =
     message || (typeof error === 'string' ? error : error?.message || 'An error occurred');
 
-  const containerStyle = fullScreen
+  const baseContainerStyle = fullScreen
     ? [styles.fullScreenContainer, { backgroundColor }]
     : styles.inlineContainer;
 
   return (
-    <ThemedView style={containerStyle}>
+    <ThemedView style={[baseContainerStyle, containerStyle]}>
       <YStack space="$4" alignItems="center" maxWidth={300}>
         <IconSymbol name="exclamationmark.triangle" size={48} color={errorColor} />
 

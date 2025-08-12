@@ -1,4 +1,5 @@
 export * from './themed-flatlist';
+export * from './themed-flashlist';
 export * from './themed-safe-area-view';
 export * from './themed-scroll-view';
 export * from './themed-section-list';

@@ -5,6 +5,7 @@ import type { ScrollView } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { ScreenWrapper, type ScreenWrapperProps } from './screen-wrapper';
 import { ScrollToTopContext } from '@/contexts/scroll-to-top-context';
+import { TabBarInsetProvider } from '@/contexts/tab-bar-inset-context';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedScrollView } from '@/components/themed/themed-scroll-view';
@@ -98,10 +99,10 @@ export function TabScreenWrapper({
     // Otherwise, render default header
     return (
       <ThemedView style={styles.header}>
-        {/* Left Button */}
-        {headerLeft && (
-          <ThemedView style={styles.headerLeft}>{renderHeaderButton(headerLeft)}</ThemedView>
-        )}
+        {/* Left Button - always render container to maintain title centering */}
+        <ThemedView style={styles.headerLeft}>
+          {headerLeft && renderHeaderButton(headerLeft)}
+        </ThemedView>
 
         {/* Title */}
         {headerTitle && (
@@ -110,10 +111,10 @@ export function TabScreenWrapper({
           </ThemedText>
         )}
 
-        {/* Right Button */}
-        {headerRight && (
-          <ThemedView style={styles.headerRight}>{renderHeaderButton(headerRight)}</ThemedView>
-        )}
+        {/* Right Button - always render container to maintain title centering */}
+        <ThemedView style={styles.headerRight}>
+          {headerRight && renderHeaderButton(headerRight)}
+        </ThemedView>
       </ThemedView>
     );
   };
@@ -146,10 +147,19 @@ export function TabScreenWrapper({
     if (!scrollToTopOnPress) return;
 
     const unsubscribe = navigation.addListener('tabPress', (e: any) => {
-      // Only handle if this is the current tab
+      // Trigger scroll to top when the current tab is pressed
       const currentTabName = tabName || routeName;
-      if (e.target?.split('-')[0] === currentTabName) {
-        triggerScrollToTop();
+
+      // Extract tab name from target - handle routes with hyphens like "list-demo"
+      const targetFull = e.target || '';
+      const targetParts = targetFull.split('-');
+      // Remove the last part (UUID) and join the rest
+      const targetTabName = targetParts.slice(0, -1).join('-');
+
+      // Check if the pressed tab matches the current screen
+      if (targetTabName === currentTabName) {
+        // Small delay to ensure the tab switch is complete
+        setTimeout(() => triggerScrollToTop(), 50);
       }
     });
 
@@ -197,7 +207,7 @@ export function TabScreenWrapper({
 
   return (
     <ScrollToTopContext.Provider value={{ registerScrollHandler, triggerScrollToTop }}>
-      {content}
+      <TabBarInsetProvider bottom={bottom}>{content}</TabBarInsetProvider>
     </ScrollToTopContext.Provider>
   );
 }

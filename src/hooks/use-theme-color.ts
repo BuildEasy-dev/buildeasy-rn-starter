@@ -42,6 +42,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
  * - tint → primary
  * - icon → color
  * - placeholder → placeholderColor
+ * - separator → gray4
  */
 
 // Get theme token names from Tamagui config
@@ -54,6 +55,7 @@ export const semanticTokens = {
   tint: 'primary',
   icon: 'color',
   placeholder: 'placeholderColor',
+  separator: 'gray4',
 } as const;
 
 type SemanticTokenName = keyof typeof semanticTokens;

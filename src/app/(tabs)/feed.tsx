@@ -1,0 +1,75 @@
+import React, { useCallback } from 'react';
+import { ScrollableListLayout } from '@/components/layout';
+import { TabScreenWrapper } from '@/components/layout/wrappers';
+import { useFeedState, PostItem, FeedDebugButton, type Post } from '@/features/feed';
+
+export default function FeedScreen() {
+  const {
+    posts,
+    refreshing,
+    loading,
+    error,
+    loadingMore,
+    handleRefresh,
+    handleLike,
+    handleRepost,
+    handleBookmark,
+    handleReply,
+    handleShare,
+    handleLoadMore,
+    handleRetry,
+    debugEmptyState,
+    debugErrorState,
+    toggleEmptyState,
+    toggleErrorState,
+  } = useFeedState();
+
+  const renderItem = useCallback(
+    ({ item }: { item: Post }) => (
+      <PostItem
+        post={item}
+        onLike={handleLike}
+        onRepost={handleRepost}
+        onReply={handleReply}
+        onBookmark={handleBookmark}
+        onShare={handleShare}
+      />
+    ),
+    [handleLike, handleRepost, handleReply, handleBookmark, handleShare]
+  );
+
+  return (
+    <TabScreenWrapper
+      safeArea="top"
+      scrollToTopOnPress
+      headerTitle="Feed"
+      headerRight={
+        <FeedDebugButton
+          debugEmptyState={debugEmptyState}
+          debugErrorState={debugErrorState}
+          onToggleEmptyState={toggleEmptyState}
+          onToggleErrorState={toggleErrorState}
+        />
+      }
+    >
+      <ScrollableListLayout
+        estimatedItemSize={120}
+        data={posts}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        loading={loading}
+        error={error}
+        onRetry={handleRetry}
+        loadingMore={loadingMore}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.3}
+        emptyTitle="No posts yet"
+        emptyMessage="Follow people to see their posts here"
+        emptyIcon="bubble.left"
+        showSeparator={true}
+      />
+    </TabScreenWrapper>
+  );
+}
