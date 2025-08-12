@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Pressable, Image, Dimensions, Modal } from 'react-native';
-import { ThemedText, ThemedView } from '@/components/themed';
+import { ThemedText, ThemedSafeAreaView } from '@/components/themed';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TextAvatar } from '@/components/ui/avatar';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -62,7 +62,7 @@ export function PhotoDetailItem({
 
   return (
     <Modal visible={visible} animationType="fade" statusBarTranslucent onRequestClose={onClose}>
-      <ThemedView style={[styles.modalContainer, { backgroundColor }]}>
+      <ThemedSafeAreaView style={[styles.modalContainer, { backgroundColor }]}>
         {/* Header */}
         <View style={styles.header}>
           <Pressable onPress={() => onUserPress(post.user.id)} style={styles.userInfo}>
@@ -171,7 +171,7 @@ export function PhotoDetailItem({
             {formatTime(post.timestamp)}
           </ThemedText>
         </View>
-      </ThemedView>
+      </ThemedSafeAreaView>
     </Modal>
   );
 }
@@ -179,7 +179,6 @@ export function PhotoDetailItem({
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    paddingTop: 50, // Status bar space
   },
   header: {
     flexDirection: 'row',

@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, FlatList, Dimensions, Pressable, Image } from 'react-native';
-import { ThemedView } from '@/components/themed';
+import { StyleSheet, Dimensions, Pressable, Image } from 'react-native';
+import { ThemedView, ScrollToTopFlashList } from '@/components/themed';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useTabBarScrollProps } from '@/hooks/use-tab-bar-scroll-props';
 import type { PhotoPost } from '../types/photo.types';
@@ -70,28 +70,27 @@ export function PhotoGrid({
 }: PhotoGridProps) {
   const tabBarProps = useTabBarScrollProps();
 
-  const renderItem = ({ item, index }: { item: PhotoPost; index: number }) => (
-    <PhotoGridItem item={item} index={index} onPress={onPhotoPress} />
+  const renderItem = ({ item, index }: { item: any; index: number }) => (
+    <PhotoGridItem item={item as PhotoPost} index={index} onPress={onPhotoPress} />
   );
 
   const renderSeparator = () => <ThemedView style={styles.separator} />;
 
   return (
-    <FlatList
+    <ScrollToTopFlashList
       data={data}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item: any) => item.id}
       numColumns={GRID_COLUMNS}
+      estimatedItemSize={ITEM_SIZE}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={[styles.container, tabBarProps.contentContainerStyle]}
+      contentContainerStyle={{ ...styles.container, ...tabBarProps.contentContainerStyle }}
       scrollIndicatorInsets={tabBarProps.scrollIndicatorInsets}
-      columnWrapperStyle={styles.row}
       ItemSeparatorComponent={renderSeparator}
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}
       refreshing={refreshing}
       onRefresh={onRefresh}
-      removeClippedSubviews={false}
     />
   );
 }

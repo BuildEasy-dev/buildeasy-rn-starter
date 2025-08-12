@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, FlatList, RefreshControl, Pressable } from 'react-native';
+import { StyleSheet, RefreshControl, Pressable } from 'react-native';
 import { TabScreenWrapper, LoadingState, EmptyState, ErrorState } from '@/components/layout';
-import { ThemedView, ThemedText } from '@/components/themed';
+import { ThemedView, ThemedText, ScrollToTopFlashList } from '@/components/themed';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useTabBarScrollProps } from '@/hooks/use-tab-bar-scroll-props';
@@ -126,22 +126,23 @@ export default function PhotosScreen() {
             onRefresh={refresh}
           />
         ) : (
-          <FlatList
+          <ScrollToTopFlashList
             data={posts}
             renderItem={renderPhoto}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item: any) => item.id}
+            estimatedItemSize={400}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={[
-              posts.length === 0 ? styles.emptyContainer : undefined,
-              tabBarProps.contentContainerStyle,
-            ]}
+            contentContainerStyle={
+              posts.length === 0
+                ? { ...styles.emptyContainer, ...tabBarProps.contentContainerStyle }
+                : tabBarProps.contentContainerStyle
+            }
             scrollIndicatorInsets={tabBarProps.scrollIndicatorInsets}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} />}
             onEndReached={loadMore}
             onEndReachedThreshold={0.3}
             ListFooterComponent={renderFooter}
             ListEmptyComponent={renderEmpty}
-            removeClippedSubviews={false}
           />
         )}
 
