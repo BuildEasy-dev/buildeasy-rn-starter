@@ -1,7 +1,13 @@
 import React, { useCallback, useMemo } from 'react';
-import { ListRenderItem, RefreshControl, StyleSheet, ViewStyle } from 'react-native';
+import {
+  ListRenderItem,
+  RefreshControl,
+  StyleSheet,
+  ViewStyle,
+  ActivityIndicator,
+} from 'react-native';
 import { ListRenderItem as FlashListRenderItem, ContentStyle } from '@shopify/flash-list';
-import { ThemedView, ThemedFlashList, ScrollToTopFlashList } from '@/components/themed';
+import { ThemedView, ThemedFlashList, ScrollToTopFlashList, ThemedText } from '@/components/themed';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { ListEmptyState } from './list-empty-state';
 import { ListErrorState } from './list-error-state';
@@ -53,6 +59,7 @@ export interface ListLayoutProps<T> {
   onEndReached?: () => void;
   onEndReachedThreshold?: number;
   loadingMore?: boolean;
+  hasMore?: boolean;
 
   // Styling
   containerStyle?: ViewStyle;
@@ -83,6 +90,7 @@ export function ListLayout<T>({
   onEndReached,
   onEndReachedThreshold = 0.5,
   loadingMore = false,
+  hasMore = true,
   containerStyle,
   contentContainerStyle,
   separatorColor,
@@ -93,7 +101,9 @@ export function ListLayout<T>({
   ...listProps
 }: ListLayoutProps<T> & { enableScrollToTop?: boolean }) {
   const backgroundColor = useThemeColor('background');
-  const refreshTintColor = useThemeColor('tint');
+  const tintColor = useThemeColor('tint');
+  const secondaryTextColor = useThemeColor('tabIconDefault');
+  const borderColor = useThemeColor('separator');
   const { bottomInset, scrollIndicatorInsets } = useTabBarScrollProps();
 
   // Combine contentContainerStyle with required bottom padding
@@ -124,15 +134,35 @@ export function ListLayout<T>({
 
   // Footer component with loading more indicator
   const renderFooterComponent = useCallback(() => {
-    if (loadingMore) {
+    // Show loading indicator when fetching more data
+    if (loadingMore && data && data.length > 0) {
       return (
-        <ThemedView style={styles.loadingMoreContainer}>
-          <LoadingState />
+        <ThemedView style={styles.loadingFooter}>
+          <ActivityIndicator size="small" color={tintColor} />
+          <ThemedText style={[styles.loadingText, { color: secondaryTextColor }]}>
+            Loading more...
+          </ThemedText>
         </ThemedView>
       );
     }
+
+    // Show end indicator when no more data
+    if (!hasMore && data && data.length > 0) {
+      return (
+        <ThemedView style={styles.footer}>
+          <ThemedView style={styles.endIndicator}>
+            <ThemedView style={[styles.endLine, { backgroundColor: borderColor }]} />
+            <ThemedText style={[styles.endText, { color: secondaryTextColor }]}>
+              No more posts
+            </ThemedText>
+            <ThemedView style={[styles.endLine, { backgroundColor: borderColor }]} />
+          </ThemedView>
+        </ThemedView>
+      );
+    }
+
     return ListFooterComponent as React.ReactElement;
-  }, [loadingMore, ListFooterComponent]);
+  }, [loadingMore, hasMore, data, tintColor, secondaryTextColor, borderColor, ListFooterComponent]);
 
   // Separator component
   const ItemSeparatorComponent = useMemo(() => {
@@ -147,15 +177,8 @@ export function ListLayout<T>({
   const refreshControl = useMemo(() => {
     if (!onRefresh) return undefined;
 
-    return (
-      <RefreshControl
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        tintColor={refreshTintColor}
-        colors={[refreshTintColor]}
-      />
-    );
-  }, [refreshing, onRefresh, refreshTintColor]);
+    return <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />;
+  }, [refreshing, onRefresh]);
 
   // Handle initial loading state
   if (loading && !data?.length && !refreshing) {
@@ -231,5 +254,39 @@ const styles = StyleSheet.create({
   loadingMoreContainer: {
     paddingVertical: 20,
     alignItems: 'center',
+  },
+  footer: {
+    paddingVertical: 30,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  endIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  endLine: {
+    height: StyleSheet.hairlineWidth,
+    flex: 1,
+    opacity: 0.3,
+  },
+  endText: {
+    fontSize: 12,
+    marginHorizontal: 12,
+    opacity: 0.5,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  loadingFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+    gap: 8,
+  },
+  loadingText: {
+    fontSize: 14,
+    opacity: 0.6,
   },
 });

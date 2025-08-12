@@ -8,6 +8,7 @@ export function useFeedState() {
   const [loading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   // Debug states for testing ListLayout empty/error states
   const [debugEmptyState, setDebugEmptyState] = useState(false);
@@ -16,6 +17,7 @@ export function useFeedState() {
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
     setError(null);
+    setHasMore(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       setPosts(FEED_DATA);
@@ -87,7 +89,7 @@ export function useFeedState() {
   }, []);
 
   const handleLoadMore = useCallback(() => {
-    if (loadingMore || posts.length >= 50) return;
+    if (loadingMore || !hasMore) return;
 
     setLoadingMore(true);
     setTimeout(() => {
@@ -107,10 +109,17 @@ export function useFeedState() {
           views: Math.floor(Math.random() * 5000),
         },
       }));
-      setPosts([...posts, ...newPosts]);
+      const updatedPosts = [...posts, ...newPosts];
+      setPosts(updatedPosts);
+
+      // Check if we've reached the maximum number of posts
+      if (updatedPosts.length >= 50) {
+        setHasMore(false);
+      }
+
       setLoadingMore(false);
     }, 1500);
-  }, [posts, loadingMore]);
+  }, [posts, loadingMore, hasMore]);
 
   const handleRetry = useCallback(() => {
     setError(null);
@@ -142,6 +151,7 @@ export function useFeedState() {
     loading,
     error: finalError,
     loadingMore,
+    hasMore,
     handleRefresh,
     handleLike,
     handleRepost,
