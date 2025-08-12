@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@expo/react-native-action-sheet':
+        specifier: ^4.1.1
+        version: 4.1.1(@types/react@19.0.14)(react@19.0.0)
       '@expo/vector-icons':
         specifier: ^14.1.0
         version: 14.1.0(expo-font@13.3.2(expo@53.0.20(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
@@ -1064,6 +1067,11 @@ packages:
   '@expo/prebuild-config@9.0.11':
     resolution: {integrity: sha512-0DsxhhixRbCCvmYskBTq8czsU0YOBsntYURhWPNpkl0IPVpeP9haE5W4OwtHGzXEbmHdzaoDwNmVcWjS/mqbDw==}
 
+  '@expo/react-native-action-sheet@4.1.1':
+    resolution: {integrity: sha512-4KRaba2vhqDRR7ObBj6nrD5uJw8ePoNHdIOMETTpgGTX7StUbrF4j/sfrP1YUyaPEa1P8FXdwG6pB+2WtrJd1A==}
+    peerDependencies:
+      react: '>=18.0.0'
+
   '@expo/sdk-runtime-versions@1.0.0':
     resolution: {integrity: sha512-Doz2bfiPndXYFPMRwPyGa1k5QaKDVpY806UJj570epIiMzWaYyCtobasyfC++qfIXVb5Ocy7r3tP9d62hAQ7IQ==}
 
@@ -1703,6 +1711,11 @@ packages:
 
   '@types/hammerjs@2.0.46':
     resolution: {integrity: sha512-ynRvcq6wvqexJ9brDMS4BnBLzmr0e14d6ZJTEShTBWKymQiHwlAyGu0ZPEFI2Fh1U53F7tN9ufClWM5KvqkKOw==}
+
+  '@types/hoist-non-react-statics@3.3.7':
+    resolution: {integrity: sha512-PQTyIulDkIDro8P+IHbKCsw7U2xxBYflVzW/FgWdCAePD9xGSidgA76/GeJ6lBKoblyhf9pBY763gbrN+1dI8g==}
+    peerDependencies:
+      '@types/react': '*'
 
   '@types/istanbul-lib-coverage@2.0.6':
     resolution: {integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==}
@@ -7057,6 +7070,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@expo/react-native-action-sheet@4.1.1(@types/react@19.0.14)(react@19.0.0)':
+    dependencies:
+      '@types/hoist-non-react-statics': 3.3.7(@types/react@19.0.14)
+      hoist-non-react-statics: 3.3.2
+      react: 19.0.0
+    transitivePeerDependencies:
+      - '@types/react'
+
   '@expo/sdk-runtime-versions@1.0.0': {}
 
   '@expo/server@0.6.3':
@@ -8122,6 +8143,11 @@ snapshots:
       '@types/node': 24.1.0
 
   '@types/hammerjs@2.0.46': {}
+
+  '@types/hoist-non-react-statics@3.3.7(@types/react@19.0.14)':
+    dependencies:
+      '@types/react': 19.0.14
+      hoist-non-react-statics: 3.3.2
 
   '@types/istanbul-lib-coverage@2.0.6': {}
 

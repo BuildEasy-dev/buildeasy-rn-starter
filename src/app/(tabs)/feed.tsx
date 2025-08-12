@@ -1,17 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { ScrollableListLayout } from '@/components/layout';
 import { TabScreenWrapper } from '@/components/layout/wrappers';
-import {
-  useFeedState,
-  PostItem,
-  FeedDebugButton,
-  FeedDebugModal,
-  type Post,
-} from '@/features/feed';
+import { useFeedState, PostItem, FeedDebugButton, type Post } from '@/features/feed';
 
 export default function FeedScreen() {
-  const [debugModalVisible, setDebugModalVisible] = useState(false);
-
   const {
     posts,
     refreshing,
@@ -47,41 +39,37 @@ export default function FeedScreen() {
   );
 
   return (
-    <>
-      <TabScreenWrapper
-        safeArea="top"
-        scrollToTopOnPress
-        headerTitle="Feed"
-        headerRight={<FeedDebugButton onPress={() => setDebugModalVisible(true)} />}
-      >
-        <ScrollableListLayout
-          estimatedItemSize={120}
-          data={posts}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          loading={loading}
-          error={error}
-          onRetry={handleRetry}
-          loadingMore={loadingMore}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.3}
-          emptyTitle="No posts yet"
-          emptyMessage="Follow people to see their posts here"
-          emptyIcon="bubble.left"
-          showSeparator={true}
+    <TabScreenWrapper
+      safeArea="top"
+      scrollToTopOnPress
+      headerTitle="Feed"
+      headerRight={
+        <FeedDebugButton
+          debugEmptyState={debugEmptyState}
+          debugErrorState={debugErrorState}
+          onToggleEmptyState={toggleEmptyState}
+          onToggleErrorState={toggleErrorState}
         />
-      </TabScreenWrapper>
-
-      <FeedDebugModal
-        visible={debugModalVisible}
-        onClose={() => setDebugModalVisible(false)}
-        debugEmptyState={debugEmptyState}
-        debugErrorState={debugErrorState}
-        onToggleEmptyState={toggleEmptyState}
-        onToggleErrorState={toggleErrorState}
+      }
+    >
+      <ScrollableListLayout
+        estimatedItemSize={120}
+        data={posts}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        loading={loading}
+        error={error}
+        onRetry={handleRetry}
+        loadingMore={loadingMore}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.3}
+        emptyTitle="No posts yet"
+        emptyMessage="Follow people to see their posts here"
+        emptyIcon="bubble.left"
+        showSeparator={true}
       />
-    </>
+    </TabScreenWrapper>
   );
 }
