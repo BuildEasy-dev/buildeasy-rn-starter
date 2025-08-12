@@ -2,12 +2,44 @@ import React from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
 import { ThemedView } from '@/components/themed/themed-view';
 
+/**
+ * Props for the CardFooter component
+ */
 export interface CardFooterProps {
+  /** Child components to render (typically buttons or actions) */
   children: React.ReactNode;
+  /** Horizontal alignment of footer content */
   alignment?: 'left' | 'center' | 'right' | 'space-between' | 'space-around';
+  /** Spacing above footer and between child elements */
   spacing?: 'none' | 'small' | 'medium' | 'large';
 }
 
+/**
+ * CardFooter component for action buttons and footer content in cards
+ *
+ * Provides flexible alignment options and spacing for footer elements
+ *
+ * @component
+ * @example
+ * ```tsx
+ * // Right-aligned buttons (default)
+ * <CardFooter>
+ *   <Button>Cancel</Button>
+ *   <Button>Save</Button>
+ * </CardFooter>
+ *
+ * // Space-between layout for actions
+ * <CardFooter alignment="space-between">
+ *   <Button>Delete</Button>
+ *   <View>
+ *     <Button>Cancel</Button>
+ *     <Button>Save</Button>
+ *   </View>
+ * </CardFooter>
+ * ```
+ *
+ * @param props - The props for the CardFooter component
+ */
 export function CardFooter({ children, alignment = 'right', spacing = 'medium' }: CardFooterProps) {
   const alignmentStyle = getAlignmentStyle(alignment);
   const spacingStyle = getSpacingStyle(spacing);
@@ -17,6 +49,11 @@ export function CardFooter({ children, alignment = 'right', spacing = 'medium' }
   );
 }
 
+/**
+ * Returns the appropriate alignment style based on the alignment prop
+ * @param alignment - The alignment option for footer content
+ * @returns ViewStyle object with justifyContent property
+ */
 function getAlignmentStyle(alignment: CardFooterProps['alignment']): ViewStyle {
   switch (alignment) {
     case 'left':
@@ -34,6 +71,11 @@ function getAlignmentStyle(alignment: CardFooterProps['alignment']): ViewStyle {
   }
 }
 
+/**
+ * Returns the appropriate spacing style based on the spacing prop
+ * @param spacing - The spacing size option
+ * @returns Style object with marginTop and gap properties
+ */
 function getSpacingStyle(spacing: CardFooterProps['spacing']) {
   switch (spacing) {
     case 'none':
