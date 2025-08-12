@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Pressable, Dimensions, Modal } from 'react-native';
 import { Image } from 'expo-image';
-import { ThemedText, ThemedSafeAreaView } from '@/components/themed';
+import { ThemedText, ThemedView } from '@/components/themed';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TextAvatar } from '@/components/ui/avatar';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DEFAULT_BLURHASH } from '../utils/image-utils';
 import type { PhotoPost } from '../types/photo.types';
 
@@ -52,6 +53,7 @@ export function PhotoDetailItem({
   onUserPress,
 }: PhotoDetailItemProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const insets = useSafeAreaInsets();
   const backgroundColor = useThemeColor('background');
   const tintColor = useThemeColor('tint');
   const textColor = useThemeColor('text');
@@ -63,8 +65,23 @@ export function PhotoDetailItem({
   const imageHeight = Math.min(imageWidth / imageAspectRatio, maxImageHeight);
 
   return (
-    <Modal visible={visible} animationType="fade" statusBarTranslucent onRequestClose={onClose}>
-      <ThemedSafeAreaView style={[styles.modalContainer, { backgroundColor }]}>
+    <Modal
+      visible={visible}
+      animationType="fade"
+      statusBarTranslucent
+      onRequestClose={onClose}
+      presentationStyle="fullScreen"
+    >
+      <ThemedView
+        style={[
+          styles.modalContainer,
+          {
+            backgroundColor,
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
+          },
+        ]}
+      >
         {/* Header */}
         <View style={styles.header}>
           <Pressable onPress={() => onUserPress(post.user.id)} style={styles.userInfo}>
@@ -178,7 +195,7 @@ export function PhotoDetailItem({
             {formatTime(post.timestamp)}
           </ThemedText>
         </View>
-      </ThemedSafeAreaView>
+      </ThemedView>
     </Modal>
   );
 }

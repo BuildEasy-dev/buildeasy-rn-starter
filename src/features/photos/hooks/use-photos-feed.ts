@@ -64,7 +64,7 @@ export function usePhotosFeed() {
 
   const loadMore = useCallback(() => {
     setState((prev) => {
-      if (!prev.loading && prev.hasMore) {
+      if (!prev.loading && !prev.refreshing && prev.hasMore) {
         loadPosts(prev.lastPage + 1);
       }
       return prev;

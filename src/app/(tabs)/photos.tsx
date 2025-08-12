@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, RefreshControl, Pressable } from 'react-native';
+import { StyleSheet, RefreshControl, Pressable, ActivityIndicator } from 'react-native';
 import { TabScreenWrapper, LoadingState, EmptyState, ErrorState } from '@/components/layout';
 import { ThemedView, ThemedText, ScrollToTopFlashList } from '@/components/themed';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -20,6 +20,7 @@ export default function PhotosScreen() {
   const tintColor = useThemeColor('tint');
   const textColor = useThemeColor('text');
   const borderColor = useThemeColor('separator');
+  const secondaryTextColor = useThemeColor('tabIconDefault');
   const tabBarProps = useTabBarScrollProps();
 
   const {
@@ -64,16 +65,31 @@ export default function PhotosScreen() {
   );
 
   const renderFooter = () => {
-    if (!hasMore) {
+    // Show loading indicator when fetching more data
+    if (loading && posts.length > 0) {
       return (
-        <ThemedView style={styles.footer}>
-          <ThemedText style={styles.footerText}>You&apos;ve reached the end! 📸</ThemedText>
+        <ThemedView style={styles.loadingFooter}>
+          <ActivityIndicator size="small" color={tintColor} />
+          <ThemedText style={[styles.loadingText, { color: secondaryTextColor }]}>
+            Loading more...
+          </ThemedText>
         </ThemedView>
       );
     }
 
-    if (loading && posts.length > 0) {
-      return <LoadingState />;
+    // Show end indicator when no more data
+    if (!hasMore && posts.length > 0) {
+      return (
+        <ThemedView style={styles.footer}>
+          <ThemedView style={styles.endIndicator}>
+            <ThemedView style={[styles.endLine, { backgroundColor: borderColor }]} />
+            <ThemedText style={[styles.endText, { color: secondaryTextColor }]}>
+              No more photos
+            </ThemedText>
+            <ThemedView style={[styles.endLine, { backgroundColor: borderColor }]} />
+          </ThemedView>
+        </ThemedView>
+      );
     }
 
     return null;
@@ -204,12 +220,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   footer: {
-    padding: 20,
+    paddingVertical: 30,
+    paddingHorizontal: 20,
     alignItems: 'center',
   },
   footerText: {
     fontSize: 16,
     opacity: 0.6,
     textAlign: 'center',
+  },
+  endIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  endLine: {
+    height: StyleSheet.hairlineWidth,
+    flex: 1,
+    opacity: 0.3,
+  },
+  endText: {
+    fontSize: 12,
+    marginHorizontal: 12,
+    opacity: 0.5,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  loadingFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+    gap: 8,
+  },
+  loadingText: {
+    fontSize: 14,
+    opacity: 0.6,
   },
 });
