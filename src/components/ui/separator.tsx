@@ -26,7 +26,6 @@ export function Separator({ color, height = 1, style }: SeparatorProps) {
   return (
     <ThemedView
       style={[
-        styles.separator,
         {
           backgroundColor,
           height,
@@ -36,9 +35,3 @@ export function Separator({ color, height = 1, style }: SeparatorProps) {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  separator: {
-    width: '100%',
-  },
-});

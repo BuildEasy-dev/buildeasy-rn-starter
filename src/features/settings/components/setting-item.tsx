@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Pressable, View } from 'react-native';
 import { ThemedText } from '@/components/themed/themed-text';
 import { IconSymbol, IconSymbolName } from '@/components/ui/icon-symbol';
+import { Separator } from '@/components/ui/separator';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 interface SettingItemProps {
@@ -26,7 +27,6 @@ export function SettingItem({
   isLast = false,
 }: SettingItemProps) {
   const tintColor = useThemeColor('tint');
-  const borderColor = useThemeColor('separator'); // Border separator color
   const chevronColor = useThemeColor('gray8'); // Chevron arrow color
   const switchTrackColor = {
     false: useThemeColor('gray6'), // Switch track color when off
@@ -34,60 +34,58 @@ export function SettingItem({
   };
 
   return (
-    <Pressable
-      onPress={onPress}
-      disabled={type === 'toggle'}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'transparent',
-      }}
-    >
-      <View
+    <View style={{ paddingHorizontal: 16 }}>
+      <Pressable
+        onPress={onPress}
+        disabled={type === 'toggle'}
         style={{
-          marginLeft: 16,
-          marginRight: 12,
-          paddingVertical: 10,
-        }}
-      >
-        <IconSymbol name={icon} size={24} color={tintColor} />
-      </View>
-
-      <View
-        style={{
-          flex: 1,
           flexDirection: 'row',
           alignItems: 'center',
+          backgroundColor: 'transparent',
         }}
       >
+        <View
+          style={{
+            marginRight: 12,
+            paddingVertical: 10,
+          }}
+        >
+          <IconSymbol name={icon} size={24} color={tintColor} />
+        </View>
+
         <View
           style={{
             flex: 1,
             flexDirection: 'row',
             alignItems: 'center',
-            borderBottomWidth: isLast ? 0 : 1,
-            borderBottomColor: borderColor,
-            paddingVertical: 10,
           }}
         >
-          <View style={{ flex: 1 }}>
-            <ThemedText style={{ fontSize: 16, fontWeight: '500' }}>{title}</ThemedText>
-            {subtitle && (
-              <ThemedText style={{ fontSize: 14, opacity: 0.6, marginTop: 2 }}>
-                {subtitle}
-              </ThemedText>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingVertical: 10,
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <ThemedText style={{ fontSize: 16, fontWeight: '500' }}>{title}</ThemedText>
+              {subtitle && (
+                <ThemedText style={{ fontSize: 14, opacity: 0.6, marginTop: 2 }}>
+                  {subtitle}
+                </ThemedText>
+              )}
+            </View>
+
+            {type === 'toggle' ? (
+              <Switch value={value} onValueChange={onValueChange} trackColor={switchTrackColor} />
+            ) : (
+              <IconSymbol name="chevron.right" size={16} color={chevronColor} />
             )}
           </View>
-
-          {type === 'toggle' ? (
-            <Switch value={value} onValueChange={onValueChange} trackColor={switchTrackColor} />
-          ) : (
-            <IconSymbol name="chevron.right" size={16} color={chevronColor} />
-          )}
         </View>
-
-        <View style={{ width: 16 }} />
-      </View>
-    </Pressable>
+      </Pressable>
+      {!isLast && <Separator style={{ marginLeft: 36 }} />}
+    </View>
   );
 }
