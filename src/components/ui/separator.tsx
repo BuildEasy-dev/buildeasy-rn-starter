@@ -11,7 +11,7 @@ interface SeparatorProps {
    */
   color?: ThemedColor;
   /**
-   * Height of the separator. Defaults to StyleSheet.hairlineWidth
+   * Height of the separator. Defaults to 1
    */
   height?: number;
   /**
@@ -20,7 +20,7 @@ interface SeparatorProps {
   style?: ViewStyle;
 }
 
-export function Separator({ color, height = StyleSheet.hairlineWidth, style }: SeparatorProps) {
+export function Separator({ color, height = 1, style }: SeparatorProps) {
   const backgroundColor = useThemeColor('separator', color);
 
   return (
