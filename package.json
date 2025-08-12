@@ -34,7 +34,8 @@
     "test:update": "jest -u",
     "test:ci": "jest --ci --coverage --maxWorkers=2",
     "prebuild": "expo prebuild",
-    "prebuild:clean": "expo prebuild --clean"
+    "prebuild:clean": "expo prebuild --clean",
+    "validate:photo-urls": "node scripts/validate-photo-urls.js"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
