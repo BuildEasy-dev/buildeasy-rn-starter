@@ -4,6 +4,7 @@ import { ThemedText, ThemedView } from '@/components/themed';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TextAvatar } from '@/components/ui/avatar';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { formatRelativeTime } from '@/utils/time';
 import type { Post } from '../types/post.types';
 
 interface PostItemProps {
@@ -14,18 +15,6 @@ interface PostItemProps {
   onBookmark: (id: string) => void;
   onShare: (post: Post) => void;
 }
-
-const formatTime = (date: Date) => {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const days = Math.floor(hours / 24);
-
-  if (days > 0) return `${days}d`;
-  if (hours > 0) return `${hours}h`;
-  const minutes = Math.floor(diff / (1000 * 60));
-  return minutes > 0 ? `${minutes}m` : 'now';
-};
 
 const formatNumber = (num: number) => {
   if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
@@ -67,7 +56,7 @@ function PostItemComponent({
               @{post.author.username}
             </ThemedText>
             <ThemedText style={[styles.timestamp, { color: secondaryTextColor }]}>
-              · {formatTime(post.timestamp)}
+              · {formatRelativeTime(post.timestamp)}
             </ThemedText>
           </View>
           <Pressable onPress={() => onShare(post)} style={styles.moreButton}>

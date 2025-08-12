@@ -6,6 +6,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TextAvatar } from '@/components/ui/avatar';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { formatRelativeTime } from '@/utils/time';
 import { DEFAULT_BLURHASH } from '../utils/image-utils';
 import type { PhotoPost } from '../types/photo.types';
 
@@ -21,20 +22,6 @@ interface PhotoDetailItemProps {
   onBookmark: (id: string) => void;
   onUserPress: (userId: string) => void;
 }
-
-const formatTime = (date: Date) => {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const days = Math.floor(hours / 24);
-  const weeks = Math.floor(days / 7);
-
-  if (weeks > 0) return `${weeks}w`;
-  if (days > 0) return `${days}d`;
-  if (hours > 0) return `${hours}h`;
-  const minutes = Math.floor(diff / (1000 * 60));
-  return minutes > 0 ? `${minutes}m` : 'now';
-};
 
 const formatNumber = (num: number) => {
   if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
@@ -192,7 +179,7 @@ export function PhotoDetailItem({
         {/* Timestamp */}
         <View style={styles.timestamp}>
           <ThemedText style={[styles.timestampText, { color: secondaryTextColor }]}>
-            {formatTime(post.timestamp)}
+            {formatRelativeTime(post.timestamp)}
           </ThemedText>
         </View>
       </ThemedView>
