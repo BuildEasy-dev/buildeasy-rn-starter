@@ -61,17 +61,13 @@ export default function DrawerLayout() {
           footer={renderFooter()}
           sections={[
             {
-              title: 'Main',
               routes: [
                 { name: '(tabs)', label: 'Home', icon: 'house.fill' },
                 { name: 'profile', label: 'Profile', icon: 'person.fill', badge: 'New' },
-                { name: 'dashboard', label: 'Dashboard', icon: 'square.grid.2x2', badge: 12 },
               ],
             },
             {
-              title: 'Tools & Settings',
               routes: [
-                { name: 'settings', label: 'Settings', icon: 'gear', badge: 3 },
                 {
                   name: 'help',
                   label: 'Help & Support',
@@ -107,15 +103,6 @@ export default function DrawerLayout() {
           title: 'Profile',
           drawerIcon: ({ color, size }) => (
             <IconSymbol name="person.fill" color={color} size={size} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="dashboard"
-        options={{
-          title: 'Dashboard',
-          drawerIcon: ({ color, size }) => (
-            <IconSymbol name="square.grid.2x2" color={color} size={size} />
           ),
         }}
       />
