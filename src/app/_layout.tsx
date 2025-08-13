@@ -37,10 +37,10 @@ export default function RootLayout() {
   return (
     <AppProviders>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-
+        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
         <Stack.Screen name="create-post" options={createModalScreenOptions()} />
+        <Stack.Screen name="drawer-example" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
     </AppProviders>
