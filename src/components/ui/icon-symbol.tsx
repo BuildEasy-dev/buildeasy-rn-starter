@@ -50,6 +50,12 @@ const MAPPING = {
   bookmark: 'bookmark-border',
   'bookmark.fill': 'bookmark',
   'square.and.arrow.up': 'share',
+  'photo.on.rectangle': 'photo-library',
+  paperplane: 'send',
+  photo: 'photo-camera',
+  'exclamationmark.triangle': 'warning',
+  doc: 'description',
+  'square.grid.3x3': 'grid-view',
 } as IconMapping;
 
 /**

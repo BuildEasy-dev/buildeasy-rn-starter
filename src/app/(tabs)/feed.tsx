@@ -10,6 +10,7 @@ export default function FeedScreen() {
     loading,
     error,
     loadingMore,
+    hasMore,
     handleRefresh,
     handleLike,
     handleRepost,
@@ -63,6 +64,7 @@ export default function FeedScreen() {
         error={error}
         onRetry={handleRetry}
         loadingMore={loadingMore}
+        hasMore={hasMore}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.3}
         emptyTitle="No posts yet"
