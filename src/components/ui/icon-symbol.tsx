@@ -27,10 +27,12 @@ const MAPPING = {
   gear: 'settings',
   'gear.circle': 'settings',
   'moon.fill': 'dark-mode',
+  moon: 'dark-mode',
   'bell.fill': 'notifications',
   'speaker.wave.3.fill': 'volume-up',
   waveform: 'graphic-eq',
   'person.crop.circle': 'account-circle',
+  'person.fill': 'person',
   'lock.fill': 'lock',
   'creditcard.fill': 'credit-card',
   'questionmark.circle': 'help',
@@ -56,6 +58,11 @@ const MAPPING = {
   'exclamationmark.triangle': 'warning',
   doc: 'description',
   'square.grid.3x3': 'grid-view',
+  'square.grid.2x2': 'dashboard',
+  'line.3.horizontal': 'menu',
+  'arrow.right.square': 'logout',
+  'info.circle': 'info',
+  pencil: 'edit',
 } as IconMapping;
 
 /**
