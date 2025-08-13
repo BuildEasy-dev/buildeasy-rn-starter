@@ -62,7 +62,7 @@ export interface DrawerFooterProps {
   backgroundColor?: string;
   /**
    * Vertical padding
-   * @default 20
+   * @default 12
    */
   paddingVertical?: number;
   /**
@@ -113,7 +113,7 @@ export function DrawerFooter({
   version,
   copyright,
   backgroundColor,
-  paddingVertical = 20,
+  paddingVertical = 12,
   paddingHorizontal = 20,
 }: DrawerFooterProps) {
   const defaultBackgroundColor = useThemeColor('background');
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: 8,
   },
   actionButton: {
     borderRadius: 8,
@@ -251,8 +251,8 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     alignItems: 'center',
-    marginTop: 16,
-    paddingTop: 12,
+    marginTop: 8,
+    paddingTop: 8,
   },
   infoText: {
     fontSize: 12,
