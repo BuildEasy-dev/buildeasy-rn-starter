@@ -44,10 +44,11 @@ export interface DrawerItemProps {
  *
  * Features:
  * - Integrates with IconSymbol for consistent icons
- * - Badge support with variants
- * - Active state styling
- * - Theme-aware colors
- * - Disabled state
+ * - Badge support (default uses primary color, danger uses red)
+ * - Perfect circular badges for single characters
+ * - Active state styling with proper contrast
+ * - Theme-aware colors for both light and dark modes
+ * - Disabled state support
  *
  * @example
  * ```tsx

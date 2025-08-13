@@ -49,7 +49,9 @@ export interface DrawerContentProps extends DrawerContentComponentProps {
  *
  * Features:
  * - Custom header/footer support
+ * - Unified route configuration with icons, labels, and badges
  * - Route sections with titles
+ * - Badge support (default and danger variants)
  * - Hide specific routes
  * - Theme-aware styling
  * - Custom item rendering

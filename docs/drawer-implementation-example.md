@@ -2,6 +2,21 @@
 
 This document provides a complete example of implementing drawer navigation with Expo Router using the custom drawer components.
 
+## 🎯 New Features
+
+### Badge System
+
+- **Default badges**: Use primary theme color
+- **Danger badges**: Red color for warnings/alerts
+- **Perfect circles**: Single characters display as perfect circles
+- **Theme aware**: Automatic contrast in light/dark modes
+
+### Unified Configuration
+
+- Icons, labels, and badges in single route config
+- Reduced code duplication
+- Better TypeScript support
+
 ## Installation
 
 The drawer navigation package has been installed:
@@ -37,17 +52,22 @@ export default function DrawerLayout() {
             header={<UserProfileHeader />}
             sections={[
               {
-                key: 'main',
                 title: 'Main',
-                routes: ['index', 'dashboard', 'profile'],
+                routes: [
+                  { name: 'index', label: 'Home', icon: 'house.fill' },
+                  { name: 'dashboard', label: 'Dashboard', icon: 'square.grid.2x2', badge: 5 },
+                  { name: 'profile', label: 'Profile', icon: 'person.fill', badge: 'New' },
+                ],
               },
               {
-                key: 'tools',
                 title: 'Tools',
-                routes: ['settings', 'help'],
+                routes: [
+                  { name: 'settings', label: 'Settings', icon: 'gear', badge: 2 },
+                  { name: 'help', label: 'Help & Support', icon: 'questionmark.circle', badge: '!', badgeVariant: 'danger' },
+                ],
               },
             ]}
-            footer={<LogoutButton />}
+            footer={<LogoutButton />
             hiddenRoutes={['_sitemap', '+not-found']}
           />
         )}

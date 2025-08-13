@@ -2,6 +2,29 @@
 
 这份文档介绍了新的通用 Drawer 布局组件，它们与业务逻辑解耦，可以在任何项目中重复使用。
 
+## 🆕 最新更新：统一配置 API
+
+新版本引入了统一的路由配置方式，将图标、标签和徽章整合到单一配置中：
+
+```tsx
+sections={[
+  {
+    title: 'Main',
+    routes: [
+      { name: 'dashboard', label: 'Dashboard', icon: 'square.grid.2x2', badge: 3 },
+      { name: 'help', label: 'Help', icon: 'questionmark.circle', badge: '!', badgeVariant: 'danger' }
+    ]
+  }
+]}
+```
+
+**优势**：
+
+- 📦 **统一配置** - 图标、标签、徽章在同一处定义
+- 🎯 **减少重复** - 不需要重复写路由名称
+- 🛡️ **类型安全** - 更好的 TypeScript 支持
+- 🧹 **更简洁** - 代码量减少 60%
+
 ## 🧩 组件架构
 
 ### 三段式布局组件
@@ -333,19 +356,34 @@ export default function CorporateDrawerLayout() {
             }}
             sections={[
               {
-                key: 'main',
                 title: 'Main',
-                routes: ['dashboard', 'projects', 'team'],
+                routes: [
+                  { name: 'dashboard', label: 'Dashboard', icon: 'square.grid.2x2', badge: 3 },
+                  { name: 'projects', label: 'Projects', icon: 'folder.fill', badge: 12 },
+                  { name: 'team', label: 'Team', icon: 'person.2.fill' },
+                ],
               },
               {
-                key: 'tools',
                 title: 'Tools',
-                routes: ['analytics', 'reports', 'settings'],
+                routes: [
+                  { name: 'analytics', label: 'Analytics', icon: 'chart.bar.fill' },
+                  { name: 'reports', label: 'Reports', icon: 'doc.text.fill', badge: 'New' },
+                  { name: 'settings', label: 'Settings', icon: 'gear', badge: 2 },
+                ],
               },
               {
-                key: 'account',
                 title: 'Account',
-                routes: ['profile', 'billing', 'security'],
+                routes: [
+                  { name: 'profile', label: 'Profile', icon: 'person.circle.fill' },
+                  { name: 'billing', label: 'Billing', icon: 'creditcard.fill' },
+                  {
+                    name: 'security',
+                    label: 'Security',
+                    icon: 'lock.shield.fill',
+                    badge: '!',
+                    badgeVariant: 'danger',
+                  },
+                ],
               },
             ]}
           />

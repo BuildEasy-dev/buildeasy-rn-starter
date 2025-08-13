@@ -104,17 +104,19 @@ See the configuration guide at `docs/configuration-guide.md` for detailed setup 
 ```
 src/              # Source code directory
   app/            # Application screens (file-based routing)
-    (tabs)/       # Tab navigation screens
+    (drawer)/     # Drawer navigation with nested tabs
+      (tabs)/     # Tab navigation screens
     _layout.tsx   # Root layout with providers
   components/     # Reusable components
-    ui/          # UI components (Tamagui-based)
+    layout/       # Layout components (drawer, navigation)
+    ui/           # UI components (Tamagui-based)
   constants/      # App constants
-  hooks/         # Custom React hooks
-  lib/           # Utilities and configurations
-    api/         # API client setup
-    auth/        # Authentication logic
-    i18n/        # Internationalization
-assets/          # Images, fonts, and static files (root level)
+  hooks/          # Custom React hooks
+  lib/            # Utilities and configurations
+    api/          # API client setup
+    auth/         # Authentication logic
+    i18n/         # Internationalization
+assets/           # Images, fonts, and static files (root level)
 ```
 
 This project uses [file-based routing](https://docs.expo.dev/router/introduction) - start developing by editing files inside the **src/app** directory.

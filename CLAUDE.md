@@ -95,7 +95,13 @@ For detailed theming patterns and configuration, see **[docs/theme-guide.md](doc
 ```
 src/
   app/              # Screens & navigation (file-based routing)
-  components/       # Reusable components (themed/, ui/, layout/)
+    (drawer)/       # Main drawer navigation
+      (tabs)/       # Nested tab navigation
+    _layout.tsx     # Root layout
+  components/       # Reusable components
+    themed/         # Theme-aware components
+    ui/             # UI primitives
+    layout/         # Navigation & layout components
   hooks/            # Custom React hooks
   constants/        # App constants & config
   tamagui.config.ts # Theme configuration
