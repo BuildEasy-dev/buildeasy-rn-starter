@@ -1,7 +1,7 @@
 import React from 'react';
 import { Drawer } from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DrawerContent, createDrawerOptions } from '@/components/layout';
+import { DrawerContent, createDrawerOptions, AppBrandDrawerHeader } from '@/components/layout';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Alert } from 'react-native';
 import { router } from 'expo-router';
@@ -38,13 +38,9 @@ export default function DrawerLayout() {
         drawerContent={(props) => (
           <DrawerContent
             {...props}
-            headerProps={{
-              avatar: { uri: 'https://picsum.photos/200' },
-              title: 'John Doe',
-              subtitle: 'john.doe@example.com',
-              caption: 'Premium Member',
-              onPress: () => console.log('Go to profile'),
-            }}
+            headerContent={
+              <AppBrandDrawerHeader appName="BuildEasy" tagline="React Native Starter" />
+            }
             footerProps={{
               actions: [
                 {

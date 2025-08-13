@@ -15,7 +15,7 @@ export interface DrawerSection {
 
 export interface DrawerContentProps extends DrawerContentComponentProps {
   /**
-   * Header configuration (use generic DrawerHeader)
+   * Header configuration for generic DrawerHeader container
    */
   headerProps?: DrawerHeaderProps;
   /**
@@ -23,8 +23,13 @@ export interface DrawerContentProps extends DrawerContentComponentProps {
    */
   footerProps?: DrawerFooterProps;
   /**
+   * Custom header content (recommended approach)
+   * Use this to pass business components like UserProfileDrawerHeader
+   */
+  headerContent?: React.ReactNode;
+  /**
    * Custom header component (legacy support)
-   * @deprecated Use headerProps instead
+   * @deprecated Use headerContent with headerProps instead
    */
   header?: React.ReactNode;
   /**
@@ -68,11 +73,21 @@ export interface DrawerContentProps extends DrawerContentComponentProps {
  *
  * @example
  * ```tsx
+ * import { UserProfileDrawerHeader } from './user-profile-drawer-header';
+ *
+ * // Recommended approach with business components
  * <Drawer
  *   drawerContent={(props) => (
  *     <DrawerContent
  *       {...props}
- *       header={<UserProfile />}
+ *       headerProps={{ backgroundColor: '#1e40af' }}
+ *       headerContent={
+ *         <UserProfileDrawerHeader
+ *           title="John Doe"
+ *           subtitle="john.doe@example.com"
+ *           caption="Premium Member"
+ *         />
+ *       }
  *       sections={[
  *         { key: 'main', title: 'Main', routes: ['home', 'profile'] },
  *         { key: 'settings', title: 'Settings', routes: ['settings', 'about'] }
@@ -86,6 +101,7 @@ export interface DrawerContentProps extends DrawerContentComponentProps {
 export function DrawerContent({
   headerProps,
   footerProps,
+  headerContent,
   header,
   footer,
   sections,
@@ -177,18 +193,20 @@ export function DrawerContent({
   };
 
   const renderHeader = () => {
-    // New generic header takes priority
-    if (headerProps && showHeader) {
+    if (!showHeader) return null;
+
+    // New recommended approach: headerProps + headerContent
+    if (headerProps || headerContent) {
       return (
         <>
-          <DrawerHeader {...headerProps} />
+          <DrawerHeader {...headerProps}>{headerContent}</DrawerHeader>
           <Separator />
         </>
       );
     }
 
     // Legacy custom header support
-    if (header && showHeader) {
+    if (header) {
       return (
         <ThemedView style={styles.header}>
           {header}

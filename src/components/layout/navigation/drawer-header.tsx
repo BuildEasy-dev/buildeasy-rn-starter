@@ -1,29 +1,14 @@
 import React from 'react';
-import { StyleSheet, ImageSourcePropType, Image, Pressable } from 'react-native';
-import type { ImageSource } from 'expo-image';
-import { ThemedView, ThemedText } from '@/components/themed';
-import { ImageAvatar, TextAvatar } from '@/components/ui/avatar';
+import { StyleSheet, ImageSourcePropType, Image, View } from 'react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export interface DrawerHeaderProps {
   /**
-   * Avatar image source
+   * Custom content to render inside the header
    */
-  avatar?: ImageSource;
+  children?: React.ReactNode;
   /**
-   * Primary text (usually name)
-   */
-  title?: string;
-  /**
-   * Secondary text (usually email or role)
-   */
-  subtitle?: string;
-  /**
-   * Tertiary text (usually status or additional info)
-   */
-  caption?: string;
-  /**
-   * Background color or gradient
+   * Background color
    */
   backgroundColor?: string;
   /**
@@ -31,99 +16,75 @@ export interface DrawerHeaderProps {
    */
   backgroundImage?: ImageSourcePropType;
   /**
-   * Header press handler (e.g., go to profile)
-   */
-  onPress?: () => void;
-  /**
    * Custom height for header
-   * @default 120
+   * @default 80
    */
   height?: number;
   /**
    * Vertical padding
-   * @default 20
+   * @default 12
    */
   paddingVertical?: number;
   /**
    * Horizontal padding
-   * @default 20
+   * @default 16
    */
   paddingHorizontal?: number;
+  /**
+   * Custom container style
+   */
+  style?: any;
 }
 
 /**
- * DrawerHeader - Generic header component for drawer navigation
+ * DrawerHeader - Pure layout container for drawer navigation
  *
- * Features:
- * - Avatar (image or text-based)
- * - Title, subtitle, and caption text
- * - Background customization
- * - Press interaction support
- * - Theme-aware styling
+ * A minimal, focused container component optimized for drawer headers:
+ * - Compact sizing (80px height, 12px padding)
+ * - Background customization (color/image)
+ * - Layout structure and spacing
+ * - Theme-aware background colors
+ * - Content composition via children
+ *
+ * This is a pure layout component that does NOT handle:
+ * - User interactions (onPress, gestures)
+ * - Business logic or content
+ * - Navigation behavior
  *
  * @example
  * ```tsx
+ * // Basic usage with business component
+ * <DrawerHeader>
+ *   <AppBrandDrawerHeader
+ *     appName="My App"
+ *     tagline="Version 1.0"
+ *   />
+ * </DrawerHeader>
+ *
+ * // With custom background
+ * <DrawerHeader backgroundColor="#1e40af">
+ *   <MyCustomHeaderContent />
+ * </DrawerHeader>
+ *
+ * // With background image
  * <DrawerHeader
- *   avatar={{ uri: 'https://example.com/avatar.jpg' }}
- *   title="John Doe"
- *   subtitle="john.doe@example.com"
- *   caption="Premium Member"
- *   onPress={() => console.log('Go to profile')}
- * />
+ *   backgroundImage={require('@/assets/header-bg.jpg')}
+ *   height={100}
+ * >
+ *   <MyHeaderContent />
+ * </DrawerHeader>
  * ```
  */
 export function DrawerHeader({
-  avatar,
-  title,
-  subtitle,
-  caption,
+  children,
   backgroundColor,
   backgroundImage,
-  onPress,
-  height = 120,
-  paddingVertical = 20,
-  paddingHorizontal = 20,
+  height = 80,
+  paddingVertical = 12,
+  paddingHorizontal = 16,
+  style,
 }: DrawerHeaderProps) {
   const defaultBackgroundColor = useThemeColor('background');
-  const textColor = useThemeColor('text');
-
-  const renderAvatar = () => {
-    if (!avatar && !title) return null;
-
-    return (
-      <ThemedView style={styles.avatarContainer}>
-        {avatar ? (
-          <ImageAvatar source={avatar} size={64} />
-        ) : title ? (
-          <TextAvatar name={title} size={64} />
-        ) : null}
-      </ThemedView>
-    );
-  };
-
-  const renderTexts = () => {
-    if (!title && !subtitle && !caption) return null;
-
-    return (
-      <ThemedView style={styles.textContainer}>
-        {title && (
-          <ThemedText style={[styles.title, { color: textColor }]} numberOfLines={1}>
-            {title}
-          </ThemedText>
-        )}
-        {subtitle && (
-          <ThemedText style={[styles.subtitle, { color: textColor }]} numberOfLines={1}>
-            {subtitle}
-          </ThemedText>
-        )}
-        {caption && (
-          <ThemedText style={[styles.caption, { color: textColor }]} numberOfLines={1}>
-            {caption}
-          </ThemedText>
-        )}
-      </ThemedView>
-    );
-  };
 
   const headerStyle = [
     styles.container,
@@ -133,65 +94,22 @@ export function DrawerHeader({
       paddingHorizontal,
       backgroundColor: backgroundColor || defaultBackgroundColor,
     },
+    style,
   ];
 
-  const content = (
-    <>
+  return (
+    <View style={headerStyle}>
       {backgroundImage && <Image source={backgroundImage} style={StyleSheet.absoluteFill} />}
-      <ThemedView style={styles.overlay}>
-        <ThemedView style={styles.mainContent}>
-          {renderAvatar()}
-          {renderTexts()}
-        </ThemedView>
-      </ThemedView>
-    </>
+      <View style={styles.content}>{children}</View>
+    </View>
   );
-
-  if (onPress) {
-    return (
-      <Pressable onPress={onPress} style={headerStyle}>
-        {content}
-      </Pressable>
-    );
-  }
-
-  return <ThemedView style={headerStyle}>{content}</ThemedView>;
 }
 
 const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
   },
-  overlay: {
+  content: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  mainContent: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatarContainer: {
-    marginRight: 16,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 2,
-  },
-  subtitle: {
-    fontSize: 14,
-    opacity: 0.7,
-    marginBottom: 2,
-  },
-  caption: {
-    fontSize: 12,
-    opacity: 0.5,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
   },
 });
