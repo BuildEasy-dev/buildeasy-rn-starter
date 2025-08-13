@@ -1,9 +1,10 @@
 import React from 'react';
 import { Drawer } from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DrawerContent, createDrawerOptions, AppBrandDrawerHeader } from '@/components/layout';
+import { View , Alert } from 'react-native';
+import { DrawerContent, createDrawerOptions, DrawerFooter } from '@/components/layout';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Alert } from 'react-native';
+import { ThemedText } from '@/components/themed';
 import { router } from 'expo-router';
 
 export default function DrawerLayout() {
@@ -38,31 +39,36 @@ export default function DrawerLayout() {
         drawerContent={(props) => (
           <DrawerContent
             {...props}
-            headerContent={
-              <AppBrandDrawerHeader appName="BuildEasy" tagline="React Native Starter" />
+            header={
+              <View style={{ alignItems: 'center', justifyContent: 'center', minHeight: 50 }}>
+                <ThemedText style={{ fontSize: 18, fontWeight: '700' }}>BuildEasy</ThemedText>
+                <ThemedText style={{ fontSize: 13, opacity: 0.7 }}>React Native Starter</ThemedText>
+              </View>
             }
-            footerProps={{
-              actions: [
-                {
-                  id: 'theme',
-                  label: 'Dark Mode',
-                  icon: 'moon' as const,
-                  type: 'switch',
-                  value: darkMode,
-                  onValueChange: setDarkMode,
-                },
-                {
-                  id: 'logout',
-                  label: 'Sign Out',
-                  icon: 'arrow.right.square' as const,
-                  type: 'button',
-                  destructive: true,
-                  onPress: handleLogout,
-                },
-              ],
-              version: 'v1.0.0',
-              copyright: '© 2024 BuildEasy',
-            }}
+            footer={
+              <DrawerFooter
+                actions={[
+                  {
+                    id: 'theme',
+                    label: 'Dark Mode',
+                    icon: 'moon' as const,
+                    type: 'switch',
+                    value: darkMode,
+                    onValueChange: setDarkMode,
+                  },
+                  {
+                    id: 'logout',
+                    label: 'Sign Out',
+                    icon: 'arrow.right.square' as const,
+                    type: 'button',
+                    destructive: true,
+                    onPress: handleLogout,
+                  },
+                ]}
+                version="v1.0.0"
+                copyright="© 2024 BuildEasy"
+              />
+            }
             sections={[
               {
                 key: 'main',

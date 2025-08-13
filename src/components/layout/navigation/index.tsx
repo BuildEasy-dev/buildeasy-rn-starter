@@ -15,7 +15,3 @@ export type { DrawerItemProps } from './drawer-item';
 export { createDrawerOptions } from './drawer-options';
 export type { CreateDrawerOptionsProps } from './drawer-options';
 export { useDrawerActions } from '@/hooks/use-drawer-actions';
-
-// Business drawer header components (examples/templates)
-export { AppBrandDrawerHeader } from './app-brand-drawer-header';
-export type { AppBrandDrawerHeaderProps } from './app-brand-drawer-header';
