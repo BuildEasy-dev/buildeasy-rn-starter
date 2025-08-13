@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, ImageSourcePropType, Image, Pressable } from 'react-native';
 import type { ImageSource } from 'expo-image';
 import { ThemedView, ThemedText } from '@/components/themed';
-import { IconSymbol, IconSymbolName } from '@/components/ui/icon-symbol';
 import { ImageAvatar, TextAvatar } from '@/components/ui/avatar';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
@@ -32,14 +31,6 @@ export interface DrawerHeaderProps {
    */
   backgroundImage?: ImageSourcePropType;
   /**
-   * Action button (e.g., edit profile)
-   */
-  actionIcon?: IconSymbolName;
-  /**
-   * Action button press handler
-   */
-  onActionPress?: () => void;
-  /**
    * Header press handler (e.g., go to profile)
    */
   onPress?: () => void;
@@ -67,7 +58,6 @@ export interface DrawerHeaderProps {
  * - Avatar (image or text-based)
  * - Title, subtitle, and caption text
  * - Background customization
- * - Optional action button
  * - Press interaction support
  * - Theme-aware styling
  *
@@ -78,8 +68,6 @@ export interface DrawerHeaderProps {
  *   title="John Doe"
  *   subtitle="john.doe@example.com"
  *   caption="Premium Member"
- *   actionIcon="pencil"
- *   onActionPress={() => console.log('Edit profile')}
  *   onPress={() => console.log('Go to profile')}
  * />
  * ```
@@ -91,8 +79,6 @@ export function DrawerHeader({
   caption,
   backgroundColor,
   backgroundImage,
-  actionIcon,
-  onActionPress,
   onPress,
   height = 120,
   paddingVertical = 20,
@@ -100,7 +86,6 @@ export function DrawerHeader({
 }: DrawerHeaderProps) {
   const defaultBackgroundColor = useThemeColor('background');
   const textColor = useThemeColor('text');
-  const tintColor = useThemeColor('tint');
 
   const renderAvatar = () => {
     if (!avatar && !title) return null;
@@ -140,16 +125,6 @@ export function DrawerHeader({
     );
   };
 
-  const renderActionButton = () => {
-    if (!actionIcon || !onActionPress) return null;
-
-    return (
-      <Pressable onPress={onActionPress} style={styles.actionButton}>
-        <IconSymbol name={actionIcon} size={20} color={tintColor} />
-      </Pressable>
-    );
-  };
-
   const headerStyle = [
     styles.container,
     {
@@ -168,7 +143,6 @@ export function DrawerHeader({
           {renderAvatar()}
           {renderTexts()}
         </ThemedView>
-        {renderActionButton()}
       </ThemedView>
     </>
   );
@@ -192,7 +166,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
   mainContent: {
     flex: 1,
@@ -220,10 +193,5 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
-  },
-  actionButton: {
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
 });
