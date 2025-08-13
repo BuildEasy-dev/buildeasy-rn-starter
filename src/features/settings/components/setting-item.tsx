@@ -1,6 +1,6 @@
 import React from 'react';
-import { Switch, Pressable, View } from 'react-native';
-import { ThemedText } from '@/components/themed/themed-text';
+import { Pressable, View } from 'react-native';
+import { ThemedText, ThemedSwitch } from '@/components/themed';
 import { IconSymbol, IconSymbolName } from '@/components/ui/icon-symbol';
 import { Separator } from '@/components/ui/separator';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -26,12 +26,7 @@ export function SettingItem({
   onPress,
   isLast = false,
 }: SettingItemProps) {
-  const tintColor = useThemeColor('tint');
   const chevronColor = useThemeColor('gray8'); // Chevron arrow color
-  const switchTrackColor = {
-    false: useThemeColor('gray6'), // Switch track color when off
-    true: tintColor, // Switch track color when on
-  };
 
   return (
     <View style={{ paddingHorizontal: 16 }}>
@@ -50,7 +45,7 @@ export function SettingItem({
             paddingVertical: 10,
           }}
         >
-          <IconSymbol name={icon} size={24} color={tintColor} />
+          <IconSymbol name={icon} size={24} color={useThemeColor('tint')} />
         </View>
 
         <View
@@ -78,7 +73,7 @@ export function SettingItem({
             </View>
 
             {type === 'toggle' ? (
-              <Switch value={value} onValueChange={onValueChange} trackColor={switchTrackColor} />
+              <ThemedSwitch value={value} onValueChange={onValueChange} />
             ) : (
               <IconSymbol name="chevron.right" size={16} color={chevronColor} />
             )}

@@ -2,6 +2,13 @@ import { createTamagui } from '@tamagui/core';
 import { config } from '@tamagui/config';
 import { createInterFont } from '@tamagui/font-inter';
 
+// Color constants
+const COLORS = {
+  BRAND_PRIMARY: '#007AFF',
+  WHITE: '#FFFFFF',
+  BLACK: '#000000',
+} as const;
+
 // Extend themes with semantic tokens while preserving all default tokens
 const customThemes = {
   ...config.themes,
@@ -10,14 +17,26 @@ const customThemes = {
   light: {
     ...config.themes.light,
     // Brand colors
-    primary: config.themes.light.color,
+    primary: COLORS.BRAND_PRIMARY,
+    // Text/icon color - consistent across platforms
+    color: COLORS.BLACK,
+    // Switch colors
+    switchThumb: COLORS.WHITE,
+    switchTrackActive: COLORS.BRAND_PRIMARY,
+    switchTrackInactive: config.themes.light.gray6,
   },
 
   // Extend dark theme with semantic tokens
   dark: {
     ...config.themes.dark,
     // Brand colors
-    primary: config.themes.dark.color,
+    primary: COLORS.BRAND_PRIMARY,
+    // Text/icon color - consistent across platforms
+    color: COLORS.WHITE,
+    // Switch colors
+    switchThumb: COLORS.WHITE,
+    switchTrackActive: COLORS.BRAND_PRIMARY,
+    switchTrackInactive: config.themes.dark.gray6,
   },
 };
 

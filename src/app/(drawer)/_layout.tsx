@@ -1,9 +1,9 @@
 import React from 'react';
 import { Drawer } from 'expo-router/drawer';
-import { StyleSheet, View, Switch } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { DrawerContent, createDrawerOptions } from '@/components/layout';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ThemedText, ThemedView } from '@/components/themed';
+import { ThemedText, ThemedView, ThemedSwitch } from '@/components/themed';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useColorScheme, setColorScheme } from '@/hooks/use-color-scheme';
 
@@ -11,7 +11,6 @@ export default function DrawerLayout() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const textColor = useThemeColor('text');
-  const tintColor = useThemeColor('tint');
 
   const toggleDarkMode = (value: boolean) => {
     setColorScheme(value ? 'dark' : 'light');
@@ -37,11 +36,7 @@ export default function DrawerLayout() {
           <IconSymbol name="moon" size={20} color={textColor} style={styles.actionIcon} />
           <ThemedText style={[styles.actionLabel, { color: textColor }]}>Dark Mode</ThemedText>
         </ThemedView>
-        <Switch
-          value={isDarkMode}
-          onValueChange={toggleDarkMode}
-          trackColor={{ true: tintColor }}
-        />
+        <ThemedSwitch value={isDarkMode} onValueChange={toggleDarkMode} />
       </ThemedView>
     </ThemedView>
   );
@@ -104,13 +99,6 @@ export default function DrawerLayout() {
           drawerIcon: ({ color, size }) => (
             <IconSymbol name="person.fill" color={color} size={size} />
           ),
-        }}
-      />
-      <Drawer.Screen
-        name="settings"
-        options={{
-          title: 'Settings',
-          drawerIcon: ({ color, size }) => <IconSymbol name="gear" color={color} size={size} />,
         }}
       />
       <Drawer.Screen

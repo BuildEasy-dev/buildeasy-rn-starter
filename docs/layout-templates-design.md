@@ -1,8 +1,8 @@
-# Layout Templates Technical Design (Revised)
+# Layout Templates Design
 
 ## Overview
 
-This document outlines the technical design for creating reusable layout template components in `src/components/layout/` that work with Expo Router's file-based navigation system and build upon existing components like `HapticTab`, `TabBarBackground`, and `IconSymbol`.
+This document describes the design principles and architecture for reusable layout components that work with Expo Router's file-based navigation system.
 
 ## Goals
 
@@ -10,595 +10,341 @@ This document outlines the technical design for creating reusable layout templat
 2. **Reusability** - Drop-in components for common layouts
 3. **Flexibility** - Customizable while maintaining standards
 4. **Type Safety** - Full TypeScript support
-5. **Theme Integration** - Work seamlessly with Tamagui theming
-6. **Expo Router Compatible** - Enhance, not replace, Expo Router's navigation
-7. **Build on Existing** - Leverage existing HapticTab, TabBarBackground, IconSymbol
+5. **Theme Integration** - Seamless integration with Tamagui theming
+6. **Expo Router Compatible** - Enhance, not replace, navigation system
 
 ## Architecture
 
+### Component Structure
+
 ```
 src/components/layout/
-├── wrappers/           # Wrappers that enhance Expo Router layouts
-│   ├── screen-wrapper.tsx
-│   ├── tab-screen-wrapper.tsx
-│   ├── modal-wrapper.tsx
-│   └── drawer-wrapper.tsx
-├── navigation/         # Enhanced navigation components
-│   ├── enhanced-tab-config.tsx  # Build on HapticTab/TabBarBackground
-│   ├── stack-header.tsx         # Custom header for Stack
-│   ├── drawer-content.tsx       # Custom drawer content
-│   └── drawer-item.tsx
-├── content/           # Content layout components
-│   ├── list/
-│   │   ├── list-layout.tsx
-│   │   ├── list-item.tsx
-│   │   └── list-empty-state.tsx
-│   ├── grid/
-│   │   ├── grid-layout.tsx
-│   │   ├── grid-item.tsx
-│   │   └── grid-responsive.tsx
-│   ├── card/
-│   │   ├── card.tsx
-│   │   ├── card-header.tsx
-│   │   ├── card-content.tsx
-│   │   └── card-footer.tsx
-│   └── modal/
-│       ├── modal-content.tsx
-│       └── modal-header.tsx
-├── common/
-│   ├── empty-state.tsx
-│   ├── loading-state.tsx
-│   ├── error-state.tsx
-│   └── safe-area-wrapper.tsx
-└── index.tsx
-
-// Current project components (already exist)
-src/components/
-├── ui/
-│   ├── tab-bar-background.tsx     # Platform-specific backgrounds
-│   ├── tab-bar-background.ios.tsx # iOS blur effect
-│   └── icon-symbol.tsx            # Adaptive icons
-└── haptic-tab.tsx                 # Tab with haptic feedback
+├── wrappers/           # Screen-level wrappers
+│   ├── screen-wrapper      # Base wrapper with safe area
+│   ├── tab-screen-wrapper  # Tab screens with scroll-to-top
+│   ├── modal-wrapper       # Modal screens with headers
+│   └── safe-area-wrapper   # Standalone safe area
+├── navigation/         # Navigation configuration
+│   ├── create-tab-options  # Tab navigator config
+│   ├── drawer-options      # Drawer navigator config
+│   ├── modal-screen-options # Modal presentation
+│   └── drawer-content      # Custom drawer UI
+├── content/           # Content layouts
+│   └── list/
+│       ├── list-layout     # Scrollable lists with states
+│       └── list-item       # List item components
+└── common/            # Shared components
+    ├── empty-state         # Empty state display
+    ├── loading-state       # Loading indicators
+    └── error-state         # Error handling
 ```
 
-## Working With Existing Components
+## Core Interfaces
 
-### Current Tab Setup Analysis
-
-The project already has:
-
-```typescript
-// app/(tabs)/_layout.tsx - Current Implementation
-<Tabs
-  screenOptions={{
-    tabBarActiveTintColor: tintColor,    // Theme-aware colors
-    headerShown: false,                   // Headers hidden
-    tabBarButton: HapticTab,              // Custom haptic feedback
-    tabBarBackground: TabBarBackground,   // Platform blur/solid
-    tabBarStyle: Platform.select({        // Platform-specific styling
-      ios: { position: 'absolute' },
-      default: {},
-    }),
-  }}
->
-  <Tabs.Screen
-    name="index"
-    options={{
-      title: 'Home',
-      tabBarIcon: ({ color }) => <IconSymbol name="house.fill" color={color} />
-    }}
-  />
-</Tabs>
-```
-
-**What's Already Great:**
-
-- ✅ Haptic feedback on tab press
-- ✅ Platform-specific blur backgrounds
-- ✅ Theme-aware colors
-- ✅ Adaptive icons (iOS SF Symbols vs Android)
-- ✅ Proper safe area handling
-
-## Component Specifications
-
-### 1. Navigation Components (Enhanced)
-
-#### EnhancedTabConfig
-
-**Purpose:** Extend existing tab functionality with additional variants and features
-
-**What it builds upon:**
-
-- Uses existing `HapticTab` for button behavior
-- Uses existing `TabBarBackground` for platform backgrounds
-- Uses existing `useThemeColor` for theming
-
-**Additional features:**
-
-```typescript
-interface EnhancedTabOptions {
-  variant?: 'default' | 'compact' | 'floating';
-  animateIcons?: boolean;
-  customHeight?: number;
-}
-
-// components/layout/navigation/enhanced-tab-config.tsx
-import { HapticTab } from '@/components/haptic-tab';
-import TabBarBackground from '@/components/ui/tab-bar-background';
-import { useThemeColor } from '@/hooks/use-theme-color';
-
-export function createEnhancedTabOptions(options?: EnhancedTabOptions) {
-  const tintColor = useThemeColor('tint');
-
-  return {
-    // Keep existing functionality
-    tabBarButton: HapticTab,
-    tabBarBackground: TabBarBackground,
-    tabBarActiveTintColor: tintColor,
-    headerShown: false,
-
-    // Add enhancements
-    tabBarStyle: Platform.select({
-      ios: {
-        position: 'absolute',
-        ...(options?.variant === 'floating' && {
-          marginHorizontal: 16,
-          marginBottom: 16,
-          borderRadius: 25,
-          height: options?.customHeight ?? 80,
-          paddingBottom: 20,
-        }),
-        ...(options?.variant === 'compact' && {
-          height: options?.customHeight ?? 60,
-        }),
-      },
-      default: {
-        ...(options?.variant === 'compact' && {
-          height: options?.customHeight ?? 60,
-        }),
-      },
-    }),
-
-    // Enhanced label styling
-    tabBarLabelStyle: {
-      fontSize: options?.variant === 'compact' ? 11 : 12,
-      fontWeight: '500',
-    },
-  };
-}
-```
-
-**Usage:**
-
-```typescript
-// app/(tabs)/_layout.tsx - Enhanced version
-import { createEnhancedTabOptions } from '@/components/layout';
-
-export default function TabLayout() {
-  return (
-    <Tabs screenOptions={createEnhancedTabOptions({ variant: 'default' })}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol name="house.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
-}
-```
-
-#### ScreenWrapper
-
-**Purpose:** Consistent wrapper for all screens
-
-**Props:**
+### Screen Wrappers
 
 ```typescript
 interface ScreenWrapperProps {
   children: ReactNode;
-  title?: string;
   safeArea?: boolean | 'top' | 'bottom' | 'both';
-  padding?: boolean | number;
-  scrollable?: boolean;
-  loading?: boolean;
-  error?: Error;
-  onRefresh?: () => Promise<void>;
   backgroundColor?: string;
+  loading?: boolean;
+  error?: Error | null;
+  onRetry?: () => void;
 }
-```
 
-#### TabScreenWrapper
-
-**Purpose:** Enhanced wrapper specifically for tab screens with scroll-to-top functionality
-
-**Props:**
-
-```typescript
 interface TabScreenWrapperProps extends ScreenWrapperProps {
   // Tab-specific features
   tabName?: string;
   scrollToTopOnPress?: boolean;
+  scrollable?: boolean;
+  padding?: number;
 
-  // Override safeArea default for tab screens
+  // Header configuration
+  renderHeader?: () => ReactNode;
+  headerTitle?: string;
+  headerTitleAlign?: 'left' | 'center' | 'right';
+  headerLeft?: ReactNode | HeaderButtonConfig;
+  headerRight?: ReactNode | HeaderButtonConfig;
+}
+
+interface ModalWrapperProps {
+  children: ReactNode;
+  title?: string;
+  variant?: 'default' | 'bottom' | 'fullscreen';
+  showHandle?: boolean;
+  onClose?: () => void;
+  closeButton?: boolean;
+  headerLeft?: ReactNode;
+  headerRight?: ReactNode;
   safeArea?: boolean | 'top' | 'bottom' | 'both';
 }
 ```
 
-**TabScreenWrapper Key Features:**
-
-- **Scroll-to-Top**: Automatically scrolls to top when the tab is pressed again
-- **Context Integration**: Provides `useScrollToTop` hook for child components
-- **Safe Area Defaults**: Defaults to `safeArea='top'` since tab bar handles bottom
-- **Tab Navigation**: Listens to tab press events and triggers scroll-to-top
-
-**Usage:**
+### Navigation Configuration
 
 ```typescript
-// app/(tabs)/index.tsx
-import { TabScreenWrapper } from '@/components/layout';
-import { ScrollableParallaxView } from '@/components/parallax-scroll-view';
-import { useScrollToTop } from '@/hooks/use-scroll-to-top';
-
-function ScrollToTopButton() {
-  const scrollToTop = useScrollToTop();
-
-  if (!scrollToTop) return null;
-
-  return (
-    <Pressable onPress={() => scrollToTop.triggerScrollToTop()}>
-      <Text>Scroll to Top</Text>
-    </Pressable>
-  );
+interface DrawerOptions {
+  position?: 'left' | 'right';
+  width?: number;
+  headerShown?: boolean;
+  swipeEnabled?: boolean;
+  hideStatusBar?: boolean;
 }
 
-export default function HomeScreen() {
-  return (
-    <TabScreenWrapper safeArea={false} scrollToTopOnPress>
-      <ScrollableParallaxView>
-        <Content />
-        <ScrollToTopButton />
-      </ScrollableParallaxView>
-    </TabScreenWrapper>
-  );
-}
-```
-
-#### StackHeader
-
-**Purpose:** Custom header that works with Expo Router Stack
-
-**Props:**
-
-```typescript
-interface StackHeaderProps {
-  title?: string;
-  canGoBack?: boolean;
-  headerLeft?: ReactNode;
-  headerRight?: ReactNode;
-  variant?: 'default' | 'large' | 'transparent';
-  showBorder?: boolean;
-}
-```
-
-**Usage with Expo Router:**
-
-```typescript
-// app/(stack)/_layout.tsx
-import { Stack } from 'expo-router';
-import { StackHeader } from '@/components/layout';
-
-export default function StackLayout() {
-  return (
-    <Stack
-      screenOptions={{
-        header: (props) => <StackHeader {...props} variant="large" />
-      }}
-    >
-      <Stack.Screen
-        name="profile"
-        options={{
-          headerRight: () => (
-            <Pressable onPress={() => router.push('/settings')}>
-              <IconSymbol name="gear" />
-            </Pressable>
-          )
-        }}
-      />
-    </Stack>
-  );
-}
-```
-
-### 2. Content Layout Components
-
-#### List Layout Components
-
-**ListLayout**
-
-```typescript
-interface ListLayoutProps<T> {
-  data: T[];
-  renderItem: (item: T, index: number) => ReactNode;
-  keyExtractor?: (item: T) => string;
-  onRefresh?: () => Promise<void>;
-  onEndReached?: () => void;
-  emptyState?: ReactNode;
+interface DrawerContentProps {
+  sections: DrawerSection[];
   header?: ReactNode;
   footer?: ReactNode;
-  separator?: boolean | ReactNode;
-  contentPadding?: number;
+  hiddenRoutes?: string[];
+}
+
+interface DrawerSection {
+  title?: string;
+  routes: DrawerRoute[];
+}
+
+interface DrawerRoute {
+  name: string;
+  label: string;
+  icon: string;
+  badge?: string | number;
+  badgeVariant?: 'default' | 'danger' | 'success';
 }
 ```
 
-#### Grid Layout Components
-
-**GridLayout**
+### Content Layouts
 
 ```typescript
-interface GridLayoutProps<T> {
+interface ScrollableListLayoutProps<T> {
+  // Data
   data: T[];
-  renderItem: (item: T, index: number) => ReactNode;
-  columns?: number | 'auto';
-  spacing?: number;
-  aspectRatio?: number;
-  onItemPress?: (item: T) => void;
-  emptyState?: ReactNode;
+  renderItem: ({ item, index }: { item: T; index: number }) => ReactNode;
+  keyExtractor: (item: T) => string;
+  estimatedItemSize?: number;
+
+  // Refresh & Loading
+  refreshing?: boolean;
+  onRefresh?: () => void | Promise<void>;
+  loading?: boolean;
+  error?: Error | null;
+  onRetry?: () => void;
+
+  // Pagination
+  loadingMore?: boolean;
+  hasMore?: boolean;
+  onEndReached?: () => void;
+  onEndReachedThreshold?: number;
+
+  // Empty state
+  emptyTitle?: string;
+  emptyMessage?: string;
+  emptyIcon?: string;
+  emptyAction?: { label: string; onPress: () => void };
+
+  // Styling
+  showSeparator?: boolean;
+  contentContainerStyle?: ViewStyle;
 }
 ```
 
-#### Card Components
-
-**Card**
+### State Components
 
 ```typescript
-interface CardProps {
-  variant?: 'elevated' | 'outlined' | 'filled';
-  padding?: 'none' | 'small' | 'medium' | 'large';
-  onPress?: () => void;
-  children: ReactNode;
+interface EmptyStateProps {
+  title?: string;
+  message?: string;
+  icon?: string;
+  action?: {
+    label: string;
+    onPress: () => void;
+  };
+}
+
+interface LoadingStateProps {
+  message?: string;
+  fullScreen?: boolean;
+}
+
+interface ErrorStateProps {
+  error?: Error | null;
+  message?: string;
+  onRetry?: () => void;
+  fullScreen?: boolean;
 }
 ```
 
-## Usage Examples
+## Design Principles
 
-### Enhanced Tab Layout
+### 1. Wrapper Components
 
-```typescript
-// app/(tabs)/_layout.tsx
-import { Tabs } from 'expo-router';
-import { createEnhancedTabOptions } from '@/components/layout';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+Screen wrappers provide consistent structure:
 
-export default function TabLayout() {
-  return (
-    <Tabs
-      screenOptions={createEnhancedTabOptions({
-        variant: 'default'
-      })}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <IconSymbol
-              name={focused ? 'house.fill' : 'house'}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <IconSymbol
-              name={focused ? 'paperplane.fill' : 'paperplane'}
-              color={color}
-            />
-          ),
-        }}
-      />
-    </Tabs>
-  );
-}
-```
+- **Safe area handling** - Automatic safe area insets
+- **Header support** - Optional built-in headers
+- **Scroll management** - Coordinated scrolling behavior
+- **Theme integration** - Automatic theme colors
 
-### Tab Screen with Wrapper
+### 2. Navigation Integration
 
-```typescript
-// app/(tabs)/index.tsx
-import { TabScreenWrapper } from '@/components/layout';
-import { ScrollableParallaxView } from '@/components/parallax-scroll-view';
-import { useScrollToTop } from '@/hooks/use-scroll-to-top';
-import { Image, StyleSheet, Pressable } from 'react-native';
+Navigation helpers work with Expo Router:
 
-function ScrollToTopButton() {
-  const scrollToTop = useScrollToTop();
+- **Tab configuration** - Haptic feedback, blur backgrounds
+- **Drawer sections** - Grouped navigation items
+- **Modal presentation** - Consistent modal styles
+- **Type safety** - Fully typed navigation
 
-  return (
-    <Pressable
-      onPress={() => scrollToTop?.triggerScrollToTop()}
-      style={styles.scrollButton}
-    >
-      <Text style={styles.scrollButtonText}>Scroll to Top</Text>
-    </Pressable>
-  );
-}
+### 3. Content Layouts
 
-export default function HomeScreen() {
-  return (
-    <TabScreenWrapper safeArea={false} scrollToTopOnPress>
-      <ScrollableParallaxView
-        headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-        headerImage={
-          <Image
-            source={require('@/assets/images/partial-react-logo.png')}
-            style={styles.reactLogo}
-          />
-        }
-      >
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">Welcome!</ThemedText>
-          <HelloWave />
-        </ThemedView>
+Reusable content patterns:
 
-        <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-          <ThemedText>
-            Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-            Press <ThemedText type="defaultSemiBold">⌘ + d</ThemedText> to open developer tools.
-          </ThemedText>
-          <ScrollToTopButton />
-        </ThemedView>
-      </ScrollableParallaxView>
-    </TabScreenWrapper>
-  );
-}
-```
+- **List layouts** - Pull-to-refresh, infinite scroll, empty states
+- **State management** - Loading, error, and empty states
+- **Responsive design** - Adapt to screen sizes
+- **Performance** - Optimized rendering with FlashList
 
-### Modal Screen
+## Key Features
 
-```typescript
-// app/create-post.tsx
-import { ModalWrapper } from '@/components/layout';
-import { router } from 'expo-router';
+### TabScreenWrapper
 
-export default function CreatePostModal() {
-  return (
-    <ModalWrapper
-      title="Create Post"
-      variant="bottom"
-      showHandle
-      onClose={() => router.back()}
-    >
-      <PostForm onSubmit={handleSubmit} />
-    </ModalWrapper>
-  );
-}
-```
+Wrapper for screens within tab navigation:
+
+- Automatic scroll-to-top on tab press
+- Tab bar inset handling
+- Optional header with customizable buttons
+- Integrated safe area management
+- ScrollToTop context provider
+
+### ScrollableListLayout
+
+High-performance list component:
+
+- Pull-to-refresh functionality
+- Infinite scroll with pagination
+- Built-in loading/error/empty states
+- Separator and item rendering
+- FlashList optimization
+
+### DrawerContent
+
+Custom drawer navigation:
+
+- Sectioned route organization
+- Badge support for notifications
+- Header/footer customization
+- Route filtering and hiding
+- Active route highlighting
+
+### ModalWrapper
+
+Modal screen wrapper:
+
+- Multiple presentation variants
+- Header with action buttons
+- Handle indicator for bottom sheets
+- Gesture-based dismissal
+- Safe area handling
+
+## Navigation Patterns
+
+### Tab Navigation
+
+- Uses `useTabOptions()` hook for configuration
+- Preserves platform-specific behaviors (iOS blur, Android solid)
+- Integrates haptic feedback on tab press
+- Tab bar inset context for content spacing
+
+### Drawer Navigation
+
+- Sections for grouping related screens
+- Custom header/footer areas
+- Badge indicators for notifications
+- Swipe gesture support
+- Customizable drawer width and position
+
+### Modal Presentation
+
+- Standard modal, bottom sheet, and fullscreen variants
+- Consistent header styling
+- Platform-appropriate animations
+- Gesture-based dismissal
+
+## State Management
+
+### Loading States
+
+- Skeleton screens for initial load
+- Progress indicators for actions
+- Shimmer effects for content placeholders
+- Inline vs fullscreen loading
+
+### Error States
+
+- User-friendly error messages
+- Retry action buttons
+- Contextual error information
+- Error boundaries integration
+
+### Empty States
+
+- Illustrative icons
+- Helpful messages and descriptions
+- Call-to-action buttons
+- Customizable appearance
+
+## Theme Integration
+
+All layout components are theme-aware:
+
+- Automatic color adaptation (light/dark mode)
+- Consistent spacing using theme tokens
+- Platform-specific styling
+- Accessible color contrasts
+
+## Context Providers
+
+### ScrollToTopContext
+
+Manages scroll-to-top behavior for tab screens:
+
+- `registerScrollHandler` - Register scroll view
+- `triggerScrollToTop` - Trigger scroll action
+
+### TabBarInsetContext
+
+Provides tab bar height for content spacing:
+
+- Automatic bottom padding
+- Scroll indicator insets
+
+## Best Practices
+
+1. **Use appropriate wrappers** - TabScreenWrapper for tabs, ModalWrapper for modals
+2. **Leverage built-in states** - Don't recreate loading/error/empty states
+3. **Follow navigation patterns** - Use provided configuration hooks
+4. **Maintain consistency** - Use layout components throughout the app
+5. **Consider performance** - Use ScrollableListLayout for long lists
+6. **Handle edge cases** - Always provide error and empty states
 
 ## Migration Strategy
 
-### Phase 1: Add Wrappers to Existing Screens
+### Progressive Enhancement
 
-```typescript
-// Before
-export default function HomeScreen() {
-  return (
-    <SafeAreaView>
-      <ScrollView>
-        <View style={{ padding: 16 }}>
-          <Content />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
+1. Start with basic wrappers for consistency
+2. Add specialized features as needed
+3. Migrate screens incrementally
 
-// After
-export default function HomeScreen() {
-  return (
-    <ScreenWrapper safeArea="top" padding scrollable>
-      <Content />
-    </ScreenWrapper>
-  );
-}
-```
+### Backward Compatibility
 
-### Phase 2: Enhance Tab Configuration
+- Existing screens continue working
+- No breaking changes to navigation
+- Gradual adoption path
 
-```typescript
-// Before (current)
-<Tabs
-  screenOptions={{
-    tabBarActiveTintColor: tintColor,
-    tabBarButton: HapticTab,
-    tabBarBackground: TabBarBackground,
-  }}
->
+## Benefits
 
-// After (enhanced)
-<Tabs
-  screenOptions={createEnhancedTabOptions({
-    variant: 'default'
-  })}
->
-```
-
-### Phase 3: Add Content Layouts
-
-```typescript
-// Replace manual lists with ListLayout
-<FlatList data={items} renderItem={...} />
-
-// Becomes
-<ListLayout
-  data={items}
-  renderItem={...}
-  onRefresh={refetch}
-  emptyState={<EmptyState />}
-/>
-```
-
-## Key Benefits
-
-1. **Preserves Existing Work**
-   - Keeps HapticTab functionality
-   - Maintains TabBarBackground blur effects
-   - Uses existing IconSymbol components
-
-2. **Adds Consistency**
-   - Standardized screen wrappers
-   - Common loading/error states
-   - Consistent spacing and theming
-
-3. **Enhances Functionality**
-   - Scroll-to-top functionality for tab screens
-   - Additional tab variants
-   - Better state management
-
-4. **Type Safety**
-   - Full TypeScript support
-   - Proper prop validation
-   - IntelliSense support
-
-5. **Backward Compatible**
-   - Existing screens continue working
-   - Gradual migration possible
-   - No breaking changes
-
-## Implementation Notes
-
-### Respecting Existing Patterns
-
-1. **Keep HapticTab**: Don't replace, enhance
-2. **Keep TabBarBackground**: Build variants on top
-3. **Keep IconSymbol**: Use for consistency
-4. **Keep Theme System**: Integrate with existing `useThemeColor`
-
-### New Additions
-
-1. **TabScreenWrapper**: Enhanced tab screens with scroll-to-top functionality
-2. **Screen States**: Consistent loading/error handling
-3. **Layout Variants**: Floating, compact tab styles
-4. **Content Components**: List, Grid, Card layouts
-
-### File Organization
-
-```
-components/
-├── layout/           # New layout components
-│   ├── navigation/   # Enhanced nav components
-│   ├── wrappers/     # Screen wrappers
-│   └── content/      # List, Grid, Card
-├── ui/              # Existing UI components (keep)
-│   ├── tab-bar-background.tsx
-│   └── icon-symbol.tsx
-└── haptic-tab.tsx   # Existing (keep)
-```
-
-This approach respects the excellent foundation already built while adding the layout consistency and reusability we need.
+1. **Reduced boilerplate** - Less repetitive code
+2. **Consistent UX** - Same patterns everywhere
+3. **Faster development** - Pre-built components
+4. **Better maintenance** - Centralized layout logic
+5. **Type safety** - Full TypeScript support
+6. **Performance** - Optimized rendering and scrolling
