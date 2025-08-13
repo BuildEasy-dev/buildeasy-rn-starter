@@ -57,11 +57,6 @@ export interface DrawerFooterProps {
    */
   copyright?: string;
   /**
-   * Show border top
-   * @default true
-   */
-  showBorder?: boolean;
-  /**
    * Custom background color
    */
   backgroundColor?: string;
@@ -117,7 +112,6 @@ export function DrawerFooter({
   actions = [],
   version,
   copyright,
-  showBorder = true,
   backgroundColor,
   paddingVertical = 20,
   paddingHorizontal = 20,
@@ -125,7 +119,6 @@ export function DrawerFooter({
   const defaultBackgroundColor = useThemeColor('background');
   const textColor = useThemeColor('text');
   const tintColor = useThemeColor('tint');
-  const borderColor = useThemeColor('border');
 
   const renderAction = (action: DrawerFooterAction) => {
     const {
@@ -211,8 +204,6 @@ export function DrawerFooter({
         styles.container,
         {
           backgroundColor: backgroundColor || defaultBackgroundColor,
-          borderTopColor: borderColor,
-          borderTopWidth: showBorder ? StyleSheet.hairlineWidth : 0,
           paddingVertical,
           paddingHorizontal,
         },

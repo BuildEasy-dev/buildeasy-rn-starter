@@ -6,6 +6,7 @@ import {
   DrawerContentComponentProps,
 } from '@react-navigation/drawer';
 import { ThemedView, ThemedText } from '@/components/themed';
+import { Separator } from '@/components/ui/separator';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { DrawerHeader, DrawerHeaderProps } from './drawer-header';
 import { DrawerFooter, DrawerFooterProps } from './drawer-footer';
@@ -100,7 +101,6 @@ export function DrawerContent({
 }: DrawerContentProps) {
   const backgroundColor = useThemeColor('background');
   const textColor = useThemeColor('text');
-  const borderColor = useThemeColor('border');
   const tintColor = useThemeColor('tint');
 
   const { state, descriptors, navigation } = props;
@@ -120,7 +120,7 @@ export function DrawerContent({
       return (
         <View key={section.key}>
           {section.title && (
-            <ThemedView style={[styles.sectionHeader, { borderBottomColor: borderColor }]}>
+            <ThemedView style={styles.sectionHeader}>
               <ThemedText style={styles.sectionTitle}>{section.title}</ThemedText>
             </ThemedView>
           )}
@@ -184,14 +184,20 @@ export function DrawerContent({
   const renderHeader = () => {
     // New generic header takes priority
     if (headerProps && showHeader) {
-      return <DrawerHeader {...headerProps} />;
+      return (
+        <>
+          <DrawerHeader {...headerProps} />
+          <Separator />
+        </>
+      );
     }
 
     // Legacy custom header support
     if (header && showHeader) {
       return (
-        <ThemedView style={[styles.header, { borderBottomColor: borderColor }]}>
+        <ThemedView style={styles.header}>
           {header}
+          <Separator style={styles.headerSeparator} />
         </ThemedView>
       );
     }
@@ -202,13 +208,21 @@ export function DrawerContent({
   const renderFooter = () => {
     // New generic footer takes priority
     if (footerProps && showFooter) {
-      return <DrawerFooter {...footerProps} />;
+      return (
+        <>
+          <Separator />
+          <DrawerFooter {...footerProps} />
+        </>
+      );
     }
 
     // Legacy custom footer support
     if (footer && showFooter) {
       return (
-        <ThemedView style={[styles.footer, { borderTopColor: borderColor }]}>{footer}</ThemedView>
+        <ThemedView style={styles.footer}>
+          <Separator style={styles.footerSeparator} />
+          {footer}
+        </ThemedView>
       );
     }
 
@@ -219,6 +233,7 @@ export function DrawerContent({
     <DrawerContentScrollView
       {...props}
       contentContainerStyle={[styles.container, { backgroundColor }]}
+      style={{ flex: 1 }}
     >
       {renderHeader()}
 
@@ -233,12 +248,15 @@ export function DrawerContent({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
   },
   header: {
     paddingVertical: 20,
     paddingHorizontal: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  headerSeparator: {
+    marginTop: 20,
+    marginHorizontal: -16,
   },
   content: {
     flex: 1,
@@ -247,13 +265,15 @@ const styles = StyleSheet.create({
   footer: {
     paddingVertical: 20,
     paddingHorizontal: 16,
-    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  footerSeparator: {
+    marginBottom: 20,
+    marginHorizontal: -16,
   },
   sectionHeader: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    marginBottom: 8,
+    paddingTop: 8,
+    paddingBottom: 2,
   },
   sectionTitle: {
     fontSize: 13,

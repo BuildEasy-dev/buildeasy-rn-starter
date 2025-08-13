@@ -111,7 +111,6 @@ export function DrawerHeader({
   const defaultBackgroundColor = useThemeColor('background');
   const textColor = useThemeColor('text');
   const tintColor = useThemeColor('tint');
-  const borderColor = useThemeColor('border');
 
   const renderAvatar = () => {
     if (!avatar) return null;
@@ -175,7 +174,6 @@ export function DrawerHeader({
       paddingVertical,
       paddingHorizontal,
       backgroundColor: backgroundColor || defaultBackgroundColor,
-      borderBottomColor: borderColor,
     },
   ];
 
@@ -205,7 +203,6 @@ export function DrawerHeader({
 
 const styles = StyleSheet.create({
   container: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
     overflow: 'hidden',
   },
   overlay: {
