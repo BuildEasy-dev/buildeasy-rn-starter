@@ -3,9 +3,15 @@ import { Drawer } from 'expo-router/drawer';
 import { DrawerContent, createDrawerOptions } from '@/components/layout';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Alert } from 'react-native';
+import { useColorScheme, setColorScheme } from '@/hooks/use-color-scheme';
 
 export default function DrawerLayout() {
-  const [darkMode, setDarkMode] = React.useState(false);
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+
+  const toggleDarkMode = (value: boolean) => {
+    setColorScheme(value ? 'dark' : 'light');
+  };
 
   const handleLogout = () => {
     Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
@@ -53,8 +59,8 @@ export default function DrawerLayout() {
                 label: 'Dark Mode',
                 icon: 'moon' as const,
                 type: 'switch',
-                value: darkMode,
-                onValueChange: setDarkMode,
+                value: isDarkMode,
+                onValueChange: toggleDarkMode,
               },
               {
                 id: 'logout',

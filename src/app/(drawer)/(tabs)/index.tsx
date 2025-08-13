@@ -29,9 +29,16 @@ function ScrollToTopButton() {
 function DrawerToggleButton() {
   const { toggleDrawer } = useDrawerActions();
   const tintColor = useThemeColor('tint');
+  const backgroundColor = useThemeColor('background');
 
   return (
-    <Pressable onPress={toggleDrawer} style={styles.drawerToggle}>
+    <Pressable
+      onPress={toggleDrawer}
+      style={[
+        styles.drawerToggle,
+        { backgroundColor: backgroundColor + 'E6' }, // 90% opacity
+      ]}
+    >
       <IconSymbol name="line.3.horizontal" size={24} color={tintColor} />
     </Pressable>
   );
@@ -177,7 +184,6 @@ const styles = StyleSheet.create({
     left: 16,
     zIndex: 1000,
     padding: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 8,
   },
 });
