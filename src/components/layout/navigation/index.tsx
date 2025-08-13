@@ -6,10 +6,6 @@ export { useHeaderActions } from './stack-header-actions';
 // Drawer navigation
 export { DrawerContent } from './drawer-content';
 export type { DrawerContentProps, DrawerSection } from './drawer-content';
-export { DrawerHeader } from './drawer-header';
-export type { DrawerHeaderProps } from './drawer-header';
-export { DrawerFooter } from './drawer-footer';
-export type { DrawerFooterProps, DrawerFooterAction } from './drawer-footer';
 export { DrawerItem, DrawerItemSeparator } from './drawer-item';
 export type { DrawerItemProps } from './drawer-item';
 export { createDrawerOptions } from './drawer-options';
