@@ -1,14 +1,22 @@
 import React from 'react';
-import { StyleSheet, View, Pressable, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { DrawerItemList, DrawerContentComponentProps } from '@react-navigation/drawer';
 import { ThemedView, ThemedText, ThemedSafeAreaView } from '@/components/themed';
 import { Separator } from '@/components/ui/separator';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { DrawerItem } from './drawer-item';
+import { IconSymbolName } from '@/components/ui/icon-symbol';
+
+export interface DrawerRoute {
+  name: string;
+  label?: string;
+  icon?: IconSymbolName;
+  badge?: string | number;
+  badgeVariant?: 'default' | 'danger';
+}
 
 export interface DrawerSection {
-  key: string;
   title?: string;
-  routes: string[];
+  routes: DrawerRoute[];
 }
 
 export interface DrawerContentProps extends DrawerContentComponentProps {
@@ -23,7 +31,7 @@ export interface DrawerContentProps extends DrawerContentComponentProps {
    */
   footer?: React.ReactNode;
   /**
-   * Group routes into sections
+   * Group routes into sections with unified configuration
    */
   sections?: DrawerSection[];
   /**
@@ -48,49 +56,28 @@ export interface DrawerContentProps extends DrawerContentComponentProps {
  *
  * @example
  * ```tsx
- * import { AppBrandDrawerHeader, DrawerHeader, DrawerFooter } from '@/components/layout';
- * import { LogoutButton } from './logout-button';
- *
- * // Using header/footer as React components
+ * // Simplified unified configuration
  * <Drawer
  *   drawerContent={(props) => (
  *     <DrawerContent
  *       {...props}
- *       header={<AppBrandDrawerHeader appName="My App" tagline="Version 1.0" />}
- *       footer={
- *         <DrawerFooter
- *           actions={[
- *             {
- *               id: 'logout',
- *               label: 'Sign Out',
- *               icon: 'arrow.right.square',
- *               type: 'button',
- *               onPress: handleLogout,
- *             },
- *           ]}
- *           version="v1.0.0"
- *           copyright="© 2024 My Company"
- *         />
- *       }
  *       sections={[
- *         { key: 'main', title: 'Main', routes: ['home', 'profile'] },
- *         { key: 'settings', title: 'Settings', routes: ['settings', 'about'] }
+ *         {
+ *           title: 'Main',
+ *           routes: [
+ *             { name: 'home', label: 'Home', icon: 'house.fill' },
+ *             { name: 'profile', label: 'Profile', icon: 'person.fill', badge: 'New' },
+ *             { name: 'dashboard', label: 'Dashboard', icon: 'square.grid.2x2', badge: 5 }
+ *           ]
+ *         },
+ *         {
+ *           title: 'Settings',
+ *           routes: [
+ *             { name: 'settings', label: 'Settings', icon: 'gear', badge: 2 },
+ *             { name: 'help', label: 'Help', icon: 'questionmark.circle', badge: '!', badgeVariant: 'danger' }
+ *           ]
+ *         }
  *       ]}
- *     />
- *   )}
- * />
- *
- * // Using generic DrawerHeader with custom content
- * <Drawer
- *   drawerContent={(props) => (
- *     <DrawerContent
- *       {...props}
- *       header={
- *         <DrawerHeader backgroundColor="#1e40af">
- *           <CustomHeaderContent />
- *         </DrawerHeader>
- *       }
- *       footer={<CustomFooterComponent />}
  *     />
  *   )}
  * />
@@ -104,9 +91,6 @@ export function DrawerContent({
   renderItem,
   ...props
 }: DrawerContentProps) {
-  const textColor = useThemeColor('text');
-  const tintColor = useThemeColor('tint');
-
   const { state, descriptors, navigation } = props;
 
   const filteredRoutes = state.routes.filter((route) => !hiddenRoutes.includes(route.name));
@@ -116,13 +100,16 @@ export function DrawerContent({
       return <DrawerItemList {...props} />;
     }
 
-    return sections.map((section) => {
-      const sectionRoutes = filteredRoutes.filter((route) => section.routes.includes(route.name));
+    return sections.map((section, sectionIndex) => {
+      const sectionRouteNames = section.routes.map((route) => route.name);
+      const sectionRoutes = filteredRoutes.filter((route) =>
+        sectionRouteNames.includes(route.name)
+      );
 
       if (sectionRoutes.length === 0) return null;
 
       return (
-        <View key={section.key}>
+        <View key={sectionIndex}>
           {section.title && (
             <ThemedView style={styles.sectionHeader}>
               <ThemedText style={styles.sectionTitle}>{section.title}</ThemedText>
@@ -130,12 +117,17 @@ export function DrawerContent({
           )}
           {sectionRoutes.map((route, index) => {
             const { options } = descriptors[route.key];
+
+            // Find the route configuration from our sections
+            const routeConfig = section.routes.find((r) => r.name === route.name);
+
             const label =
-              options.drawerLabel !== undefined
+              routeConfig?.label ||
+              (options.drawerLabel !== undefined
                 ? options.drawerLabel
                 : options.title !== undefined
                   ? options.title
-                  : route.name;
+                  : route.name);
 
             const isFocused = state.index === state.routes.findIndex((r) => r.key === route.key);
 
@@ -156,28 +148,15 @@ export function DrawerContent({
             };
 
             return (
-              <Pressable
+              <DrawerItem
                 key={route.key}
+                label={label as string}
+                icon={routeConfig?.icon}
+                focused={isFocused}
+                badge={routeConfig?.badge}
+                badgeVariant={routeConfig?.badgeVariant}
                 onPress={onPress}
-                style={[styles.drawerItem, isFocused && styles.drawerItemFocused]}
-              >
-                <View style={styles.drawerItemContent}>
-                  {options.drawerIcon && (
-                    <View style={styles.drawerItemIcon}>
-                      {options.drawerIcon({
-                        focused: isFocused,
-                        size: 24,
-                        color: isFocused ? tintColor : textColor,
-                      })}
-                    </View>
-                  )}
-                  <ThemedText
-                    style={[styles.drawerItemLabel, isFocused && styles.drawerItemLabelFocused]}
-                  >
-                    {label as string}
-                  </ThemedText>
-                </View>
-              </Pressable>
+              />
             );
           })}
         </View>
@@ -277,27 +256,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textTransform: 'uppercase',
     opacity: 0.6,
-  },
-  drawerItem: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginHorizontal: 8,
-    borderRadius: 8,
-  },
-  drawerItemFocused: {
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
-  },
-  drawerItemContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  drawerItemIcon: {
-    marginRight: 12,
-  },
-  drawerItemLabel: {
-    fontSize: 16,
-  },
-  drawerItemLabelFocused: {
-    fontWeight: '600',
   },
 });

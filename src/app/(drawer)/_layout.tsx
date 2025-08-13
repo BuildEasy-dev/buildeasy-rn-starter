@@ -61,14 +61,26 @@ export default function DrawerLayout() {
           footer={renderFooter()}
           sections={[
             {
-              key: 'main',
               title: 'Main',
-              routes: ['(tabs)', 'profile', 'dashboard'],
+              routes: [
+                { name: '(tabs)', label: 'Home', icon: 'house.fill' },
+                { name: 'profile', label: 'Profile', icon: 'person.fill', badge: 'New' },
+                { name: 'dashboard', label: 'Dashboard', icon: 'square.grid.2x2', badge: 12 },
+              ],
             },
             {
-              key: 'tools',
               title: 'Tools & Settings',
-              routes: ['settings', 'help', 'about'],
+              routes: [
+                { name: 'settings', label: 'Settings', icon: 'gear', badge: 3 },
+                {
+                  name: 'help',
+                  label: 'Help & Support',
+                  icon: 'questionmark.circle',
+                  badge: '!',
+                  badgeVariant: 'danger',
+                },
+                { name: 'about', label: 'About', icon: 'info.circle' },
+              ],
             },
           ]}
           hiddenRoutes={['_sitemap', '+not-found']}

@@ -24,7 +24,7 @@ export interface DrawerItemProps {
   /**
    * Badge variant
    */
-  badgeVariant?: 'default' | 'primary' | 'danger';
+  badgeVariant?: 'default' | 'danger';
   /**
    * Press handler
    */
@@ -58,6 +58,14 @@ export interface DrawerItemProps {
  *   badge={3}
  *   onPress={() => navigation.navigate('dashboard')}
  * />
+ *
+ * <DrawerItem
+ *   label="Notifications"
+ *   icon="bell.fill"
+ *   badge="!"
+ *   badgeVariant="danger"
+ *   onPress={() => navigation.navigate('notifications')}
+ * />
  * ```
  */
 export function DrawerItem({
@@ -73,15 +81,9 @@ export function DrawerItem({
   const textColor = useThemeColor('text');
   const tintColor = useThemeColor('tint');
   const backgroundColor = useThemeColor('background');
-  const borderColor = useThemeColor('border');
 
   const getBadgeColors = () => {
     switch (badgeVariant) {
-      case 'primary':
-        return {
-          bg: tintColor,
-          text: backgroundColor,
-        };
       case 'danger':
         return {
           bg: '#FF3B30',
@@ -89,14 +91,19 @@ export function DrawerItem({
         };
       default:
         return {
-          bg: borderColor,
-          text: textColor,
+          bg: tintColor,
+          text: backgroundColor,
         };
     }
   };
 
   const badgeColors = getBadgeColors();
   const itemColor = focused ? tintColor : textColor;
+  const focusedBackgroundColor = focused
+    ? tintColor.startsWith('#')
+      ? `${tintColor}15`
+      : 'rgba(0, 122, 255, 0.1)'
+    : 'transparent';
 
   return (
     <Pressable
@@ -105,7 +112,7 @@ export function DrawerItem({
       style={[
         styles.container,
         focused && styles.containerFocused,
-        focused && { backgroundColor: `${tintColor}15` },
+        focused && { backgroundColor: focusedBackgroundColor },
         disabled && styles.containerDisabled,
         style,
       ]}
@@ -130,7 +137,14 @@ export function DrawerItem({
         </ThemedText>
 
         {badge !== undefined && (
-          <View style={[styles.badge, { backgroundColor: badgeColors.bg }]}>
+          <View
+            style={[
+              styles.badge,
+              { backgroundColor: badgeColors.bg },
+              // Make it a perfect circle for single characters
+              String(badge).length === 1 && styles.badgeCircle,
+            ]}
+          >
             <ThemedText style={[styles.badgeText, { color: badgeColors.text }]}>{badge}</ThemedText>
           </View>
         )}
@@ -191,6 +205,13 @@ const styles = StyleSheet.create({
     minWidth: 24,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  badgeCircle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
   },
   badgeText: {
     fontSize: 12,
