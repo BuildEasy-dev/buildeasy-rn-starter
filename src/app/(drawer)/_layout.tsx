@@ -1,39 +1,50 @@
 import React from 'react';
 import { Drawer } from 'expo-router/drawer';
-import {
-  DrawerContent,
-  createDrawerOptions,
-  AppBrandDrawerHeader,
-  DrawerFooter,
-} from '@/components/layout';
+import { StyleSheet, View, Switch } from 'react-native';
+import { DrawerContent, createDrawerOptions } from '@/components/layout';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Alert } from 'react-native';
+import { ThemedText, ThemedView } from '@/components/themed';
+import { useThemeColor } from '@/hooks/use-theme-color';
 import { useColorScheme, setColorScheme } from '@/hooks/use-color-scheme';
 
 export default function DrawerLayout() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
+  const textColor = useThemeColor('text');
+  const tintColor = useThemeColor('tint');
 
   const toggleDarkMode = (value: boolean) => {
     setColorScheme(value ? 'dark' : 'light');
   };
 
-  const handleLogout = () => {
-    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Sign Out',
-        style: 'destructive',
-        onPress: () => {
-          console.log('User logged out');
-          // In a real app, you'd handle authentication here
-        },
-      },
-    ]);
-  };
+  const renderHeader = () => (
+    <View style={styles.headerContainer}>
+      <View style={styles.textContainer}>
+        <ThemedText style={[styles.appName, { color: textColor }]} numberOfLines={1}>
+          BuildEasy
+        </ThemedText>
+        <ThemedText style={[styles.tagline, { color: textColor }]} numberOfLines={1}>
+          React Native Starter
+        </ThemedText>
+      </View>
+    </View>
+  );
+
+  const renderFooter = () => (
+    <ThemedView style={styles.footerContainer}>
+      <ThemedView style={styles.footerAction}>
+        <ThemedView style={styles.actionContent}>
+          <IconSymbol name="moon" size={20} color={textColor} style={styles.actionIcon} />
+          <ThemedText style={[styles.actionLabel, { color: textColor }]}>Dark Mode</ThemedText>
+        </ThemedView>
+        <Switch
+          value={isDarkMode}
+          onValueChange={toggleDarkMode}
+          trackColor={{ true: tintColor }}
+        />
+      </ThemedView>
+    </ThemedView>
+  );
 
   return (
     <Drawer
@@ -46,22 +57,8 @@ export default function DrawerLayout() {
       drawerContent={(props) => (
         <DrawerContent
           {...props}
-          header={<AppBrandDrawerHeader appName="BuildEasy" tagline="React Native Starter" />}
-          footer={
-            <DrawerFooter
-              actions={[
-                {
-                  id: 'theme',
-                  label: 'Dark Mode',
-                  icon: 'moon' as const,
-                  type: 'switch',
-                  value: isDarkMode,
-                  onValueChange: toggleDarkMode,
-                },
-              ]}
-              paddingVertical={4}
-            />
-          }
+          header={renderHeader()}
+          footer={renderFooter()}
           sections={[
             {
               key: 'main',
@@ -136,3 +133,46 @@ export default function DrawerLayout() {
     </Drawer>
   );
 }
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    minHeight: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textContainer: {
+    alignItems: 'center',
+  },
+  appName: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 2,
+    textAlign: 'center',
+  },
+  tagline: {
+    fontSize: 13,
+    opacity: 0.7,
+    textAlign: 'center',
+  },
+  footerContainer: {
+    paddingVertical: 4,
+  },
+  footerAction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+  actionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  actionIcon: {
+    marginRight: 12,
+  },
+  actionLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+});
