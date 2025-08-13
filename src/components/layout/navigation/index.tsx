@@ -12,5 +12,6 @@ export { DrawerFooter } from './drawer-footer';
 export type { DrawerFooterProps, DrawerFooterAction } from './drawer-footer';
 export { DrawerItem, DrawerItemSeparator } from './drawer-item';
 export type { DrawerItemProps } from './drawer-item';
-export { createDrawerOptions, useDrawerActions } from './drawer-options';
+export { createDrawerOptions } from './drawer-options';
 export type { CreateDrawerOptionsProps } from './drawer-options';
+export { useDrawerActions } from '@/hooks/use-drawer-actions';

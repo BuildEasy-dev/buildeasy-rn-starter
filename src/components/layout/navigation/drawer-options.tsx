@@ -1,6 +1,5 @@
-import { DrawerNavigationOptions, DrawerNavigationProp } from '@react-navigation/drawer';
+import { DrawerNavigationOptions } from '@react-navigation/drawer';
 import { Platform } from 'react-native';
-import { useNavigation } from 'expo-router';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export interface CreateDrawerOptionsProps {
@@ -151,41 +150,5 @@ export function createDrawerOptions(
         default: 'none', // No animation on other platforms
       }),
     };
-  };
-}
-
-/**
- * useDrawerActions - Hook for common drawer actions
- *
- * @example
- * ```tsx
- * const { toggleDrawer, openDrawer, closeDrawer } = useDrawerActions();
- *
- * <Pressable onPress={toggleDrawer}>
- *   <IconSymbol name="line.3.horizontal" />
- * </Pressable>
- * ```
- */
-export function useDrawerActions() {
-  const navigation = useNavigation<DrawerNavigationProp<any>>();
-
-  return {
-    /**
-     * Toggle drawer open/closed state
-     * Opens the drawer if closed, closes it if open
-     */
-    toggleDrawer: () => navigation.toggleDrawer(),
-
-    /**
-     * Open the drawer
-     * Forces the drawer to open regardless of current state
-     */
-    openDrawer: () => navigation.openDrawer(),
-
-    /**
-     * Close the drawer
-     * Forces the drawer to close regardless of current state
-     */
-    closeDrawer: () => navigation.closeDrawer(),
   };
 }
