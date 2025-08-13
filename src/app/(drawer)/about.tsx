@@ -1,24 +1,15 @@
 import React from 'react';
-import { StyleSheet, Pressable } from 'react-native';
-import { ScreenWrapper, useDrawerActions } from '@/components/layout';
+import { StyleSheet } from 'react-native';
+import { ScreenWrapper } from '@/components/layout';
 import { ThemedView, ThemedText } from '@/components/themed';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function AboutScreen() {
-  const { toggleDrawer } = useDrawerActions();
   const tintColor = useThemeColor('tint');
 
   return (
     <ScreenWrapper safeArea="top" scrollable padding>
-      <ThemedView style={styles.header}>
-        <Pressable onPress={toggleDrawer} style={styles.menuButton}>
-          <IconSymbol name="line.3.horizontal" size={24} color={tintColor} />
-        </Pressable>
-        <ThemedText style={styles.headerTitle}>About</ThemedText>
-        <ThemedView style={styles.headerRight} />
-      </ThemedView>
-
       <ThemedView style={styles.content}>
         <IconSymbol name="info.circle" size={64} color={tintColor} />
         <ThemedText type="title" style={styles.title}>
@@ -35,25 +26,6 @@ export default function AboutScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 4,
-    marginBottom: 20,
-  },
-  menuButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  headerRight: {
-    width: 40,
-  },
   content: {
     alignItems: 'center',
     padding: 32,

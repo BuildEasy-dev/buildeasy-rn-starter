@@ -51,7 +51,7 @@ export default function DrawerLayout() {
       screenOptions={createDrawerOptions({
         position: 'left',
         width: 280,
-        headerShown: false,
+        headerShown: true,
         swipeEnabled: true,
       })}
       drawerContent={(props) => (
@@ -92,6 +92,8 @@ export default function DrawerLayout() {
         name="(tabs)"
         options={{
           title: 'Home',
+          headerShown: false,
+          drawerLabel: 'Home',
           drawerIcon: ({ color, size }) => (
             <IconSymbol name="house.fill" color={color} size={size} />
           ),

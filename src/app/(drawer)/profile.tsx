@@ -1,26 +1,15 @@
 import React from 'react';
-import { StyleSheet, Pressable } from 'react-native';
-import { ScreenWrapper, useDrawerActions } from '@/components/layout';
+import { StyleSheet } from 'react-native';
+import { ScreenWrapper } from '@/components/layout';
 import { ThemedView, ThemedText } from '@/components/themed';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function ProfileScreen() {
-  const { toggleDrawer } = useDrawerActions();
   const tintColor = useThemeColor('tint');
 
   return (
     <ScreenWrapper safeArea="top" padding>
-      {/* Header with Drawer Toggle */}
-      <ThemedView style={styles.header}>
-        <Pressable onPress={toggleDrawer} style={styles.menuButton}>
-          <IconSymbol name="line.3.horizontal" size={24} color={tintColor} />
-        </Pressable>
-        <ThemedText style={styles.headerTitle}>Profile</ThemedText>
-        <ThemedView style={styles.headerRight} />
-      </ThemedView>
-
-      {/* Content */}
       <ThemedView style={styles.content}>
         <ThemedView style={styles.card}>
           <IconSymbol name="person.fill" size={48} color={tintColor} />
@@ -37,24 +26,6 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 4,
-  },
-  menuButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  headerRight: {
-    width: 40,
-  },
   content: {
     flex: 1,
     paddingTop: 20,
