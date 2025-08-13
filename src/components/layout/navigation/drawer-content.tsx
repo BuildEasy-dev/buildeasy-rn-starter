@@ -4,8 +4,6 @@ import { DrawerItemList, DrawerContentComponentProps } from '@react-navigation/d
 import { ThemedView, ThemedText, ThemedSafeAreaView } from '@/components/themed';
 import { Separator } from '@/components/ui/separator';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { DrawerHeader, DrawerHeaderProps } from './drawer-header';
-import { DrawerFooter, DrawerFooterProps } from './drawer-footer';
 
 export interface DrawerSection {
   key: string;
@@ -15,26 +13,13 @@ export interface DrawerSection {
 
 export interface DrawerContentProps extends DrawerContentComponentProps {
   /**
-   * Header configuration for generic DrawerHeader container
-   */
-  headerProps?: DrawerHeaderProps;
-  /**
-   * Footer configuration (use generic DrawerFooter)
-   */
-  footerProps?: DrawerFooterProps;
-  /**
-   * Custom header content (recommended approach)
-   * Use this to pass business components like UserProfileDrawerHeader
-   */
-  headerContent?: React.ReactNode;
-  /**
-   * Custom header component (legacy support)
-   * @deprecated Use headerContent with headerProps instead
+   * Header - can be DrawerHeader component or any React component
+   * - React component (including DrawerHeader)
    */
   header?: React.ReactNode;
   /**
-   * Custom footer component (legacy support)
-   * @deprecated Use footerProps instead
+   * Footer - can be DrawerFooter component or any React component
+   * - React component (including DrawerFooter)
    */
   footer?: React.ReactNode;
   /**
@@ -49,16 +34,6 @@ export interface DrawerContentProps extends DrawerContentComponentProps {
    * Custom item render function
    */
   renderItem?: (route: any, index: number, focused: boolean) => React.ReactNode;
-  /**
-   * Whether to show default header
-   * @default true
-   */
-  showHeader?: boolean;
-  /**
-   * Whether to show default footer
-   * @default true
-   */
-  showFooter?: boolean;
 }
 
 /**
@@ -73,42 +48,60 @@ export interface DrawerContentProps extends DrawerContentComponentProps {
  *
  * @example
  * ```tsx
- * import { UserProfileDrawerHeader } from './user-profile-drawer-header';
+ * import { AppBrandDrawerHeader, DrawerHeader, DrawerFooter } from '@/components/layout';
+ * import { LogoutButton } from './logout-button';
  *
- * // Recommended approach with business components
+ * // Using header/footer as React components
  * <Drawer
  *   drawerContent={(props) => (
  *     <DrawerContent
  *       {...props}
- *       headerProps={{ backgroundColor: '#1e40af' }}
- *       headerContent={
- *         <UserProfileDrawerHeader
- *           title="John Doe"
- *           subtitle="john.doe@example.com"
- *           caption="Premium Member"
+ *       header={<AppBrandDrawerHeader appName="My App" tagline="Version 1.0" />}
+ *       footer={
+ *         <DrawerFooter
+ *           actions={[
+ *             {
+ *               id: 'logout',
+ *               label: 'Sign Out',
+ *               icon: 'arrow.right.square',
+ *               type: 'button',
+ *               onPress: handleLogout,
+ *             },
+ *           ]}
+ *           version="v1.0.0"
+ *           copyright="© 2024 My Company"
  *         />
  *       }
  *       sections={[
  *         { key: 'main', title: 'Main', routes: ['home', 'profile'] },
  *         { key: 'settings', title: 'Settings', routes: ['settings', 'about'] }
  *       ]}
- *       footer={<LogoutButton />}
+ *     />
+ *   )}
+ * />
+ *
+ * // Using generic DrawerHeader with custom content
+ * <Drawer
+ *   drawerContent={(props) => (
+ *     <DrawerContent
+ *       {...props}
+ *       header={
+ *         <DrawerHeader backgroundColor="#1e40af">
+ *           <CustomHeaderContent />
+ *         </DrawerHeader>
+ *       }
+ *       footer={<CustomFooterComponent />}
  *     />
  *   )}
  * />
  * ```
  */
 export function DrawerContent({
-  headerProps,
-  footerProps,
-  headerContent,
   header,
   footer,
   sections,
   hiddenRoutes = [],
   renderItem,
-  showHeader = true,
-  showFooter = true,
   ...props
 }: DrawerContentProps) {
   const textColor = useThemeColor('text');
@@ -193,53 +186,25 @@ export function DrawerContent({
   };
 
   const renderHeader = () => {
-    if (!showHeader) return null;
+    if (!header) return null;
 
-    // New recommended approach: headerProps + headerContent
-    if (headerProps || headerContent) {
-      return (
-        <>
-          <DrawerHeader {...headerProps}>{headerContent}</DrawerHeader>
-          <Separator />
-        </>
-      );
-    }
-
-    // Legacy custom header support
-    if (header) {
-      return (
-        <ThemedView style={styles.header}>
-          {header}
-          <Separator style={styles.headerSeparator} />
-        </ThemedView>
-      );
-    }
-
-    return null;
+    return (
+      <ThemedView style={styles.header}>
+        {header}
+        <Separator style={styles.headerSeparator} />
+      </ThemedView>
+    );
   };
 
   const renderFooter = () => {
-    // New generic footer takes priority
-    if (footerProps && showFooter) {
-      return (
-        <>
-          <Separator />
-          <DrawerFooter {...footerProps} />
-        </>
-      );
-    }
+    if (!footer) return null;
 
-    // Legacy custom footer support
-    if (footer && showFooter) {
-      return (
-        <ThemedView style={styles.footer}>
-          <Separator style={styles.footerSeparator} />
-          {footer}
-        </ThemedView>
-      );
-    }
-
-    return null;
+    return (
+      <ThemedView style={styles.footer}>
+        <Separator style={styles.footerSeparator} />
+        {footer}
+      </ThemedView>
+    );
   };
 
   return (
@@ -295,7 +260,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   footer: {
-    paddingVertical: 20,
+    paddingVertical: 8,
     paddingHorizontal: 16,
   },
   footerSeparator: {

@@ -81,7 +81,7 @@ export function AppBrandDrawerHeader({ appName, tagline }: AppBrandDrawerHeaderP
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    minHeight: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
