@@ -104,6 +104,18 @@ export default function HomeScreen() {
             <ThemedText style={styles.modalButtonText}>📝 Create Post (Modal Page)</ThemedText>
           </Pressable>
         </ThemedView>
+
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText type="subtitle">🗂️ Drawer Navigation Demo</ThemedText>
+          <ThemedText>Experience the custom drawer navigation components:</ThemedText>
+
+          <Pressable
+            onPress={() => router.push('/drawer-example')}
+            style={[styles.modalButton, { backgroundColor: '#007AFF' }]}
+          >
+            <ThemedText style={styles.modalButtonText}>📋 Open Drawer Example</ThemedText>
+          </Pressable>
+        </ThemedView>
       </ScrollableParallaxView>
     </TabScreenWrapper>
   );
