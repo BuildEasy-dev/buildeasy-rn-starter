@@ -46,8 +46,6 @@ export default function DrawerLayout() {
             title: 'John Doe',
             subtitle: 'john.doe@example.com',
             caption: 'Premium Member',
-            showOnlineStatus: true,
-            isOnline: true,
             actionIcon: 'pencil' as const,
             onActionPress: () => console.log('Edit profile'),
             onPress: () => console.log('Go to profile'),

@@ -1,14 +1,16 @@
 import React from 'react';
 import { StyleSheet, ImageSourcePropType, Image, Pressable } from 'react-native';
+import type { ImageSource } from 'expo-image';
 import { ThemedView, ThemedText } from '@/components/themed';
 import { IconSymbol, IconSymbolName } from '@/components/ui/icon-symbol';
+import { ImageAvatar, TextAvatar } from '@/components/ui/avatar';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export interface DrawerHeaderProps {
   /**
    * Avatar image source
    */
-  avatar?: ImageSourcePropType | { uri: string };
+  avatar?: ImageSource;
   /**
    * Primary text (usually name)
    */
@@ -29,14 +31,6 @@ export interface DrawerHeaderProps {
    * Background image
    */
   backgroundImage?: ImageSourcePropType;
-  /**
-   * Show online status indicator
-   */
-  showOnlineStatus?: boolean;
-  /**
-   * Online status (true = online, false = offline)
-   */
-  isOnline?: boolean;
   /**
    * Action button (e.g., edit profile)
    */
@@ -70,7 +64,7 @@ export interface DrawerHeaderProps {
  * DrawerHeader - Generic header component for drawer navigation
  *
  * Features:
- * - Avatar with optional online status
+ * - Avatar (image or text-based)
  * - Title, subtitle, and caption text
  * - Background customization
  * - Optional action button
@@ -84,8 +78,6 @@ export interface DrawerHeaderProps {
  *   title="John Doe"
  *   subtitle="john.doe@example.com"
  *   caption="Premium Member"
- *   showOnlineStatus
- *   isOnline={true}
  *   actionIcon="pencil"
  *   onActionPress={() => console.log('Edit profile')}
  *   onPress={() => console.log('Go to profile')}
@@ -99,8 +91,6 @@ export function DrawerHeader({
   caption,
   backgroundColor,
   backgroundImage,
-  showOnlineStatus = false,
-  isOnline = false,
   actionIcon,
   onActionPress,
   onPress,
@@ -113,22 +103,15 @@ export function DrawerHeader({
   const tintColor = useThemeColor('tint');
 
   const renderAvatar = () => {
-    if (!avatar) return null;
+    if (!avatar && !title) return null;
 
     return (
       <ThemedView style={styles.avatarContainer}>
-        <Image source={avatar} style={styles.avatar} />
-        {showOnlineStatus && (
-          <ThemedView
-            style={[
-              styles.onlineIndicator,
-              {
-                backgroundColor: isOnline ? '#34C759' : '#8E8E93',
-                borderColor: backgroundColor || defaultBackgroundColor,
-              },
-            ]}
-          />
-        )}
+        {avatar ? (
+          <ImageAvatar source={avatar} size={64} />
+        ) : title ? (
+          <TextAvatar name={title} size={64} />
+        ) : null}
       </ThemedView>
     );
   };
@@ -217,22 +200,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatarContainer: {
-    position: 'relative',
     marginRight: 16,
-  },
-  avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-  },
-  onlineIndicator: {
-    position: 'absolute',
-    bottom: 2,
-    right: 2,
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    borderWidth: 3,
   },
   textContainer: {
     flex: 1,
