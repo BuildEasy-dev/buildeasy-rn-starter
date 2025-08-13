@@ -8,6 +8,9 @@ import { ThemedView } from '@/components/themed/themed-view';
 import { TabScreenWrapper } from '@/components/layout/wrappers';
 import { ScrollableParallaxView } from '@/components/parallax-scroll-view';
 import { useScrollToTop } from '@/hooks/use-scroll-to-top';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { useDrawerActions } from '@/components/layout';
 
 function ScrollToTopButton() {
   const scrollToTop = useScrollToTop();
@@ -23,9 +26,28 @@ function ScrollToTopButton() {
   );
 }
 
+function DrawerToggleButton() {
+  const { toggleDrawer } = useDrawerActions();
+  const tintColor = useThemeColor('tint');
+  const backgroundColor = useThemeColor('background');
+
+  return (
+    <Pressable
+      onPress={toggleDrawer}
+      style={[
+        styles.drawerToggle,
+        { backgroundColor: backgroundColor + 'E6' }, // 90% opacity
+      ]}
+    >
+      <IconSymbol name="line.3.horizontal" size={24} color={tintColor} />
+    </Pressable>
+  );
+}
+
 export default function HomeScreen() {
   return (
     <TabScreenWrapper safeArea={false} scrollToTopOnPress>
+      <DrawerToggleButton />
       <ScrollableParallaxView
         headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
         headerImage={
@@ -104,6 +126,14 @@ export default function HomeScreen() {
             <ThemedText style={styles.modalButtonText}>📝 Create Post (Modal Page)</ThemedText>
           </Pressable>
         </ThemedView>
+
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText type="subtitle">🗂️ Drawer Navigation</ThemedText>
+          <ThemedText>
+            This app now has integrated drawer navigation! Use the menu button in the top-left
+            corner or swipe from the left edge to open the drawer.
+          </ThemedText>
+        </ThemedView>
       </ScrollableParallaxView>
     </TabScreenWrapper>
   );
@@ -147,5 +177,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: 16,
+  },
+  drawerToggle: {
+    position: 'absolute',
+    top: 60,
+    left: 16,
+    zIndex: 1000,
+    padding: 8,
+    borderRadius: 8,
   },
 });

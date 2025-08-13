@@ -3,12 +3,18 @@ import { Linking, Platform } from 'react-native';
 import { TabScreenWrapper } from '@/components/layout/wrappers';
 import { SettingSection, SettingItem, AppFooter } from '@/features/settings/components';
 import { Config } from '@/constants/config';
+import { useColorScheme, setColorScheme } from '@/hooks/use-color-scheme';
 
 // Settings page UI configuration - set to 'card' for modern card style, 'default' for traditional flat style
 const SECTION_VIEW_STYLE = 'card' as const;
 
 export default function SettingScreen() {
-  const [darkMode, setDarkMode] = useState(false);
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+
+  const toggleDarkMode = (value: boolean) => {
+    setColorScheme(value ? 'dark' : 'light');
+  };
   const [notifications, setNotifications] = useState(true);
   const [sounds, setSounds] = useState(true);
   const [haptics, setHaptics] = useState(true);
@@ -35,8 +41,8 @@ export default function SettingScreen() {
           title="Dark Mode"
           subtitle="Toggle app theme appearance"
           type="toggle"
-          value={darkMode}
-          onValueChange={setDarkMode}
+          value={isDarkMode}
+          onValueChange={toggleDarkMode}
         />
       </SettingSection>
 
