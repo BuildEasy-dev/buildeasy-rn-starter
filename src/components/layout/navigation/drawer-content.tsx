@@ -1,11 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Pressable } from 'react-native';
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerContentComponentProps,
-} from '@react-navigation/drawer';
-import { ThemedView, ThemedText } from '@/components/themed';
+import { StyleSheet, View, Pressable, ScrollView } from 'react-native';
+import { DrawerItemList, DrawerContentComponentProps } from '@react-navigation/drawer';
+import { ThemedView, ThemedText, ThemedSafeAreaView } from '@/components/themed';
 import { Separator } from '@/components/ui/separator';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { DrawerHeader, DrawerHeaderProps } from './drawer-header';
@@ -99,7 +95,6 @@ export function DrawerContent({
   showFooter = true,
   ...props
 }: DrawerContentProps) {
-  const backgroundColor = useThemeColor('background');
   const textColor = useThemeColor('text');
   const tintColor = useThemeColor('tint');
 
@@ -230,25 +225,45 @@ export function DrawerContent({
   };
 
   return (
-    <DrawerContentScrollView
-      {...props}
-      contentContainerStyle={[styles.container, { backgroundColor }]}
-      style={{ flex: 1 }}
-    >
-      {renderHeader()}
+    <ThemedSafeAreaView style={styles.drawerContainer}>
+      {/* Fixed Header */}
+      <ThemedView style={styles.fixedHeader}>{renderHeader()}</ThemedView>
 
-      <ThemedView style={styles.content}>
-        {sections ? renderSections() : <DrawerItemList {...props} />}
-      </ThemedView>
+      {/* Scrollable Content */}
+      <ScrollView
+        style={styles.scrollableContent}
+        contentContainerStyle={styles.scrollContentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <ThemedView style={styles.content}>
+          {sections ? renderSections() : <DrawerItemList {...props} />}
+        </ThemedView>
+      </ScrollView>
 
-      {renderFooter()}
-    </DrawerContentScrollView>
+      {/* Fixed Footer */}
+      <ThemedView style={styles.fixedFooter}>{renderFooter()}</ThemedView>
+    </ThemedSafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+  },
+  drawerContainer: {
+    flex: 1,
+  },
+  fixedHeader: {
+    // Header stays at the top
+  },
+  scrollableContent: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    flexGrow: 1,
+  },
+  fixedFooter: {
+    // Footer stays at the bottom
   },
   header: {
     paddingVertical: 20,
@@ -259,7 +274,6 @@ const styles = StyleSheet.create({
     marginHorizontal: -16,
   },
   content: {
-    flex: 1,
     paddingVertical: 8,
   },
   footer: {
