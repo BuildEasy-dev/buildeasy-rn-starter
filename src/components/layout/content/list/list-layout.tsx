@@ -139,7 +139,7 @@ export function ListLayout<T>({
       return (
         <ThemedView style={styles.loadingFooter}>
           <ActivityIndicator size="small" color={tintColor} />
-          <ThemedText style={[styles.loadingText, { color: secondaryTextColor }]}>
+          <ThemedText type="body1" style={[styles.loadingText, { color: secondaryTextColor }]}>
             Loading more...
           </ThemedText>
         </ThemedView>
@@ -152,7 +152,7 @@ export function ListLayout<T>({
         <ThemedView style={styles.footer}>
           <ThemedView style={styles.endIndicator}>
             <ThemedView style={[styles.endLine, { backgroundColor: borderColor }]} />
-            <ThemedText style={[styles.endText, { color: secondaryTextColor }]}>
+            <ThemedText type="body1" style={[styles.endText, { color: secondaryTextColor }]}>
               No more posts
             </ThemedText>
             <ThemedView style={[styles.endLine, { backgroundColor: borderColor }]} />
@@ -272,7 +272,6 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   endText: {
-    fontSize: 12,
     marginHorizontal: 12,
     opacity: 0.5,
     textTransform: 'uppercase',
@@ -286,7 +285,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   loadingText: {
-    fontSize: 14,
     opacity: 0.6,
   },
 });

@@ -25,11 +25,19 @@ describe('ThemedText', () => {
 
   it('renders with different types without crashing', () => {
     expect(() => {
-      render(<ThemedText type="default">Default Text</ThemedText>);
-      render(<ThemedText type="title">Title Text</ThemedText>);
-      render(<ThemedText type="subtitle">Subtitle Text</ThemedText>);
-      render(<ThemedText type="defaultSemiBold">Semi Bold Text</ThemedText>);
-      render(<ThemedText type="link">Link Text</ThemedText>);
+      render(<ThemedText type="body1">Default Text</ThemedText>);
+      render(<ThemedText type="h1">Title Text</ThemedText>);
+      render(<ThemedText type="h3">Subtitle Text</ThemedText>);
+      render(
+        <ThemedText type="body1" weight="semibold">
+          Semi Bold Text
+        </ThemedText>
+      );
+      render(
+        <ThemedText type="body1" variant="link">
+          Link Text
+        </ThemedText>
+      );
     }).not.toThrow();
   });
 

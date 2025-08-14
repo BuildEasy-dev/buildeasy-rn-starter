@@ -37,11 +37,12 @@ export function ErrorState({
         <IconSymbol name="exclamationmark.triangle" size={48} color={errorColor} />
 
         <YStack space="$2" alignItems="center">
-          <ThemedText type="title" style={{ textAlign: 'center' }}>
+          <ThemedText type="h1" style={{ textAlign: 'center' }}>
             Something went wrong
           </ThemedText>
 
           <ThemedText
+            type="body1"
             style={{
               textAlign: 'center',
               opacity: 0.7,
@@ -56,7 +57,9 @@ export function ErrorState({
             onPress={onRetry}
             style={({ pressed }) => [styles.retryButton, { opacity: pressed ? 0.7 : 1 }]}
           >
-            <ThemedText style={{ fontWeight: '600', color: '#007AFF' }}>Try Again</ThemedText>
+            <ThemedText type="body1" weight="semibold" style={{ color: '#007AFF' }}>
+              Try Again
+            </ThemedText>
           </Pressable>
         )}
       </YStack>

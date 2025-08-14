@@ -68,7 +68,7 @@ export function PhotosScreen() {
       return (
         <ThemedView style={styles.loadingFooter}>
           <ActivityIndicator size="small" color={tintColor} />
-          <ThemedText style={[styles.loadingText, { color: secondaryTextColor }]}>
+          <ThemedText type="body1" style={{ color: secondaryTextColor }}>
             Loading more...
           </ThemedText>
         </ThemedView>
@@ -81,7 +81,7 @@ export function PhotosScreen() {
         <ThemedView style={styles.footer}>
           <ThemedView style={styles.endIndicator}>
             <ThemedView style={[styles.endLine, { backgroundColor: borderColor }]} />
-            <ThemedText style={[styles.endText, { color: secondaryTextColor }]}>
+            <ThemedText type="body1" style={{ color: secondaryTextColor }}>
               No more photos
             </ThemedText>
             <ThemedView style={[styles.endLine, { backgroundColor: borderColor }]} />
@@ -110,8 +110,8 @@ export function PhotosScreen() {
   const renderHeader = () => (
     <ThemedView style={[styles.header, { borderBottomColor: borderColor }]}>
       <ThemedView style={styles.headerLeft}>
-        <ThemedText style={styles.headerTitle}>Photos</ThemedText>
-        <ThemedText style={[styles.postCount, { color: textColor }]}>
+        <ThemedText type="h1">Photos</ThemedText>
+        <ThemedText type="body1" style={{ color: textColor }}>
           {posts.length} posts
         </ThemedText>
       </ThemedView>
@@ -201,12 +201,7 @@ const styles = StyleSheet.create({
   headerLeft: {
     flex: 1,
   },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
   postCount: {
-    fontSize: 14,
     opacity: 0.6,
     marginTop: 2,
   },
@@ -241,7 +236,6 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   endText: {
-    fontSize: 12,
     marginHorizontal: 12,
     opacity: 0.5,
     textTransform: 'uppercase',
@@ -253,9 +247,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 20,
     gap: 8,
-  },
-  loadingText: {
-    fontSize: 14,
-    opacity: 0.6,
   },
 });

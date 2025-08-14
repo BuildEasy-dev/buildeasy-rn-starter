@@ -31,7 +31,11 @@ export function SettingSection({ title, children, viewStyle = 'default' }: Setti
   const cardBorderColor = useThemeColor('gray4');
   const isCardStyle = viewStyle === 'card';
 
-  const titleComponent = <ThemedText style={styles.titleText}>{title}</ThemedText>;
+  const titleComponent = (
+    <ThemedText type="overline" variant="muted">
+      {title}
+    </ThemedText>
+  );
 
   const childrenContent = isCardStyle ? (
     <ThemedView
@@ -56,13 +60,6 @@ export function SettingSection({ title, children, viewStyle = 'default' }: Setti
 const styles = StyleSheet.create({
   container: {
     marginBottom: 8,
-  },
-  titleText: {
-    fontSize: 12,
-    fontWeight: '600',
-    opacity: 0.6,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
   },
   titleContainer: {
     paddingHorizontal: 16,

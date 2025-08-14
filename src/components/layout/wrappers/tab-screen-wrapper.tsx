@@ -106,7 +106,7 @@ export function TabScreenWrapper({
 
         {/* Title */}
         {headerTitle && (
-          <ThemedText style={[styles.headerTitle, { textAlign: headerTitleAlign }]}>
+          <ThemedText type="h2" style={[styles.headerTitle, { textAlign: headerTitleAlign }]}>
             {headerTitle}
           </ThemedText>
         )}
@@ -225,8 +225,6 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     flex: 1,
-    fontSize: 22,
-    fontWeight: '600',
     textAlign: 'center',
   },
   headerRight: {

@@ -19,10 +19,20 @@ export default function DrawerLayout() {
   const renderHeader = () => (
     <View style={styles.headerContainer}>
       <View style={styles.textContainer}>
-        <ThemedText style={[styles.appName, { color: textColor }]} numberOfLines={1}>
+        <ThemedText
+          type="h5"
+          weight="bold"
+          style={{ color: textColor, textAlign: 'center', marginBottom: 2 }}
+          numberOfLines={1}
+        >
           BuildEasy
         </ThemedText>
-        <ThemedText style={[styles.tagline, { color: textColor }]} numberOfLines={1}>
+        <ThemedText
+          type="caption"
+          variant="muted"
+          style={{ textAlign: 'center' }}
+          numberOfLines={1}
+        >
           React Native Starter
         </ThemedText>
       </View>
@@ -34,7 +44,9 @@ export default function DrawerLayout() {
       <ThemedView style={styles.footerAction}>
         <ThemedView style={styles.actionContent}>
           <IconSymbol name="moon" size={20} color={textColor} style={styles.actionIcon} />
-          <ThemedText style={[styles.actionLabel, { color: textColor }]}>Dark Mode</ThemedText>
+          <ThemedText type="body1" weight="medium" style={{ color: textColor }}>
+            Dark Mode
+          </ThemedText>
         </ThemedView>
         <ThemedSwitch value={isDarkMode} onValueChange={toggleDarkMode} />
       </ThemedView>
@@ -56,22 +68,10 @@ export default function DrawerLayout() {
           footer={renderFooter()}
           sections={[
             {
-              routes: [
-                { name: '(tabs)', label: 'Home', icon: 'house.fill' },
-                { name: 'profile', label: 'Profile', icon: 'person.fill', badge: 'New' },
-              ],
+              routes: [{ name: '(tabs)', label: 'Home', icon: 'house.fill', badge: 'New' }],
             },
             {
-              routes: [
-                {
-                  name: 'help',
-                  label: 'Help & Support',
-                  icon: 'questionmark.circle',
-                  badge: '!',
-                  badgeVariant: 'danger',
-                },
-                { name: 'about', label: 'About', icon: 'info.circle' },
-              ],
+              routes: [{ name: 'typography', label: 'Typography', icon: 'textformat' }],
             },
           ]}
           hiddenRoutes={['_sitemap', '+not-found']}
@@ -93,29 +93,11 @@ export default function DrawerLayout() {
 
       {/* Additional drawer screens */}
       <Drawer.Screen
-        name="profile"
+        name="typography"
         options={{
-          title: 'Profile',
+          title: 'Typography',
           drawerIcon: ({ color, size }) => (
-            <IconSymbol name="person.fill" color={color} size={size} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="help"
-        options={{
-          title: 'Help & Support',
-          drawerIcon: ({ color, size }) => (
-            <IconSymbol name="questionmark.circle" color={color} size={size} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="about"
-        options={{
-          title: 'About',
-          drawerIcon: ({ color, size }) => (
-            <IconSymbol name="info.circle" color={color} size={size} />
+            <IconSymbol name="textformat" color={color} size={size} />
           ),
         }}
       />
@@ -131,17 +113,6 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     alignItems: 'center',
-  },
-  appName: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 2,
-    textAlign: 'center',
-  },
-  tagline: {
-    fontSize: 13,
-    opacity: 0.7,
-    textAlign: 'center',
   },
   footerContainer: {
     paddingVertical: 4,
@@ -159,9 +130,5 @@ const styles = StyleSheet.create({
   },
   actionIcon: {
     marginRight: 12,
-  },
-  actionLabel: {
-    fontSize: 16,
-    fontWeight: '500',
   },
 });

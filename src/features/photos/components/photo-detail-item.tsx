@@ -75,7 +75,9 @@ export function PhotoDetailItem({
             <TextAvatar name={post.user.name} size={32} />
             <View style={styles.userDetails}>
               <View style={styles.usernameRow}>
-                <ThemedText style={styles.username}>{post.user.username}</ThemedText>
+                <ThemedText type="body1" weight="semibold">
+                  {post.user.username}
+                </ThemedText>
                 {post.user.verified && (
                   <IconSymbol
                     name="checkmark.seal.fill"
@@ -86,7 +88,7 @@ export function PhotoDetailItem({
                 )}
               </View>
               {post.location && (
-                <ThemedText style={[styles.location, { color: secondaryTextColor }]}>
+                <ThemedText type="body1" style={{ color: secondaryTextColor }}>
                   {post.location.name}
                 </ThemedText>
               )}
@@ -118,7 +120,9 @@ export function PhotoDetailItem({
           />
           {!imageLoaded && (
             <View style={[styles.imagePlaceholder, { width: imageWidth, height: imageHeight }]}>
-              <ThemedText style={{ color: secondaryTextColor }}>Loading...</ThemedText>
+              <ThemedText type="body1" style={{ color: secondaryTextColor }}>
+                Loading...
+              </ThemedText>
             </View>
           )}
         </View>
@@ -154,15 +158,19 @@ export function PhotoDetailItem({
 
         {/* Stats */}
         <View style={styles.stats}>
-          <ThemedText style={styles.likesCount}>{formatNumber(post.stats.likes)} likes</ThemedText>
+          <ThemedText type="body1" weight="semibold">
+            {formatNumber(post.stats.likes)} likes
+          </ThemedText>
         </View>
 
         {/* Caption */}
         {post.caption && (
           <View style={styles.caption}>
-            <ThemedText>
-              <ThemedText style={styles.username}>{post.user.username}</ThemedText>
-              <ThemedText> {post.caption}</ThemedText>
+            <ThemedText type="body1">
+              <ThemedText type="body1" weight="semibold">
+                {post.user.username}
+              </ThemedText>
+              <ThemedText type="body1"> {post.caption}</ThemedText>
             </ThemedText>
           </View>
         )}
@@ -170,7 +178,7 @@ export function PhotoDetailItem({
         {/* Comments */}
         {post.stats.comments > 0 && (
           <Pressable onPress={() => onComment(post)} style={styles.commentsButton}>
-            <ThemedText style={[styles.commentsText, { color: secondaryTextColor }]}>
+            <ThemedText type="body1" style={{ color: secondaryTextColor }}>
               View all {formatNumber(post.stats.comments)} comments
             </ThemedText>
           </Pressable>
@@ -178,7 +186,7 @@ export function PhotoDetailItem({
 
         {/* Timestamp */}
         <View style={styles.timestamp}>
-          <ThemedText style={[styles.timestampText, { color: secondaryTextColor }]}>
+          <ThemedText type="body1" style={{ color: secondaryTextColor }}>
             {formatRelativeTime(post.timestamp)}
           </ThemedText>
         </View>
@@ -213,15 +221,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  username: {
-    fontWeight: '600',
-    fontSize: 16,
-  },
   verifiedIcon: {
     marginLeft: 4,
   },
   location: {
-    fontSize: 12,
     marginTop: 2,
   },
   closeButton: {
@@ -265,10 +268,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 12,
   },
-  likesCount: {
-    fontWeight: '600',
-    fontSize: 16,
-  },
   caption: {
     paddingHorizontal: 16,
     paddingTop: 8,
@@ -277,16 +276,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 6,
   },
-  commentsText: {
-    fontSize: 15,
-  },
   timestamp: {
     paddingHorizontal: 16,
     paddingTop: 6,
     paddingBottom: 20,
   },
   timestampText: {
-    fontSize: 12,
     textTransform: 'uppercase',
   },
 });
