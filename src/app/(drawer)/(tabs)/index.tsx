@@ -21,7 +21,9 @@ function ScrollToTopButton() {
 
   return (
     <Pressable onPress={handlePress} style={styles.scrollButton}>
-      <ThemedText style={styles.scrollButtonText}>↑ Scroll to Top</ThemedText>
+      <ThemedText type="body2" weight="semibold" style={styles.scrollButtonText}>
+        ↑ Scroll to Top
+      </ThemedText>
     </Pressable>
   );
 }
@@ -58,15 +60,18 @@ export default function HomeScreen() {
         }
       >
         <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">Welcome!</ThemedText>
+          <ThemedText type="h1">Welcome!</ThemedText>
           <HelloWave />
         </ThemedView>
         <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-          <ThemedText>
-            Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see
-            changes. Press{' '}
-            <ThemedText type="defaultSemiBold">
+          <ThemedText type="h3">Step 1: Try it</ThemedText>
+          <ThemedText type="body1">
+            Edit{' '}
+            <ThemedText type="body1" weight="semibold">
+              app/(tabs)/index.tsx
+            </ThemedText>{' '}
+            to see changes. Press{' '}
+            <ThemedText type="body1" weight="semibold">
               {Platform.select({
                 ios: 'cmd + d',
                 android: 'cmd + m',
@@ -77,59 +82,76 @@ export default function HomeScreen() {
           </ThemedText>
         </ThemedView>
         <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          <ThemedText>
+          <ThemedText type="h3">Step 2: Explore</ThemedText>
+          <ThemedText type="body1">
             {`Tap the Explore tab to learn more about what's included in this starter app.`}
           </ThemedText>
         </ThemedView>
         <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">Step 3: Start building</ThemedText>
-          <ThemedText>
+          <ThemedText type="h3">Step 3: Start building</ThemedText>
+          <ThemedText type="body1">
             You&apos;re all set! Start building your app by editing the files in the{' '}
-            <ThemedText type="defaultSemiBold">app</ThemedText> directory. The ScreenWrapper
-            component provides consistent layouts with safe area handling, theming, and loading
-            states.
+            <ThemedText type="body1" weight="semibold">
+              app
+            </ThemedText>{' '}
+            directory. The ScreenWrapper component provides consistent layouts with safe area
+            handling, theming, and loading states.
           </ThemedText>
         </ThemedView>
 
         <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">✨ New: TabScreenWrapper</ThemedText>
-          <ThemedText>
-            This screen now uses <ThemedText type="defaultSemiBold">TabScreenWrapper</ThemedText>{' '}
-            from <ThemedText type="defaultSemiBold">@/components/layout</ThemedText>. It provides
-            tab-specific features like scroll-to-top on tab press, badge support, and optimized safe
-            areas.
+          <ThemedText type="h3">✨ New: TabScreenWrapper</ThemedText>
+          <ThemedText type="body1">
+            This screen now uses{' '}
+            <ThemedText type="body1" weight="semibold">
+              TabScreenWrapper
+            </ThemedText>{' '}
+            from{' '}
+            <ThemedText type="body1" weight="semibold">
+              @/components/layout
+            </ThemedText>
+            . It provides tab-specific features like scroll-to-top on tab press, badge support, and
+            optimized safe areas.
           </ThemedText>
         </ThemedView>
 
         <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">🚀 Scroll to Top Demo</ThemedText>
-          <ThemedText>Try the scroll-to-top functionality:</ThemedText>
-          <ThemedText>
-            • <ThemedText type="defaultSemiBold">Automatic</ThemedText>: Scroll down, then tap the
-            Home tab again
+          <ThemedText type="h3">🚀 Scroll to Top Demo</ThemedText>
+          <ThemedText type="body1">Try the scroll-to-top functionality:</ThemedText>
+          <ThemedText type="body1">
+            •{' '}
+            <ThemedText type="body1" weight="semibold">
+              Automatic
+            </ThemedText>
+            : Scroll down, then tap the Home tab again
           </ThemedText>
-          <ThemedText>
-            • <ThemedText type="defaultSemiBold">Manual</ThemedText>: Use the button below
+          <ThemedText type="body1">
+            •{' '}
+            <ThemedText type="body1" weight="semibold">
+              Manual
+            </ThemedText>
+            : Use the button below
           </ThemedText>
           <ScrollToTopButton />
         </ThemedView>
 
         <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">📱 Modal Pages Demo</ThemedText>
-          <ThemedText>Test Expo Router modal pages:</ThemedText>
+          <ThemedText type="h3">📱 Modal Pages Demo</ThemedText>
+          <ThemedText type="body1">Test Expo Router modal pages:</ThemedText>
 
           <Pressable
             onPress={() => router.push('/create-post')}
             style={[styles.modalButton, { backgroundColor: '#34C759' }]}
           >
-            <ThemedText style={styles.modalButtonText}>📝 Create Post (Modal Page)</ThemedText>
+            <ThemedText type="body1" weight="semibold" style={styles.modalButtonText}>
+              📝 Create Post (Modal Page)
+            </ThemedText>
           </Pressable>
         </ThemedView>
 
         <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">🗂️ Drawer Navigation</ThemedText>
-          <ThemedText>
+          <ThemedText type="h3">🗂️ Drawer Navigation</ThemedText>
+          <ThemedText type="body1">
             This app now has integrated drawer navigation! Use the menu button in the top-left
             corner or swipe from the left edge to open the drawer.
           </ThemedText>
@@ -165,7 +187,6 @@ const styles = StyleSheet.create({
   },
   scrollButtonText: {
     color: 'white',
-    fontWeight: '600',
   },
   modalButton: {
     marginTop: 12,
@@ -175,8 +196,6 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     color: 'white',
-    fontWeight: '600',
-    fontSize: 16,
   },
   drawerToggle: {
     position: 'absolute',

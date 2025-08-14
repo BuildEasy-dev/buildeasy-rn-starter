@@ -64,9 +64,11 @@ export function SettingItem({
             }}
           >
             <View style={{ flex: 1 }}>
-              <ThemedText style={{ fontSize: 16, fontWeight: '500' }}>{title}</ThemedText>
+              <ThemedText type="body1" weight="medium">
+                {title}
+              </ThemedText>
               {subtitle && (
-                <ThemedText style={{ fontSize: 14, opacity: 0.6, marginTop: 2 }}>
+                <ThemedText type="body2" variant="muted" style={{ marginTop: 2 }}>
                   {subtitle}
                 </ThemedText>
               )}

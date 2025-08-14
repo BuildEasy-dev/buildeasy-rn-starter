@@ -126,9 +126,10 @@ export function DrawerItem({
         )}
 
         <ThemedText
+          type="body1"
+          weight={focused ? 'semibold' : 'medium'}
           style={[
             styles.label,
-            focused && styles.labelFocused,
             disabled && styles.labelDisabled,
             { color: disabled ? `${textColor}50` : itemColor },
           ]}
@@ -146,7 +147,13 @@ export function DrawerItem({
               String(badge).length === 1 && styles.badgeCircle,
             ]}
           >
-            <ThemedText style={[styles.badgeText, { color: badgeColors.text }]}>{badge}</ThemedText>
+            <ThemedText
+              type="caption"
+              weight="semibold"
+              style={[styles.badgeText, { color: badgeColors.text }]}
+            >
+              {badge}
+            </ThemedText>
           </View>
         )}
       </View>
@@ -190,11 +197,6 @@ const styles = StyleSheet.create({
   },
   label: {
     flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  labelFocused: {
-    fontWeight: '600',
   },
   labelDisabled: {
     // Color is set dynamically
@@ -215,8 +217,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   badgeText: {
-    fontSize: 12,
-    fontWeight: '600',
+    // Type and weight are handled by ThemedText
   },
   separator: {
     height: StyleSheet.hairlineWidth,

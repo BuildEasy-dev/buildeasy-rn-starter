@@ -49,6 +49,8 @@ export function TextAvatar({
       ]}
     >
       <ThemedText
+        type="body1"
+        weight="semibold"
         style={[
           styles.text,
           {
@@ -97,7 +99,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  text: {
-    fontWeight: '600',
-  },
+  text: {},
 });

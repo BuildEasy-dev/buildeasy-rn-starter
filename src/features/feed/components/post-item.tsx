@@ -43,7 +43,9 @@ function PostItemComponent({
         </View>
         <View style={styles.headerContent}>
           <View style={styles.authorInfo}>
-            <ThemedText style={styles.authorName}>{post.author.name}</ThemedText>
+            <ThemedText type="body1" weight="bold" style={styles.authorName}>
+              {post.author.name}
+            </ThemedText>
             {post.author.verified && (
               <IconSymbol
                 name="checkmark.seal.fill"
@@ -52,10 +54,10 @@ function PostItemComponent({
                 style={styles.verifiedIcon}
               />
             )}
-            <ThemedText style={[styles.username, { color: secondaryTextColor }]}>
+            <ThemedText type="body1" style={[styles.username, { color: secondaryTextColor }]}>
               @{post.author.username}
             </ThemedText>
-            <ThemedText style={[styles.timestamp, { color: secondaryTextColor }]}>
+            <ThemedText type="body1" style={[styles.timestamp, { color: secondaryTextColor }]}>
               · {formatRelativeTime(post.timestamp)}
             </ThemedText>
           </View>
@@ -67,25 +69,33 @@ function PostItemComponent({
 
       {post.replyTo && (
         <View style={styles.replyToContainer}>
-          <ThemedText style={[styles.replyTo, { color: secondaryTextColor }]}>
+          <ThemedText type="body1" style={[styles.replyTo, { color: secondaryTextColor }]}>
             Replying to @{post.replyTo}
           </ThemedText>
         </View>
       )}
 
       <View style={styles.content}>
-        <ThemedText style={styles.postText}>{post.content}</ThemedText>
+        <ThemedText type="body1" style={styles.postText}>
+          {post.content}
+        </ThemedText>
       </View>
 
       {post.quotePost && (
         <View style={[styles.quotePost, { borderColor }]}>
           <View style={styles.quoteHeader}>
-            <ThemedText style={styles.quoteName}>{post.quotePost.author.name}</ThemedText>
-            <ThemedText style={[styles.quoteUsername, { color: secondaryTextColor }]}>
+            <ThemedText type="body1" weight="semibold" style={styles.quoteName}>
+              {post.quotePost.author.name}
+            </ThemedText>
+            <ThemedText type="body1" style={[styles.quoteUsername, { color: secondaryTextColor }]}>
               @{post.quotePost.author.username}
             </ThemedText>
           </View>
-          <ThemedText style={[styles.quoteContent, { color: textColor }]} numberOfLines={2}>
+          <ThemedText
+            type="body1"
+            style={[styles.quoteContent, { color: textColor }]}
+            numberOfLines={2}
+          >
             {post.quotePost.content}
           </ThemedText>
         </View>
@@ -94,7 +104,7 @@ function PostItemComponent({
       <View style={styles.actions}>
         <Pressable onPress={() => onReply(post)} style={styles.actionButton}>
           <IconSymbol name="bubble.left" size={18} color={secondaryTextColor} />
-          <ThemedText style={[styles.actionCount, { color: secondaryTextColor }]}>
+          <ThemedText type="body1" style={[styles.actionCount, { color: secondaryTextColor }]}>
             {formatNumber(post.stats.replies)}
           </ThemedText>
         </Pressable>
@@ -106,6 +116,7 @@ function PostItemComponent({
             color={post.isReposted ? '#00BA7C' : secondaryTextColor}
           />
           <ThemedText
+            type="body1"
             style={[
               styles.actionCount,
               { color: post.isReposted ? '#00BA7C' : secondaryTextColor },
@@ -122,6 +133,7 @@ function PostItemComponent({
             color={post.isLiked ? '#E0245E' : secondaryTextColor}
           />
           <ThemedText
+            type="body1"
             style={[styles.actionCount, { color: post.isLiked ? '#E0245E' : secondaryTextColor }]}
           >
             {formatNumber(post.stats.likes)}
@@ -143,7 +155,7 @@ function PostItemComponent({
 
       {post.stats.views && (
         <View style={styles.viewsContainer}>
-          <ThemedText style={[styles.views, { color: secondaryTextColor }]}>
+          <ThemedText type="body1" style={[styles.views, { color: secondaryTextColor }]}>
             {formatNumber(post.stats.views)} views
           </ThemedText>
         </View>
@@ -179,20 +191,15 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   authorName: {
-    fontWeight: '700',
-    fontSize: 15,
     marginRight: 4,
   },
   verifiedIcon: {
     marginRight: 4,
   },
   username: {
-    fontSize: 15,
     marginRight: 4,
   },
-  timestamp: {
-    fontSize: 15,
-  },
+  timestamp: {},
   moreButton: {
     padding: 4,
   },
@@ -200,15 +207,12 @@ const styles = StyleSheet.create({
     marginLeft: 52,
     marginBottom: 4,
   },
-  replyTo: {
-    fontSize: 14,
-  },
+  replyTo: {},
   content: {
     marginLeft: 52,
     marginBottom: 6,
   },
   postText: {
-    fontSize: 15,
     lineHeight: 20,
   },
   quotePost: {
@@ -224,15 +228,10 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   quoteName: {
-    fontWeight: '600',
-    fontSize: 14,
     marginRight: 4,
   },
-  quoteUsername: {
-    fontSize: 14,
-  },
+  quoteUsername: {},
   quoteContent: {
-    fontSize: 14,
     lineHeight: 18,
   },
   actions: {
@@ -248,14 +247,11 @@ const styles = StyleSheet.create({
     paddingRight: 16,
   },
   actionCount: {
-    fontSize: 13,
     marginLeft: 6,
   },
   viewsContainer: {
     marginLeft: 52,
     marginTop: 8,
   },
-  views: {
-    fontSize: 13,
-  },
+  views: {},
 });

@@ -119,7 +119,7 @@ export function PhotoGrid({
       return (
         <ThemedView style={styles.loadingFooter}>
           <ActivityIndicator size="small" color={tintColor} />
-          <ThemedText style={[styles.loadingText, { color: secondaryTextColor }]}>
+          <ThemedText type="body1" style={{ color: secondaryTextColor }}>
             Loading more...
           </ThemedText>
         </ThemedView>
@@ -132,7 +132,7 @@ export function PhotoGrid({
         <ThemedView style={styles.footer}>
           <ThemedView style={styles.endIndicator}>
             <ThemedView style={[styles.endLine, { backgroundColor: borderColor }]} />
-            <ThemedText style={[styles.endText, { color: secondaryTextColor }]}>
+            <ThemedText type="body1" style={{ color: secondaryTextColor }}>
               No more photos
             </ThemedText>
             <ThemedView style={[styles.endLine, { backgroundColor: borderColor }]} />
@@ -231,10 +231,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     gap: 8,
   },
-  loadingText: {
-    fontSize: 14,
-    opacity: 0.6,
-  },
   footer: {
     paddingVertical: 20,
     paddingHorizontal: 20,
@@ -252,7 +248,6 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   endText: {
-    fontSize: 12,
     marginHorizontal: 12,
     opacity: 0.5,
     textTransform: 'uppercase',

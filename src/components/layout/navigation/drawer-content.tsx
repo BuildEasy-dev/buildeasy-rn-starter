@@ -114,7 +114,9 @@ export function DrawerContent({
         <View key={sectionIndex}>
           {section.title && (
             <ThemedView style={styles.sectionHeader}>
-              <ThemedText style={styles.sectionTitle}>{section.title}</ThemedText>
+              <ThemedText type="overline" variant="muted">
+                {section.title}
+              </ThemedText>
             </ThemedView>
           )}
           {sectionRoutes.map((route, index) => {
@@ -252,11 +254,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 8,
     paddingBottom: 2,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    opacity: 0.6,
   },
 });

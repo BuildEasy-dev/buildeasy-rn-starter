@@ -41,11 +41,12 @@ export function EmptyState({
         </ThemedView>
 
         <YStack space="$2" alignItems="center">
-          <ThemedText type="title" style={{ textAlign: 'center' }}>
+          <ThemedText type="h1" style={{ textAlign: 'center' }}>
             {title}
           </ThemedText>
 
           <ThemedText
+            type="body1"
             style={{
               textAlign: 'center',
               opacity: 0.6,
@@ -66,7 +67,9 @@ export function EmptyState({
               },
             ]}
           >
-            <ThemedText style={{ fontWeight: '600', color: 'white' }}>{actionLabel}</ThemedText>
+            <ThemedText type="body1" weight="semibold" style={{ color: 'white' }}>
+              {actionLabel}
+            </ThemedText>
           </Pressable>
         )}
       </YStack>
