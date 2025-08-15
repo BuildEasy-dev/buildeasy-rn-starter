@@ -1,6 +1,12 @@
 import { Stack, styled } from '@tamagui/core';
-import React, { forwardRef, useState, memo } from 'react';
+import React, { forwardRef, useState, memo, useEffect } from 'react';
 import { Pressable, type ViewStyle, type PressableProps } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 
@@ -32,12 +38,12 @@ const StyledRadioContainer = styled(Stack, {
   name: 'StyledRadioContainer',
   flexDirection: 'row',
   alignItems: 'center',
-  padding: '$1',
+  padding: '$2',
 });
 
 const StyledRadio = styled(Stack, {
   name: 'StyledRadio',
-  borderWidth: 1,
+  borderWidth: 2,
   borderRadius: 999,
   justifyContent: 'center',
   alignItems: 'center',
@@ -117,7 +123,13 @@ export const ThemedRadio = memo(
       ref
     ) => {
       const [focused, setFocused] = useState(false);
+      const [pressed, setPressed] = useState(false);
       const isSelected = selectedValue !== undefined ? selectedValue === value : false;
+
+      // Animation values
+      const radioScale = useSharedValue(1);
+      const indicatorScale = useSharedValue(isSelected ? 1 : 0);
+      const indicatorOpacity = useSharedValue(isSelected ? 1 : 0);
 
       // Apply theme colors with fallback to Tamagui tokens
       const borderColor = useThemeColor('border', {
@@ -128,6 +140,17 @@ export const ThemedRadio = memo(
       const radioColor = useThemeColor('tint', { light: lightRadioColor, dark: darkRadioColor });
 
       const disabledColor = useThemeColor('textSecondary');
+
+      // Update animations when selection state changes
+      useEffect(() => {
+        if (isSelected) {
+          indicatorScale.value = withSpring(1, { damping: 12, stiffness: 200 });
+          indicatorOpacity.value = withTiming(1, { duration: 150 });
+        } else {
+          indicatorScale.value = withTiming(0, { duration: 100 });
+          indicatorOpacity.value = withTiming(0, { duration: 100 });
+        }
+      }, [isSelected, indicatorScale, indicatorOpacity]);
 
       // Handle radio press
       const handlePress = () => {
@@ -146,15 +169,37 @@ export const ThemedRadio = memo(
         setFocused(false);
       };
 
+      const handlePressIn = () => {
+        setPressed(true);
+        radioScale.value = withSpring(0.95, { damping: 15, stiffness: 300 });
+      };
+
+      const handlePressOut = () => {
+        setPressed(false);
+        radioScale.value = withSpring(1, { damping: 15, stiffness: 300 });
+      };
+
       // Determine radio border color based on state
       const radioBorderColor = disabled ? disabledColor : focused ? radioColor : borderColor;
 
-      const radioOpacity = disabled ? 0.6 : 1;
+      const radioOpacity = disabled ? 0.6 : pressed ? 0.8 : 1;
+
+      // Animated styles
+      const animatedRadioStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: radioScale.value }],
+      }));
+
+      const animatedIndicatorStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: indicatorScale.value }],
+        opacity: indicatorOpacity.value,
+      }));
 
       return (
         <Pressable
           ref={ref}
           onPress={handlePress}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
           style={style}
           disabled={disabled}
           accessibilityRole="radio"
@@ -164,22 +209,24 @@ export const ThemedRadio = memo(
           {...rest}
         >
           <StyledRadioContainer>
-            <StyledRadio
-              size={size}
-              style={{
-                borderColor: radioBorderColor,
-                opacity: radioOpacity,
-              }}
-            >
-              {isSelected && (
-                <StyledRadioIndicator
-                  size={size}
-                  style={{
-                    backgroundColor: radioColor,
-                  }}
-                />
-              )}
-            </StyledRadio>
+            <Animated.View style={animatedRadioStyle}>
+              <StyledRadio
+                size={size}
+                style={{
+                  borderColor: radioBorderColor,
+                  opacity: radioOpacity,
+                }}
+              >
+                <Animated.View style={animatedIndicatorStyle}>
+                  <StyledRadioIndicator
+                    size={size}
+                    style={{
+                      backgroundColor: radioColor,
+                    }}
+                  />
+                </Animated.View>
+              </StyledRadio>
+            </Animated.View>
 
             {label && (
               <StyledLabel>
