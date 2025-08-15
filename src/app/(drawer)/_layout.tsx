@@ -75,6 +75,8 @@ export default function DrawerLayout() {
                 { name: 'typography', label: 'Typography', icon: 'textformat' },
                 { name: 'icons', label: 'Icons', icon: 'star' },
                 { name: 'buttons', label: 'Buttons', icon: 'slider.horizontal.3' },
+                { name: 'checkboxes', label: 'Checkboxes', icon: 'checkmark' },
+                { name: 'radios', label: 'Radio Buttons', icon: 'checkmark.circle' },
               ],
             },
           ]}
@@ -118,6 +120,26 @@ export default function DrawerLayout() {
           title: 'Buttons',
           drawerIcon: ({ color, size }) => (
             <IconSymbol name="slider.horizontal.3" color={color} size={size} />
+          ),
+        }}
+      />
+
+      <Drawer.Screen
+        name="checkboxes"
+        options={{
+          title: 'Checkboxes',
+          drawerIcon: ({ color, size }) => (
+            <IconSymbol name="checkmark" color={color} size={size} />
+          ),
+        }}
+      />
+
+      <Drawer.Screen
+        name="radios"
+        options={{
+          title: 'Radio Buttons',
+          drawerIcon: ({ color, size }) => (
+            <IconSymbol name="checkmark.circle" color={color} size={size} />
           ),
         }}
       />
