@@ -1,6 +1,13 @@
 import { Stack, styled } from '@tamagui/core';
-import React, { forwardRef, useState, memo } from 'react';
+import React, { forwardRef, useState, memo, useEffect } from 'react';
 import { Pressable, type ViewStyle, type PressableProps } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  interpolateColor,
+} from 'react-native-reanimated';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -103,6 +110,12 @@ export const ThemedCheckbox = memo(
       const [focused, setFocused] = useState(false);
       const [pressed, setPressed] = useState(false);
 
+      // Animation values
+      const checkboxScale = useSharedValue(1);
+      const checkmarkScale = useSharedValue(isChecked ? 1 : 0);
+      const checkmarkOpacity = useSharedValue(isChecked ? 1 : 0);
+      const backgroundColorProgress = useSharedValue(isChecked ? 1 : 0);
+
       // Apply theme colors with fallback to Tamagui tokens
       // Note: backgroundColor is not used in the new checkmark design
 
@@ -114,6 +127,19 @@ export const ThemedCheckbox = memo(
       const checkColor = useThemeColor('tint', { light: lightCheckColor, dark: darkCheckColor });
 
       const disabledColor = useThemeColor('textSecondary');
+
+      // Update animations when checked state changes
+      useEffect(() => {
+        if (isChecked) {
+          checkmarkScale.value = withSpring(1, { damping: 12, stiffness: 200 });
+          checkmarkOpacity.value = withTiming(1, { duration: 150 });
+          backgroundColorProgress.value = withTiming(1, { duration: 200 });
+        } else {
+          checkmarkScale.value = withTiming(0, { duration: 100 });
+          checkmarkOpacity.value = withTiming(0, { duration: 100 });
+          backgroundColorProgress.value = withTiming(0, { duration: 150 });
+        }
+      }, [isChecked, checkmarkScale, checkmarkOpacity, backgroundColorProgress]);
 
       // Handle checkbox press
       const handlePress = () => {
@@ -137,10 +163,12 @@ export const ThemedCheckbox = memo(
 
       const handlePressIn = () => {
         setPressed(true);
+        checkboxScale.value = withSpring(0.95, { damping: 15, stiffness: 300 });
       };
 
       const handlePressOut = () => {
         setPressed(false);
+        checkboxScale.value = withSpring(1, { damping: 15, stiffness: 300 });
       };
 
       // Determine checkbox border color based on state
@@ -148,8 +176,20 @@ export const ThemedCheckbox = memo(
 
       const checkboxOpacity = disabled ? 0.6 : pressed ? 0.8 : 1;
 
-      // Determine checkbox background color based on state
-      const checkboxBackgroundColor = isChecked ? checkColor : 'transparent';
+      // Animated styles
+      const animatedCheckboxStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: checkboxScale.value }],
+        backgroundColor: interpolateColor(
+          backgroundColorProgress.value,
+          [0, 1],
+          ['transparent', checkColor]
+        ),
+      }));
+
+      const animatedCheckmarkStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: checkmarkScale.value }],
+        opacity: checkmarkOpacity.value,
+      }));
 
       return (
         <Pressable
@@ -166,22 +206,19 @@ export const ThemedCheckbox = memo(
           {...rest}
         >
           <StyledCheckboxContainer>
-            <StyledCheckbox
-              size={size}
-              style={{
-                borderColor: checkboxBorderColor,
-                backgroundColor: checkboxBackgroundColor,
-                opacity: checkboxOpacity,
-              }}
-            >
-              {isChecked && (
-                <IconSymbol
-                  name="checkmark"
-                  size={getIconSize(size)}
-                  color={isChecked ? 'white' : checkColor}
-                />
-              )}
-            </StyledCheckbox>
+            <Animated.View style={animatedCheckboxStyle}>
+              <StyledCheckbox
+                size={size}
+                style={{
+                  borderColor: checkboxBorderColor,
+                  opacity: checkboxOpacity,
+                }}
+              >
+                <Animated.View style={animatedCheckmarkStyle}>
+                  <IconSymbol name="checkmark" size={getIconSize(size)} color="white" />
+                </Animated.View>
+              </StyledCheckbox>
+            </Animated.View>
 
             {label && (
               <StyledLabel style={{ opacity: disabled ? 0.6 : 1 }}>
