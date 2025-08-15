@@ -1,3 +1,4 @@
+export * from './themed-button';
 export * from './themed-flatlist';
 export * from './themed-flashlist';
 export * from './themed-safe-area-view';
