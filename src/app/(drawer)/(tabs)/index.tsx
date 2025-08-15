@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { HelloWave } from '@/components/hello-wave';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
+import { ThemedButton } from '@/components/themed/themed-button';
 import { TabScreenWrapper } from '@/components/layout/wrappers';
 import { ScrollableParallaxView } from '@/components/parallax-scroll-view';
 import { useScrollToTop } from '@/hooks/use-scroll-to-top';
@@ -20,11 +21,12 @@ function ScrollToTopButton() {
   };
 
   return (
-    <Pressable onPress={handlePress} style={styles.scrollButton}>
-      <ThemedText type="body2" weight="semibold" style={styles.scrollButtonText}>
-        ↑ Scroll to Top
-      </ThemedText>
-    </Pressable>
+    <ThemedButton
+      label="↑ Scroll to Top"
+      variant="primary"
+      onPress={handlePress}
+      style={styles.scrollButton}
+    />
   );
 }
 
@@ -139,14 +141,12 @@ export default function HomeScreen() {
           <ThemedText type="h3">📱 Modal Pages Demo</ThemedText>
           <ThemedText type="body1">Test Expo Router modal pages:</ThemedText>
 
-          <Pressable
+          <ThemedButton
+            label="📝 Create Post (Modal Page)"
+            variant="primary"
             onPress={() => router.push('/create-post')}
-            style={[styles.modalButton, { backgroundColor: '#34C759' }]}
-          >
-            <ThemedText type="body1" weight="semibold" style={styles.modalButtonText}>
-              📝 Create Post (Modal Page)
-            </ThemedText>
-          </Pressable>
+            style={styles.modalButton}
+          />
         </ThemedView>
 
         <ThemedView style={styles.stepContainer}>
@@ -180,22 +180,9 @@ const styles = StyleSheet.create({
   },
   scrollButton: {
     marginTop: 12,
-    padding: 12,
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  scrollButtonText: {
-    color: 'white',
   },
   modalButton: {
     marginTop: 12,
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  modalButtonText: {
-    color: 'white',
   },
   drawerToggle: {
     position: 'absolute',
