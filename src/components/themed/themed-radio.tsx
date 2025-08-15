@@ -32,12 +32,12 @@ const StyledRadioContainer = styled(Stack, {
   name: 'StyledRadioContainer',
   flexDirection: 'row',
   alignItems: 'center',
-  padding: '$1',
+  padding: '$2',
 });
 
 const StyledRadio = styled(Stack, {
   name: 'StyledRadio',
-  borderWidth: 1,
+  borderWidth: 2,
   borderRadius: 999,
   justifyContent: 'center',
   alignItems: 'center',
@@ -117,6 +117,7 @@ export const ThemedRadio = memo(
       ref
     ) => {
       const [focused, setFocused] = useState(false);
+      const [pressed, setPressed] = useState(false);
       const isSelected = selectedValue !== undefined ? selectedValue === value : false;
 
       // Apply theme colors with fallback to Tamagui tokens
@@ -146,15 +147,25 @@ export const ThemedRadio = memo(
         setFocused(false);
       };
 
+      const handlePressIn = () => {
+        setPressed(true);
+      };
+
+      const handlePressOut = () => {
+        setPressed(false);
+      };
+
       // Determine radio border color based on state
       const radioBorderColor = disabled ? disabledColor : focused ? radioColor : borderColor;
 
-      const radioOpacity = disabled ? 0.6 : 1;
+      const radioOpacity = disabled ? 0.6 : pressed ? 0.8 : 1;
 
       return (
         <Pressable
           ref={ref}
           onPress={handlePress}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
           style={style}
           disabled={disabled}
           accessibilityRole="radio"

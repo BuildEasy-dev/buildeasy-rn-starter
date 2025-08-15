@@ -3,6 +3,7 @@ import React, { forwardRef, useState, memo } from 'react';
 import { Pressable, type ViewStyle, type PressableProps } from 'react-native';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 import { ThemedText } from './themed-text';
 
@@ -26,12 +27,12 @@ const StyledCheckboxContainer = styled(Stack, {
   name: 'StyledCheckboxContainer',
   flexDirection: 'row',
   alignItems: 'center',
-  padding: '$1',
+  padding: '$2',
 });
 
 const StyledCheckbox = styled(Stack, {
   name: 'StyledCheckbox',
-  borderWidth: 1,
+  borderWidth: 2,
   borderRadius: '$1',
   justifyContent: 'center',
   alignItems: 'center',
@@ -59,32 +60,19 @@ const StyledCheckbox = styled(Stack, {
   },
 });
 
-const StyledCheckmark = styled(Stack, {
-  name: 'StyledCheckmark',
-  borderRadius: '$0.5',
-  backgroundColor: '$primary',
-
-  variants: {
-    size: {
-      small: {
-        width: 10,
-        height: 10,
-      },
-      medium: {
-        width: 14,
-        height: 14,
-      },
-      large: {
-        width: 16,
-        height: 16,
-      },
-    },
-  },
-
-  defaultVariants: {
-    size: 'medium',
-  },
-});
+// Helper function to get icon size based on checkbox size
+const getIconSize = (size: 'small' | 'medium' | 'large'): number => {
+  switch (size) {
+    case 'small':
+      return 10;
+    case 'medium':
+      return 14;
+    case 'large':
+      return 16;
+    default:
+      return 14;
+  }
+};
 
 const StyledLabel = styled(Stack, {
   name: 'StyledLabel',
@@ -113,12 +101,10 @@ export const ThemedCheckbox = memo(
     ) => {
       const [isChecked, setIsChecked] = useState(value);
       const [focused, setFocused] = useState(false);
+      const [pressed, setPressed] = useState(false);
 
       // Apply theme colors with fallback to Tamagui tokens
-      const backgroundColor = useThemeColor('background', {
-        light: lightBackgroundColor,
-        dark: darkBackgroundColor,
-      });
+      // Note: backgroundColor is not used in the new checkmark design
 
       const borderColor = useThemeColor('border', {
         light: lightBorderColor,
@@ -149,18 +135,28 @@ export const ThemedCheckbox = memo(
         setFocused(false);
       };
 
+      const handlePressIn = () => {
+        setPressed(true);
+      };
+
+      const handlePressOut = () => {
+        setPressed(false);
+      };
+
       // Determine checkbox border color based on state
       const checkboxBorderColor = disabled ? disabledColor : focused ? checkColor : borderColor;
 
-      const checkboxOpacity = disabled ? 0.6 : 1;
+      const checkboxOpacity = disabled ? 0.6 : pressed ? 0.8 : 1;
 
       // Determine checkbox background color based on state
-      const checkboxBackgroundColor = isChecked ? backgroundColor : 'transparent';
+      const checkboxBackgroundColor = isChecked ? checkColor : 'transparent';
 
       return (
         <Pressable
           ref={ref}
           onPress={handlePress}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
           style={style}
           disabled={disabled}
           accessibilityRole="checkbox"
@@ -179,11 +175,10 @@ export const ThemedCheckbox = memo(
               }}
             >
               {isChecked && (
-                <StyledCheckmark
-                  size={size}
-                  style={{
-                    backgroundColor: checkColor,
-                  }}
+                <IconSymbol
+                  name="checkmark"
+                  size={getIconSize(size)}
+                  color={isChecked ? 'white' : checkColor}
                 />
               )}
             </StyledCheckbox>
