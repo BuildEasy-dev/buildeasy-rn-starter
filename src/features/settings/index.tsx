@@ -37,7 +37,7 @@ export default function SettingScreen() {
       {/* Appearance Section */}
       <SettingSection title="Appearance" viewStyle={SECTION_VIEW_STYLE}>
         <SettingItem
-          icon="moon.fill"
+          icon="moon"
           title="Dark Mode"
           subtitle="Toggle app theme appearance"
           type="toggle"
@@ -49,7 +49,7 @@ export default function SettingScreen() {
       {/* Notifications Section */}
       <SettingSection title="Notifications" viewStyle={SECTION_VIEW_STYLE}>
         <SettingItem
-          icon="bell.fill"
+          icon="bell"
           title="Push Notifications"
           subtitle="Receive new message and update alerts"
           type="toggle"
@@ -58,7 +58,7 @@ export default function SettingScreen() {
         />
 
         <SettingItem
-          icon="speaker.wave.3.fill"
+          icon="speaker.wave.3"
           title="Sounds"
           subtitle="Notification sounds and ringtones"
           type="toggle"
@@ -86,7 +86,7 @@ export default function SettingScreen() {
         />
 
         <SettingItem
-          icon="envelope.fill"
+          icon="envelope"
           title="Contact Us"
           subtitle="Get technical support and feedback"
           onPress={openEmail}
@@ -127,14 +127,14 @@ export default function SettingScreen() {
       {/* Legal Section */}
       <SettingSection title="Legal" viewStyle={SECTION_VIEW_STYLE}>
         <SettingItem
-          icon="lock.shield.fill"
+          icon="lock.shield"
           title="Privacy Policy"
           subtitle="Read our privacy policy"
           onPress={() => openURL(Config.PRIVACY_URL)}
         />
 
         <SettingItem
-          icon="doc.text.fill"
+          icon="doc.text"
           title="Terms of Service"
           subtitle="Read our terms of service"
           onPress={() => openURL(Config.TERMS_URL)}

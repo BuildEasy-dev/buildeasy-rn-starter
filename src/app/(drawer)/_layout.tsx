@@ -68,10 +68,13 @@ export default function DrawerLayout() {
           footer={renderFooter()}
           sections={[
             {
-              routes: [{ name: '(tabs)', label: 'Home', icon: 'house.fill', badge: 'New' }],
+              routes: [{ name: '(tabs)', label: 'Home', icon: 'house', badge: 'New' }],
             },
             {
-              routes: [{ name: 'typography', label: 'Typography', icon: 'textformat' }],
+              routes: [
+                { name: 'typography', label: 'Typography', icon: 'textformat' },
+                { name: 'icons', label: 'Icons', icon: 'star' },
+              ],
             },
           ]}
           hiddenRoutes={['_sitemap', '+not-found']}
@@ -85,9 +88,7 @@ export default function DrawerLayout() {
           title: 'Home',
           headerShown: false,
           drawerLabel: 'Home',
-          drawerIcon: ({ color, size }) => (
-            <IconSymbol name="house.fill" color={color} size={size} />
-          ),
+          drawerIcon: ({ color, size }) => <IconSymbol name="house" color={color} size={size} />,
         }}
       />
 
@@ -99,6 +100,14 @@ export default function DrawerLayout() {
           drawerIcon: ({ color, size }) => (
             <IconSymbol name="textformat" color={color} size={size} />
           ),
+        }}
+      />
+
+      <Drawer.Screen
+        name="icons"
+        options={{
+          title: 'Icons',
+          drawerIcon: ({ color, size }) => <IconSymbol name="star" color={color} size={size} />,
         }}
       />
     </Drawer>

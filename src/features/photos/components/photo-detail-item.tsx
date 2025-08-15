@@ -80,7 +80,7 @@ export function PhotoDetailItem({
                 </ThemedText>
                 {post.user.verified && (
                   <IconSymbol
-                    name="checkmark.seal.fill"
+                    name="checkmark.seal"
                     size={14}
                     color={tintColor}
                     style={styles.verifiedIcon}
