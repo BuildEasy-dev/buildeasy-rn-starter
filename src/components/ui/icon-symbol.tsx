@@ -172,6 +172,8 @@ const MAPPING = {
   'gear.circle': 'settings',
   'gear.circle.fill': 'settings',
   'slider.horizontal.3': 'tune',
+  'switch.2': 'toggle-on',
+  switch: 'toggle-off',
   'cpu.fill': 'memory',
   cpu: 'memory',
   'externaldrive.fill': 'storage',

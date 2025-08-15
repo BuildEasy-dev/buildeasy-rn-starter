@@ -77,6 +77,7 @@ export default function DrawerLayout() {
                 { name: 'buttons', label: 'Buttons', icon: 'slider.horizontal.3' },
                 { name: 'checkboxes', label: 'Checkboxes', icon: 'checkmark' },
                 { name: 'radios', label: 'Radio Buttons', icon: 'checkmark.circle' },
+                { name: 'switches', label: 'Switches', icon: 'switch.2' },
               ],
             },
           ]}
@@ -141,6 +142,14 @@ export default function DrawerLayout() {
           drawerIcon: ({ color, size }) => (
             <IconSymbol name="checkmark.circle" color={color} size={size} />
           ),
+        }}
+      />
+
+      <Drawer.Screen
+        name="switches"
+        options={{
+          title: 'Switches',
+          drawerIcon: ({ color, size }) => <IconSymbol name="switch.2" color={color} size={size} />,
         }}
       />
     </Drawer>
