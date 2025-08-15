@@ -74,6 +74,7 @@ export default function DrawerLayout() {
               routes: [
                 { name: 'typography', label: 'Typography', icon: 'textformat' },
                 { name: 'icons', label: 'Icons', icon: 'star' },
+                { name: 'buttons', label: 'Buttons', icon: 'slider.horizontal.3' },
               ],
             },
           ]}
@@ -108,6 +109,16 @@ export default function DrawerLayout() {
         options={{
           title: 'Icons',
           drawerIcon: ({ color, size }) => <IconSymbol name="star" color={color} size={size} />,
+        }}
+      />
+
+      <Drawer.Screen
+        name="buttons"
+        options={{
+          title: 'Buttons',
+          drawerIcon: ({ color, size }) => (
+            <IconSymbol name="slider.horizontal.3" color={color} size={size} />
+          ),
         }}
       />
     </Drawer>
