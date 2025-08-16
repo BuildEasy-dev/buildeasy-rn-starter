@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedButton } from '@/components/themed/themed-button';
@@ -180,7 +180,7 @@ export function ActionSheetOverlay({
         </View>
       );
     },
-    [handleAction, textSecondary, borderColor]
+    [handleAction, textSecondary, textColor]
   );
 
   return (

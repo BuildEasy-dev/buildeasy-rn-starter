@@ -8,6 +8,11 @@ import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ConfirmOverlay } from '@/components/ui/confirm-overlay';
 import { ActionSheetOverlay } from '@/components/ui/action-sheet-overlay';
+import {
+  NotificationOverlay,
+  type NotificationVariant,
+} from '@/components/ui/notification-overlay';
+import { InputOverlay } from '@/components/ui/input-overlay';
 
 /**
  * Overlay Component Showcase
@@ -31,6 +36,16 @@ export const OverlayShowcase = () => {
   const [destructiveConfirmVisible, setDestructiveConfirmVisible] = useState(false);
   const [actionSheetVisible, setActionSheetVisible] = useState(false);
   const [actionSheetSectionsVisible, setActionSheetSectionsVisible] = useState(false);
+  const [notificationVisible, setNotificationVisible] = useState<{
+    variant: NotificationVariant;
+    title: string;
+    message?: string;
+    action?: boolean;
+  } | null>(null);
+  const [inputOverlayVisible, setInputOverlayVisible] = useState(false);
+  const [multilineInputVisible, setMultilineInputVisible] = useState(false);
+  const [validatedInputVisible, setValidatedInputVisible] = useState(false);
+  const [inputResult, setInputResult] = useState('No input yet');
 
   return (
     <ThemedView style={styles.container}>
@@ -516,6 +531,167 @@ export const OverlayShowcase = () => {
           ]}
         />
       </View>
+
+      {/* Input Overlay Examples */}
+      <View style={styles.section}>
+        <ThemedText type="h6" style={styles.subTitle}>
+          Input Overlay
+        </ThemedText>
+        <ThemedText style={styles.overlayContent}>Last input result: {inputResult}</ThemedText>
+        <View style={styles.buttonRow}>
+          <ThemedButton
+            onPress={() => setInputOverlayVisible(true)}
+            label="Single Line"
+            variant="primary"
+            size="medium"
+            style={styles.variantButton}
+          />
+          <ThemedButton
+            onPress={() => setMultilineInputVisible(true)}
+            label="Multi-line"
+            variant="secondary"
+            size="medium"
+            style={styles.variantButton}
+          />
+        </View>
+        <ThemedButton
+          onPress={() => setValidatedInputVisible(true)}
+          label="With Validation"
+          variant="outline"
+          size="medium"
+          style={styles.fullWidthButton}
+        />
+
+        {/* Single Line Input */}
+        <InputOverlay
+          visible={inputOverlayVisible}
+          onClose={() => setInputOverlayVisible(false)}
+          onSubmit={(value) => {
+            setInputResult(`Single line: "${value}"`);
+          }}
+          title="Enter Text"
+          placeholder="Type your name here..."
+          initialValue=""
+          submitLabel="Save"
+          cancelLabel="Cancel"
+        />
+
+        {/* Multi-line Input */}
+        <InputOverlay
+          visible={multilineInputVisible}
+          onClose={() => setMultilineInputVisible(false)}
+          onSubmit={(value) => {
+            setInputResult(`Multi-line: "${value}"`);
+          }}
+          title="Add Comment"
+          placeholder="Write your comment here..."
+          multiline={true}
+          numberOfLines={4}
+          maxLength={200}
+          showCharacterCounter={true}
+          submitLabel="Post"
+          cancelLabel="Cancel"
+        />
+
+        {/* Validated Input */}
+        <InputOverlay
+          visible={validatedInputVisible}
+          onClose={() => setValidatedInputVisible(false)}
+          onSubmit={(value) => {
+            setInputResult(`Validated email: "${value}"`);
+          }}
+          title="Enter Email"
+          placeholder="your@email.com"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          validate={(value) => {
+            if (!value.trim()) return 'Email is required';
+            if (!value.includes('@')) return 'Please enter a valid email';
+            return null;
+          }}
+          submitLabel="Continue"
+          cancelLabel="Cancel"
+        />
+      </View>
+
+      <View style={styles.section}>
+        <ThemedText type="h6" style={styles.subTitle}>
+          Notification Overlays
+        </ThemedText>
+        <View style={styles.buttonRow}>
+          <ThemedButton
+            onPress={() =>
+              setNotificationVisible({
+                variant: 'success',
+                title: 'Success!',
+                message: 'Your changes have been saved successfully.',
+              })
+            }
+            label="Success"
+            variant="secondary"
+            size="small"
+            style={styles.variantButton}
+          />
+          <ThemedButton
+            onPress={() =>
+              setNotificationVisible({
+                variant: 'error',
+                title: 'Error occurred',
+                message: 'Something went wrong. Please try again.',
+              })
+            }
+            label="Error"
+            variant="secondary"
+            size="small"
+            style={styles.variantButton}
+          />
+        </View>
+        <View style={styles.buttonRow}>
+          <ThemedButton
+            onPress={() =>
+              setNotificationVisible({
+                variant: 'info',
+                title: 'New update available',
+                message: 'Version 2.1.0 is ready to install.',
+                action: true,
+              })
+            }
+            label="Info with Action"
+            variant="secondary"
+            size="small"
+            style={styles.variantButton}
+          />
+          <ThemedButton
+            onPress={() =>
+              setNotificationVisible({
+                variant: 'warning',
+                title: 'Warning',
+                message: 'Low storage space detected.',
+              })
+            }
+            label="Warning"
+            variant="secondary"
+            size="small"
+            style={styles.variantButton}
+          />
+        </View>
+
+        <NotificationOverlay
+          visible={!!notificationVisible}
+          onClose={() => setNotificationVisible(null)}
+          variant={notificationVisible?.variant || 'info'}
+          title={notificationVisible?.title || ''}
+          message={notificationVisible?.message}
+          action={
+            notificationVisible?.action
+              ? {
+                  label: 'Update',
+                  onPress: () => console.log('Update pressed'),
+                }
+              : undefined
+          }
+        />
+      </View>
     </ThemedView>
   );
 };
@@ -545,6 +721,15 @@ const styles = StyleSheet.create({
   overlayButton: {
     marginTop: 16,
   },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  variantButton: {
+    flex: 1,
+    marginHorizontal: 4,
+  },
   customContent: {
     borderRadius: 16,
     padding: 24,
@@ -553,16 +738,6 @@ const styles = StyleSheet.create({
   customOverlayTitle: {
     marginBottom: 16,
     textAlign: 'center',
-  },
-  // Variant styles
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  variantButton: {
-    flex: 1,
-    marginHorizontal: 4,
   },
   fullWidthButton: {
     marginBottom: 8,
