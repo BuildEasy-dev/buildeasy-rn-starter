@@ -141,6 +141,7 @@ const MAPPING = {
   textformat: 'format-size',
   'textformat.size': 'format-size',
   'textformat.alt': 'text-fields',
+  textbox: 'text-fields', // Text input box icon
   bold: 'format-bold',
   italic: 'format-italic',
   underline: 'format-underlined',

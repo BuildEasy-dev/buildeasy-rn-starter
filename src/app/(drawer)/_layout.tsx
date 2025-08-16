@@ -75,6 +75,7 @@ export default function DrawerLayout() {
                 { name: 'typography', label: 'Typography', icon: 'textformat' },
                 { name: 'icons', label: 'Icons', icon: 'star' },
                 { name: 'buttons', label: 'Buttons', icon: 'slider.horizontal.3' },
+                { name: 'text-inputs', label: 'Text Inputs', icon: 'textbox' },
                 { name: 'checkboxes', label: 'Checkboxes', icon: 'checkmark' },
                 { name: 'radios', label: 'Radio Buttons', icon: 'checkmark.circle' },
                 { name: 'switches', label: 'Switches', icon: 'switch.2' },
@@ -122,6 +123,14 @@ export default function DrawerLayout() {
           drawerIcon: ({ color, size }) => (
             <IconSymbol name="slider.horizontal.3" color={color} size={size} />
           ),
+        }}
+      />
+
+      <Drawer.Screen
+        name="text-inputs"
+        options={{
+          title: 'Text Inputs',
+          drawerIcon: ({ color, size }) => <IconSymbol name="textbox" color={color} size={size} />,
         }}
       />
 
