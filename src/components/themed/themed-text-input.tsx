@@ -20,7 +20,7 @@ import { ThemedText } from './themed-text';
  * ThemedTextInput Type Definitions
  */
 export type InputSize = 'small' | 'medium' | 'large';
-export type InputVariant = 'default' | 'outline' | 'filled';
+export type InputVariant = 'default' | 'subtle' | 'minimal' | 'outline' | 'filled';
 export type InputStatus = 'default' | 'error' | 'success';
 
 export type ThemedTextInputProps = TextInputProps & {
@@ -67,32 +67,32 @@ export type ThemedTextInputProps = TextInputProps & {
 const StyledInput = styled(TextInput, {
   name: 'ThemedTextInput',
   backgroundColor: 'transparent',
-  borderWidth: 1,
-  borderColor: '$borderColor',
+  borderWidth: 0, // Default to no border
+  borderColor: 'transparent',
   outlineStyle: 'none',
 
   variants: {
     size: {
       small: {
-        height: 36,
+        height: 40,
         fontSize: 14,
         lineHeight: 20,
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-      },
-      medium: {
-        height: 44,
-        fontSize: 16,
-        lineHeight: 22,
         paddingHorizontal: 12,
         paddingVertical: 8,
       },
-      large: {
-        height: 52,
-        fontSize: 18,
-        lineHeight: 24,
+      medium: {
+        height: 48,
+        fontSize: 16,
+        lineHeight: 22,
         paddingHorizontal: 16,
         paddingVertical: 12,
+      },
+      large: {
+        height: 56,
+        fontSize: 18,
+        lineHeight: 24,
+        paddingHorizontal: 20,
+        paddingVertical: 16,
       },
     },
 
@@ -100,35 +100,66 @@ const StyledInput = styled(TextInput, {
       default: {
         backgroundColor: '$backgroundSecondary',
         borderWidth: 0,
+        borderColor: 'transparent',
+      },
+      subtle: {
+        backgroundColor: 'transparent',
+        borderWidth: 0,
+        borderTopWidth: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+        borderBottomWidth: 1,
+        borderBottomColor: '$borderColor',
+        borderRadius: 0,
+      },
+      minimal: {
+        backgroundColor: 'transparent',
+        borderWidth: 0,
+        borderColor: 'transparent',
+        borderTopWidth: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+        borderBottomWidth: 0,
       },
       outline: {
-        backgroundColor: '$backgroundSecondary',
-        borderWidth: 0.5,
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: '$borderColor',
       },
       filled: {
         backgroundColor: '$backgroundTertiary',
         borderWidth: 0,
+        borderColor: 'transparent',
       },
     },
 
     status: {
       default: {},
       error: {
-        borderColor: '$error',
+        borderColor: '$red9',
+        borderBottomColor: '$red9',
       },
       success: {
-        borderColor: '$success',
+        borderColor: '$green9',
+        borderBottomColor: '$green9',
       },
     },
 
     focused: {
       true: {
-        borderColor: '$primary',
+        borderColor: '$blue9',
+        borderBottomColor: '$blue9',
       },
+      false: {},
     },
 
     rounded: {
-      true: {},
+      true: {
+        borderRadius: 12,
+      },
+      false: {
+        borderRadius: 8,
+      },
     },
   },
 
@@ -154,17 +185,28 @@ const getIconSize = (size: 'small' | 'medium' | 'large', customSize?: number) =>
   }
 };
 
-const getBorderRadius = (size: 'small' | 'medium' | 'large', rounded: boolean) => {
+const getBorderRadius = (
+  size: 'small' | 'medium' | 'large',
+  rounded: boolean,
+  variant: InputVariant
+) => {
+  // Subtle variant always has no border radius
+  if (variant === 'subtle') {
+    return 0;
+  }
+
   if (rounded) {
     switch (size) {
       case 'small':
-        return 8;
-      case 'large':
         return 12;
+      case 'large':
+        return 16;
       default:
-        return 10;
+        return 14;
     }
   }
+
+  // Default border radius for modern look
   switch (size) {
     case 'small':
       return 8;
@@ -236,20 +278,35 @@ export const ThemedTextInput = memo(
       const computedIconSize = getIconSize(size, iconSize);
       const iconColor = focused ? '#007AFF' : '#8E8E93';
 
-      const outlineBorderColor = useThemeColor('border', {
-        light: 'rgba(0,0,0,0.1)',
-        dark: 'rgba(255,255,255,0.1)',
+      const borderColor = useThemeColor('border', {
+        light: 'rgba(0,0,0,0.08)',
+        dark: 'rgba(255,255,255,0.12)',
       });
 
-      const iosBackgroundColor = useThemeColor('backgroundSecondary', {
-        light: '#F8F8F8',
+      // Modern background colors - lighter and more subtle
+      const defaultBackgroundColor = useThemeColor('backgroundSecondary', {
+        light: '#F7F7F7',
+        dark: '#1C1C1E',
+      });
+
+      const filledBackgroundColor = useThemeColor('backgroundTertiary', {
+        light: '#EBEBEB',
         dark: '#2C2C2E',
       });
 
-      const iosFilledBackgroundColor = useThemeColor('backgroundTertiary', {
-        light: '#F0F0F0',
-        dark: '#3A3A3C',
-      });
+      // Get appropriate background based on variant
+      const getBackgroundColor = () => {
+        switch (variant) {
+          case 'filled':
+            return filledBackgroundColor;
+          case 'subtle':
+          case 'minimal':
+          case 'outline':
+            return 'transparent';
+          default:
+            return defaultBackgroundColor;
+        }
+      };
 
       const helperTextVariant =
         status === 'error' ? 'error' : status === 'success' ? 'success' : 'default';
@@ -257,7 +314,7 @@ export const ThemedTextInput = memo(
       const passwordToggleLabel = passwordVisible ? 'Hide password' : 'Show password';
 
       const visibilityIcon = passwordVisible ? 'lock.open.fill' : 'lock.fill';
-      const borderRadius = getBorderRadius(size, rounded);
+      const borderRadius = getBorderRadius(size, rounded, variant);
 
       const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
         setFocused(true);
@@ -302,8 +359,29 @@ export const ThemedTextInput = memo(
               focused={focused}
               rounded={rounded}
               borderRadius={borderRadius}
-              backgroundColor={variant === 'filled' ? iosFilledBackgroundColor : iosBackgroundColor}
-              borderColor={variant === 'outline' && !focused ? outlineBorderColor : undefined}
+              backgroundColor={getBackgroundColor()}
+              borderColor={
+                variant === 'outline'
+                  ? focused
+                    ? '#007AFF'
+                    : borderColor
+                  : variant === 'subtle'
+                    ? 'transparent'
+                    : variant === 'minimal'
+                      ? 'transparent'
+                      : 'transparent'
+              }
+              borderBottomColor={
+                variant === 'subtle'
+                  ? status === 'error'
+                    ? '#FF3B30'
+                    : status === 'success'
+                      ? '#34C759'
+                      : focused
+                        ? '#007AFF'
+                        : borderColor
+                  : undefined
+              }
               // color={textColor} // Commented out due to Tamagui type issues
               placeholderTextColor={placeholderTextColor}
               cursorColor={'#007AFF'}

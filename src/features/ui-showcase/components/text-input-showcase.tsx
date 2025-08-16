@@ -11,7 +11,9 @@ import { ThemedScrollView } from '@/components/themed/themed-scroll-view';
  */
 export const TextInputShowcase = () => {
   const [text, setText] = useState({
-    basic: '',
+    default: '',
+    subtle: '',
+    minimal: '',
     outlined: '',
     filled: '',
     small: '',
@@ -30,41 +32,63 @@ export const TextInputShowcase = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ThemedScrollView style={styles.container}>
-        {/* Input variants */}
+        {/* Modern Input variants */}
         <ThemedText type="h6" style={styles.firstSectionTitle}>
-          Input Variants
+          Modern Input Variants
         </ThemedText>
         <View style={styles.row}>
           <ThemedTextInput
-            label="Default Input"
-            placeholder="Enter text..."
-            variant="default"
-            value={text.basic}
-            onChangeText={(value) => setText({ ...text, basic: value })}
+            label="Minimal Input"
+            placeholder="Clean, borderless design"
+            variant="minimal"
+            value={text.minimal}
+            onChangeText={(value) => setText({ ...text, minimal: value })}
             style={styles.inputField}
-            helperText="Default gray background"
+            helperText="Pure minimal - no borders or background"
           />
         </View>
         <View style={styles.row}>
           <ThemedTextInput
-            label="Outline Input"
-            placeholder="Enter text..."
-            variant="outline"
-            value={text.outlined}
-            onChangeText={(value) => setText({ ...text, outlined: value })}
+            label="Subtle Input"
+            placeholder="Modern underline style"
+            variant="subtle"
+            value={text.subtle}
+            onChangeText={(value) => setText({ ...text, subtle: value })}
             style={styles.inputField}
-            helperText="With outline border"
+            helperText="Bottom line only - like modern apps"
+          />
+        </View>
+        <View style={styles.row}>
+          <ThemedTextInput
+            label="Default Input"
+            placeholder="Soft background"
+            variant="default"
+            value={text.default}
+            onChangeText={(value) => setText({ ...text, default: value })}
+            style={styles.inputField}
+            helperText="Subtle background - iOS Settings style"
           />
         </View>
         <View style={styles.row}>
           <ThemedTextInput
             label="Filled Input"
-            placeholder="Enter text..."
+            placeholder="Darker background"
             variant="filled"
             value={text.filled}
             onChangeText={(value) => setText({ ...text, filled: value })}
             style={styles.inputField}
-            helperText="Darker background fill"
+            helperText="Darker background for contrast"
+          />
+        </View>
+        <View style={styles.row}>
+          <ThemedTextInput
+            label="Outline Input"
+            placeholder="Traditional border"
+            variant="outline"
+            value={text.outlined}
+            onChangeText={(value) => setText({ ...text, outlined: value })}
+            style={styles.inputField}
+            helperText="Classic border style (less common now)"
           />
         </View>
 
@@ -215,30 +239,41 @@ export const TextInputShowcase = () => {
             iconName="magnifyingglass"
             iconPosition="left"
             returnKeyType="search"
-            variant="outline"
-            rounded
+            variant="subtle"
             value={text.search}
             onChangeText={(value) => setText({ ...text, search: value })}
             style={styles.inputField}
-            helperText="Search keyboard with rounded outline"
+            helperText="Search keyboard with subtle styling"
           />
         </View>
 
         {/* Combined features example */}
         <ThemedText type="h6" style={styles.sectionTitle}>
-          Combined Features
+          Modern Combinations
         </ThemedText>
         <View style={styles.row}>
           <ThemedTextInput
-            label="Advanced Input"
-            placeholder="All features combined..."
-            variant="filled"
+            label="Clean Search"
+            placeholder="Search with minimal design..."
+            variant="minimal"
             size="large"
+            iconName="magnifyingglass"
+            iconPosition="left"
+            rounded
+            helperText="Large minimal input with search icon"
+            style={styles.inputField}
+          />
+        </View>
+        <View style={styles.row}>
+          <ThemedTextInput
+            label="Modern Success"
+            placeholder="Success with subtle styling..."
+            variant="subtle"
+            size="medium"
             status="success"
             iconName="checkmark.circle.fill"
             iconPosition="right"
-            rounded
-            helperText="Large filled input with success status and icon"
+            helperText="Subtle input with success state"
             style={styles.inputField}
           />
         </View>
