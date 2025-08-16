@@ -4,11 +4,20 @@ import { ThemedText } from '@/components/themed/themed-text';
 
 // Mock the useThemeColor hook
 jest.mock('@/hooks/use-theme-color', () => ({
-  useThemeColor: jest.fn((props: any, colorName: string) => {
+  useThemeColor: jest.fn((colorName: string, props: any) => {
     const mockColors: Record<string, string> = {
       text: '#000000',
     };
-    return props.light || props.dark || mockColors[colorName] || '#000000';
+
+    // If props are provided and contain light/dark values, use them
+    if (props && typeof props === 'object') {
+      if (props.light && props.dark) {
+        // Return light color for testing (could be based on mock scheme)
+        return props.light;
+      }
+    }
+
+    return mockColors[colorName] || '#000000';
   }),
 }));
 
@@ -79,7 +88,7 @@ describe('ThemedText', () => {
       </ThemedText>
     );
 
-    expect(mockUseThemeColor).toHaveBeenCalledWith({ light: '#FF0000', dark: '#00FF00' }, 'text');
+    expect(mockUseThemeColor).toHaveBeenCalledWith('text', { light: '#FF0000', dark: '#00FF00' });
   });
 
   it('calls useThemeColor with default parameters when no colors provided', () => {
@@ -88,6 +97,6 @@ describe('ThemedText', () => {
 
     render(<ThemedText>Test</ThemedText>);
 
-    expect(mockUseThemeColor).toHaveBeenCalledWith({}, 'text');
+    expect(mockUseThemeColor).toHaveBeenCalledWith('text', { light: undefined, dark: undefined });
   });
 });

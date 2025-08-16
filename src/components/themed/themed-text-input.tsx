@@ -15,6 +15,7 @@ import {
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { ThemedText } from './themed-text';
+import { type ThemedColor } from '@/components/types';
 
 /**
  * ThemedTextInput Type Definitions
@@ -25,12 +26,9 @@ export type InputStatus = 'default' | 'error' | 'success';
 
 export type ThemedTextInputProps = TextInputProps & {
   // Theme customization
-  lightColor?: string;
-  darkColor?: string;
-  lightPlaceholder?: string;
-  darkPlaceholder?: string;
-  lightBorder?: string;
-  darkBorder?: string;
+  textColor?: ThemedColor;
+  placeholderColor?: ThemedColor;
+  borderColor?: ThemedColor;
 
   // Input variations
   label?: string;
@@ -151,12 +149,9 @@ export const ThemedTextInput = memo(
     (
       {
         style,
-        lightColor: _lightColor,
-        darkColor: _darkColor,
-        lightPlaceholder: _lightPlaceholder,
-        darkPlaceholder: _darkPlaceholder,
-        lightBorder: _lightBorder,
-        darkBorder: _darkBorder,
+        textColor,
+        placeholderColor,
+        borderColor: customBorderColor,
         label,
         helperText,
         iconName,
@@ -182,22 +177,31 @@ export const ThemedTextInput = memo(
       // const tokens = getTokens(); // Removed as not currently used
 
       // Calculate colors with theme awareness
-      const textColor = useThemeColor('text', {
-        light: _lightColor || '#000000',
-        dark: _darkColor || '#FFFFFF',
-      });
-      const placeholderTextColor = useThemeColor('placeholder', {
-        light: _lightPlaceholder || '#8E8E93',
-        dark: _darkPlaceholder || '#ABABAB',
-      });
+      const resolvedTextColor = useThemeColor(
+        'text',
+        textColor || {
+          light: '#000000',
+          dark: '#FFFFFF',
+        }
+      );
+      const placeholderTextColor = useThemeColor(
+        'placeholder',
+        placeholderColor || {
+          light: '#8E8E93',
+          dark: '#ABABAB',
+        }
+      );
 
       const computedIconSize = getIconSize(size, iconSize);
       const iconColor = focused ? '#007AFF' : '#8E8E93';
 
-      const borderColor = useThemeColor('border', {
-        light: 'rgba(0,0,0,0.15)', // Stronger border for better visibility
-        dark: 'rgba(255,255,255,0.25)',
-      });
+      const resolvedBorderColor = useThemeColor(
+        'border',
+        customBorderColor || {
+          light: 'rgba(0,0,0,0.15)', // Stronger border for better visibility
+          dark: 'rgba(255,255,255,0.25)',
+        }
+      );
 
       // 2025 Design: Balance between minimal and recognizable
       const defaultBackgroundColor = useThemeColor('backgroundSecondary', {
@@ -256,7 +260,7 @@ export const ThemedTextInput = memo(
         sizeConfig,
         {
           backgroundColor: getBackgroundColor(),
-          color: textColor,
+          color: resolvedTextColor,
           borderRadius,
         },
         iconName && iconPosition === 'left' && { paddingLeft: computedIconSize + 20 },
@@ -272,7 +276,7 @@ export const ThemedTextInput = memo(
                 ? '#34C759'
                 : focused
                   ? '#007AFF'
-                  : borderColor,
+                  : resolvedBorderColor,
           borderTopWidth: 0,
           borderLeftWidth: 0,
           borderRightWidth: 0,

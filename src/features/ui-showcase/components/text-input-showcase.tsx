@@ -31,14 +31,14 @@ export const TextInputShowcase = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ThemedScrollView style={styles.container}>
-        {/* Modern Input variants */}
+        {/* Input variants */}
         <ThemedText type="h6" style={styles.firstSectionTitle}>
-          Modern Input Variants
+          Input Variants
         </ThemedText>
         <View style={styles.row}>
           <ThemedTextInput
             label="Subtle Input"
-            placeholder="Modern underline style"
+            placeholder="Underline style"
             variant="subtle"
             value={text.subtle}
             onChangeText={(value) => setText({ ...text, subtle: value })}
@@ -235,7 +235,7 @@ export const TextInputShowcase = () => {
 
         {/* Combined features example */}
         <ThemedText type="h6" style={styles.sectionTitle}>
-          Modern Combinations
+          Combinations
         </ThemedText>
         <View style={styles.row}>
           <ThemedTextInput
@@ -252,7 +252,7 @@ export const TextInputShowcase = () => {
         </View>
         <View style={styles.row}>
           <ThemedTextInput
-            label="Modern Success"
+            label="Success"
             placeholder="Success with subtle styling..."
             variant="subtle"
             size="medium"

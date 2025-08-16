@@ -7,6 +7,7 @@ import { useTheme } from '@tamagui/core';
 import type { ThemeValueFallback } from '@tamagui/core';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { type ThemedColor } from '@/components/types';
 
 /**
  * Available theme tokens from Tamagui v4 themes
@@ -65,10 +66,11 @@ export type ThemeTokenName = SemanticTokenName | TamaguiThemeKeys;
 /**
  * Hook to get theme colors from Tamagui theme
  * Supports both legacy names and new semantic tokens
+ * Supports both old API (light/dark props) and new API (ThemedColor)
  */
 export function useThemeColor(
   colorName: ThemeTokenName,
-  props?: { light?: string; dark?: string }
+  props?: ThemedColor | { light?: string; dark?: string }
 ): string {
   const colorScheme = useColorScheme() ?? 'light';
   const theme = useTheme();
