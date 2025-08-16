@@ -1,6 +1,6 @@
-import { Stack, styled } from '@tamagui/core';
 import { forwardRef, useState, memo } from 'react';
 import {
+  View,
   TextInput,
   type TextInputProps,
   type StyleProp,
@@ -63,109 +63,30 @@ export type ThemedTextInputProps = TextInputProps & {
   blurOnSubmit?: boolean;
 };
 
-// Create styled TextInput component with variants
-const StyledInput = styled(TextInput, {
-  name: 'ThemedTextInput',
-  backgroundColor: 'transparent',
-  borderWidth: 0, // Default to no border
-  borderColor: 'transparent',
-  borderTopWidth: 0,
-  borderLeftWidth: 0,
-  borderRightWidth: 0,
-  borderBottomWidth: 0,
-  outlineStyle: 'none',
-
-  variants: {
-    size: {
-      small: {
-        height: 40,
-        fontSize: 14,
-        lineHeight: 20,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-      },
-      medium: {
-        height: 48,
-        fontSize: 16,
-        lineHeight: 22,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-      },
-      large: {
-        height: 56,
-        fontSize: 18,
-        lineHeight: 24,
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-      },
-    },
-
-    variant: {
-      default: {
-        // Uses dynamic background via getBackgroundColor()
-        borderWidth: 0,
-        borderColor: 'transparent',
-      },
-      subtle: {
-        // Transparent with bottom border only
-        backgroundColor: 'transparent',
-        borderWidth: 0,
-        borderTopWidth: 0,
-        borderLeftWidth: 0,
-        borderRightWidth: 0,
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(0,0,0,0.15)', // Direct color instead of token
-        borderRadius: 0,
-      },
-      outline: {
-        backgroundColor: 'transparent',
-        // No border properties here - let React Native style handle all borders
-      },
-      filled: {
-        // Uses dynamic background via getBackgroundColor()
-        borderWidth: 0,
-        borderColor: 'transparent',
-      },
-    },
-
-    status: {
-      default: {},
-      error: {
-        borderColor: '#FF3B30',
-        borderBottomColor: '#FF3B30',
-      },
-      success: {
-        borderColor: '#34C759',
-        borderBottomColor: '#34C759',
-      },
-    },
-
-    focused: {
-      true: {
-        borderColor: '#007AFF',
-        borderBottomColor: '#007AFF',
-      },
-      false: {},
-    },
-
-    rounded: {
-      true: {
-        borderRadius: 12,
-      },
-      false: {
-        borderRadius: 8,
-      },
-    },
+// Size configurations
+const sizeConfigs = {
+  small: {
+    height: 40,
+    fontSize: 14,
+    lineHeight: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
-
-  defaultVariants: {
-    size: 'medium',
-    variant: 'default',
-    status: 'default',
-    focused: false,
-    rounded: false,
+  medium: {
+    height: 48,
+    fontSize: 16,
+    lineHeight: 22,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
-});
+  large: {
+    height: 56,
+    fontSize: 18,
+    lineHeight: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+};
 
 // Helper functions
 const getIconSize = (size: 'small' | 'medium' | 'large', customSize?: number) => {
@@ -328,37 +249,68 @@ export const ThemedTextInput = memo(
         setPasswordVisible(!passwordVisible);
       };
 
+      // Create input styles
+      const sizeConfig = sizeConfigs[size];
+      const inputStyles = [
+        styles.baseInput,
+        sizeConfig,
+        {
+          backgroundColor: getBackgroundColor(),
+          color: textColor,
+          borderRadius,
+        },
+        iconName && iconPosition === 'left' && { paddingLeft: computedIconSize + 20 },
+        ((iconName && iconPosition === 'right') || (secureTextEntry && showPasswordToggle)) && {
+          paddingRight: computedIconSize + 20,
+        },
+        variant === 'subtle' && {
+          borderBottomWidth: 1,
+          borderBottomColor:
+            status === 'error'
+              ? '#FF3B30'
+              : status === 'success'
+                ? '#34C759'
+                : focused
+                  ? '#007AFF'
+                  : borderColor,
+          borderTopWidth: 0,
+          borderLeftWidth: 0,
+          borderRightWidth: 0,
+          borderRadius: 0,
+        },
+        variant === 'outline' && {
+          borderWidth: 1,
+          borderColor:
+            status === 'error'
+              ? '#FF3B30'
+              : status === 'success'
+                ? '#34C759'
+                : focused
+                  ? '#007AFF'
+                  : '#D1D1D6',
+          backgroundColor: 'transparent',
+        },
+        style,
+      ];
+
       return (
-        <Stack width="100%" marginBottom={16} style={containerStyle}>
+        <View style={[styles.container, containerStyle]}>
           {label && (
             <ThemedText type="body2" weight="medium" style={[styles.labelSpacing, labelStyle]}>
               {label}
             </ThemedText>
           )}
 
-          <Stack
-            position="relative"
-            width="100%"
-            flexDirection="row"
-            alignItems="center"
-            style={inputContainerStyle}
-          >
+          <View style={[styles.inputContainer, inputContainerStyle]}>
             {iconName && iconPosition === 'left' && (
-              <Stack position="absolute" left={12} zIndex={1} style={styles.iconContainer}>
+              <View style={[styles.iconContainer, styles.leftIcon]}>
                 <IconSymbol name={iconName} size={computedIconSize} color={iconColor} />
-              </Stack>
+              </View>
             )}
 
-            <StyledInput
+            <TextInput
               ref={ref}
-              size={size}
-              variant={variant}
-              status={status}
-              focused={focused}
-              rounded={rounded}
-              borderRadius={borderRadius}
-              backgroundColor={getBackgroundColor()}
-              // color={textColor} // Commented out due to Tamagui type issues
+              style={inputStyles}
               placeholderTextColor={placeholderTextColor}
               cursorColor={'#007AFF'}
               selectionColor={'#007AFF'}
@@ -373,87 +325,13 @@ export const ThemedTextInput = memo(
               returnKeyType={rest.returnKeyType}
               onSubmitEditing={rest.onSubmitEditing}
               blurOnSubmit={rest.blurOnSubmit}
-              paddingLeft={iconName && iconPosition === 'left' ? computedIconSize + 20 : undefined}
-              paddingRight={
-                (iconName && iconPosition === 'right') || (secureTextEntry && showPasswordToggle)
-                  ? computedIconSize + 20
-                  : undefined
-              }
-              flex={1}
-              style={[
-                { color: textColor },
-                // Enhanced border styles for all variants using React Native style override
-                variant === 'subtle' && {
-                  borderBottomWidth: 1,
-                  borderBottomColor:
-                    status === 'error'
-                      ? '#FF3B30'
-                      : status === 'success'
-                        ? '#34C759'
-                        : focused
-                          ? '#007AFF'
-                          : borderColor,
-                  borderTopWidth: 0,
-                  borderLeftWidth: 0,
-                  borderRightWidth: 0,
-                },
-                variant === 'outline' && {
-                  // Force all border properties for outline variant
-                  borderWidth: 1,
-                  borderTopWidth: 1,
-                  borderLeftWidth: 1,
-                  borderRightWidth: 1,
-                  borderBottomWidth: 1,
-                  borderColor:
-                    status === 'error'
-                      ? '#FF3B30'
-                      : status === 'success'
-                        ? '#34C759'
-                        : focused
-                          ? '#007AFF'
-                          : '#D1D1D6',
-                  borderTopColor:
-                    status === 'error'
-                      ? '#FF3B30'
-                      : status === 'success'
-                        ? '#34C759'
-                        : focused
-                          ? '#007AFF'
-                          : '#D1D1D6',
-                  borderLeftColor:
-                    status === 'error'
-                      ? '#FF3B30'
-                      : status === 'success'
-                        ? '#34C759'
-                        : focused
-                          ? '#007AFF'
-                          : '#D1D1D6',
-                  borderRightColor:
-                    status === 'error'
-                      ? '#FF3B30'
-                      : status === 'success'
-                        ? '#34C759'
-                        : focused
-                          ? '#007AFF'
-                          : '#D1D1D6',
-                  borderBottomColor:
-                    status === 'error'
-                      ? '#FF3B30'
-                      : status === 'success'
-                        ? '#34C759'
-                        : focused
-                          ? '#007AFF'
-                          : '#D1D1D6',
-                },
-                style,
-              ]}
               {...rest}
             />
 
             {iconName && iconPosition === 'right' && !showPasswordToggle && (
-              <Stack position="absolute" right={12} zIndex={1} style={styles.iconContainer}>
+              <View style={[styles.iconContainer, styles.rightIcon]}>
                 <IconSymbol name={iconName} size={computedIconSize} color={iconColor} />
-              </Stack>
+              </View>
             )}
 
             {secureTextEntry && showPasswordToggle && (
@@ -466,7 +344,7 @@ export const ThemedTextInput = memo(
                 <IconSymbol name={visibilityIcon} size={computedIconSize} color={iconColor} />
               </TouchableOpacity>
             )}
-          </Stack>
+          </View>
 
           {helperText && (
             <ThemedText
@@ -477,7 +355,7 @@ export const ThemedTextInput = memo(
               {helperText}
             </ThemedText>
           )}
-        </Stack>
+        </View>
       );
     }
   )
@@ -486,6 +364,22 @@ export const ThemedTextInput = memo(
 ThemedTextInput.displayName = 'ThemedTextInput';
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    marginBottom: 16,
+  },
+  inputContainer: {
+    position: 'relative',
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  baseInput: {
+    flex: 1,
+    borderWidth: 0,
+    borderColor: 'transparent',
+    backgroundColor: 'transparent',
+  },
   labelSpacing: {
     marginBottom: 4,
   },
@@ -493,8 +387,16 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   iconContainer: {
+    position: 'absolute',
+    zIndex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  leftIcon: {
+    left: 12,
+  },
+  rightIcon: {
+    right: 12,
   },
   passwordToggle: {
     position: 'absolute',

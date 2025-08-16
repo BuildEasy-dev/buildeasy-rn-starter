@@ -43,7 +43,7 @@ export const TextInputShowcase = () => {
             value={text.subtle}
             onChangeText={(value) => setText({ ...text, subtle: value })}
             style={styles.inputField}
-            helperText="Bottom line only - like modern apps"
+            helperText="Bottom line only"
           />
         </View>
         <View style={styles.row}>
@@ -54,7 +54,6 @@ export const TextInputShowcase = () => {
             value={text.default}
             onChangeText={(value) => setText({ ...text, default: value })}
             style={styles.inputField}
-            helperText="iOS standard gray - clear but not intrusive"
           />
         </View>
         <View style={styles.row}>
@@ -76,7 +75,6 @@ export const TextInputShowcase = () => {
             value={text.outlined}
             onChangeText={(value) => setText({ ...text, outlined: value })}
             style={styles.inputField}
-            helperText="Classic border style (less common now)"
           />
         </View>
 
