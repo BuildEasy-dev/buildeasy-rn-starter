@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import { ThemedButton } from '@/components/themed/themed-button';
-import { ThemedLoadingOverlay } from '@/components/themed/themed-loading-overlay';
+import { ThemedLoadingOverlay } from '@/components/ui/loading-overlay';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
 

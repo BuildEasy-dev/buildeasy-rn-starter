@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, memo } from 'react';
+import { forwardRef, useState, useEffect, memo, useMemo, useCallback } from 'react';
 import { Pressable, View, Modal, StyleSheet, type ViewProps, type ViewStyle } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -58,27 +58,37 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
   ) => {
     const [modalVisible, setModalVisible] = useState(visible);
 
-    // Get variant and size configurations
-    const variantConfig = overlayUtils.getVariantConfig(variant);
-    const animationPreset = animationUtils.getPreset(
-      variantConfig.animationPreset as keyof typeof animations.presets
+    // Memoize variant and animation configurations to prevent recalculation
+    const variantConfig = useMemo(() => overlayUtils.getVariantConfig(variant), [variant]);
+    const animationPreset = useMemo(
+      () =>
+        animationUtils.getPreset(variantConfig.animationPreset as keyof typeof animations.presets),
+      [variantConfig.animationPreset]
     );
 
-    // Initialize animation values based on variant type
-    const getInitialTranslateY = () => {
-      switch (variant) {
-        case 'bottom':
-          return 100; // Start from below screen
-        case 'top':
-          return -50; // Start from above screen
-        default:
-          return (animationPreset.exit as any).translateY || 0;
-      }
-    };
+    // Memoize initial animation values
+    const initialValues = useMemo(() => {
+      const getInitialTranslateY = () => {
+        switch (variant) {
+          case 'bottom':
+            return 100; // Start from below screen
+          case 'top':
+            return -50; // Start from above screen
+          default:
+            return (animationPreset.exit as any).translateY || 0;
+        }
+      };
 
-    const fadeAnim = useSharedValue(0);
-    const scaleAnim = useSharedValue((animationPreset.exit as any).scale || 0.9);
-    const translateYAnim = useSharedValue(getInitialTranslateY());
+      return {
+        translateY: getInitialTranslateY(),
+        scale: (animationPreset.exit as any).scale || 0.9,
+        opacity: 0,
+      };
+    }, [variant, animationPreset]);
+
+    const fadeAnim = useSharedValue(initialValues.opacity);
+    const scaleAnim = useSharedValue(initialValues.scale);
+    const translateYAnim = useSharedValue(initialValues.translateY);
 
     // Get theme colors - use backgroundSecondary for overlays to provide proper visual separation
     const backgroundColor = useThemeColor('backgroundSecondary', {
@@ -86,66 +96,79 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
       dark: darkColor,
     });
 
-    // Calculate animation duration
-    const finalAnimationDuration = animationDuration || animationUtils.getDuration(animationSpeed);
+    // Memoize animation duration calculation
+    const finalAnimationDuration = useMemo(
+      () => animationDuration || animationUtils.getDuration(animationSpeed),
+      [animationDuration, animationSpeed]
+    );
 
     // Handle visibility changes
+    // Memoize animation target values
+    const animationTargets = useMemo(
+      () => ({
+        enter: {
+          opacity: (animationPreset.enter as any).opacity || 1,
+          scale: (animationPreset.enter as any).scale || 1,
+          translateY: (animationPreset.enter as any).translateY || 0,
+        },
+        exit: {
+          opacity: (animationPreset.exit as any).opacity || 0,
+          scale: (animationPreset.exit as any).scale || 0.9,
+          translateY: (animationPreset.exit as any).translateY || 0,
+        },
+      }),
+      [animationPreset]
+    );
+
+    // Memoize animation config
+    const animationConfig = useMemo(
+      () => ({
+        duration: finalAnimationDuration,
+        easing: animationPreset.easing,
+      }),
+      [finalAnimationDuration, animationPreset.easing]
+    );
+
+    // Stable close modal callback
+    const closeModal = useCallback(() => {
+      setModalVisible(false);
+    }, []);
+
     useEffect(() => {
       if (visible) {
         setModalVisible(true);
 
-        // Apply enter animation based on variant
-        fadeAnim.value = withTiming((animationPreset.enter as any).opacity || 1, {
-          duration: finalAnimationDuration,
-          easing: animationPreset.easing,
-        });
-
-        scaleAnim.value = withTiming((animationPreset.enter as any).scale || 1, {
-          duration: finalAnimationDuration,
-          easing: animationPreset.easing,
-        });
-
-        translateYAnim.value = withTiming((animationPreset.enter as any).translateY || 0, {
-          duration: finalAnimationDuration,
-          easing: animationPreset.easing,
-        });
+        // Apply enter animation with memoized values
+        fadeAnim.value = withTiming(animationTargets.enter.opacity, animationConfig);
+        scaleAnim.value = withTiming(animationTargets.enter.scale, animationConfig);
+        translateYAnim.value = withTiming(animationTargets.enter.translateY, animationConfig);
       } else {
-        const closeModal = () => {
-          setModalVisible(false);
-        };
-
-        // Apply exit animation based on variant
-        fadeAnim.value = withTiming(
-          (animationPreset.exit as any).opacity || 0,
-          {
-            duration: finalAnimationDuration,
-            easing: animationPreset.easing,
-          },
-          (finished) => {
-            if (finished) {
-              runOnJS(closeModal)();
-            }
+        // Apply exit animation with memoized values
+        fadeAnim.value = withTiming(animationTargets.exit.opacity, animationConfig, (finished) => {
+          if (finished) {
+            runOnJS(closeModal)();
           }
-        );
-
-        scaleAnim.value = withTiming((animationPreset.exit as any).scale || 0.9, {
-          duration: finalAnimationDuration,
-          easing: animationPreset.easing,
         });
 
-        translateYAnim.value = withTiming((animationPreset.exit as any).translateY || 0, {
-          duration: finalAnimationDuration,
-          easing: animationPreset.easing,
-        });
+        scaleAnim.value = withTiming(animationTargets.exit.scale, animationConfig);
+        translateYAnim.value = withTiming(animationTargets.exit.translateY, animationConfig);
       }
-    }, [visible, fadeAnim, scaleAnim, translateYAnim, finalAnimationDuration, animationPreset]);
+    }, [
+      visible,
+      fadeAnim,
+      scaleAnim,
+      translateYAnim,
+      animationTargets,
+      animationConfig,
+      closeModal,
+    ]);
 
-    // Handle backdrop press
-    const handleBackdropPress = () => {
+    // Stable backdrop press handler
+    const handleBackdropPress = useCallback(() => {
       if (closeOnBackdropPress && onClose) {
         onClose();
       }
-    };
+    }, [closeOnBackdropPress, onClose]);
 
     // Animated styles
     const backdropAnimatedStyle = useAnimatedStyle(() => {
@@ -173,33 +196,43 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
     });
 
     // Memoize container style based on variant
-    const containerStyle = overlayUtils.getContainerStyle(variant);
+    const containerStyle = useMemo(() => overlayUtils.getContainerStyle(variant), [variant]);
 
     // Memoize content style based on variant and size
-    const baseContentStyle = overlayUtils.mergeContentStyle(variant, size, contentContainerStyle);
+    const baseContentStyle = useMemo(
+      () => overlayUtils.mergeContentStyle(variant, size, contentContainerStyle),
+      [variant, size, contentContainerStyle]
+    );
 
-    // Add default styling for better visibility in dark mode
-    const defaultOverlayStyle = {
-      borderRadius: 12,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
-      shadowOpacity: 0.15,
-      shadowRadius: 12,
-      elevation: 8,
-    };
+    // Memoize default styling
+    const defaultOverlayStyle = useMemo(
+      () => ({
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 4,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+        elevation: 8,
+      }),
+      []
+    );
 
-    const mergedContentStyle = [defaultOverlayStyle, baseContentStyle];
+    // Memoize merged content style
+    const mergedContentStyle = useMemo(
+      () => [defaultOverlayStyle, baseContentStyle],
+      [defaultOverlayStyle, baseContentStyle]
+    );
 
-    // Lazy loading support
-    const renderContent = () => {
+    // Memoize lazy loading content rendering
+    const renderContent = useMemo(() => {
       if (lazy && !modalVisible) {
         return null;
       }
       return children;
-    };
+    }, [lazy, modalVisible, children]);
 
     return (
       <Modal
@@ -224,7 +257,7 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
             ref={ref}
             style={[styles.content, { backgroundColor }, mergedContentStyle, contentAnimatedStyle]}
           >
-            {renderContent()}
+            {renderContent}
           </Animated.View>
         </View>
       </Modal>
