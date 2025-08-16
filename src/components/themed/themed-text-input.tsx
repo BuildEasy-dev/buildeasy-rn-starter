@@ -193,7 +193,10 @@ export const ThemedTextInput = memo(
       );
 
       const computedIconSize = getIconSize(size, iconSize);
-      const iconColor = focused ? '#007AFF' : '#8E8E93';
+      const primaryColor = useThemeColor('primary', { light: '#007AFF', dark: '#007AFF' });
+      const errorColor = useThemeColor('error', { light: '#FF3B30', dark: '#FF3B30' });
+      const successColor = useThemeColor('success', { light: '#34C759', dark: '#34C759' });
+      const iconColor = focused ? primaryColor : '#8E8E93';
 
       const resolvedBorderColor = useThemeColor(
         'border',
@@ -271,11 +274,11 @@ export const ThemedTextInput = memo(
           borderBottomWidth: 1,
           borderBottomColor:
             status === 'error'
-              ? '#FF3B30'
+              ? errorColor
               : status === 'success'
-                ? '#34C759'
+                ? successColor
                 : focused
-                  ? '#007AFF'
+                  ? primaryColor
                   : resolvedBorderColor,
           borderTopWidth: 0,
           borderLeftWidth: 0,
@@ -286,11 +289,11 @@ export const ThemedTextInput = memo(
           borderWidth: 1,
           borderColor:
             status === 'error'
-              ? '#FF3B30'
+              ? errorColor
               : status === 'success'
-                ? '#34C759'
+                ? successColor
                 : focused
-                  ? '#007AFF'
+                  ? primaryColor
                   : '#D1D1D6',
           backgroundColor: 'transparent',
         },
@@ -316,8 +319,8 @@ export const ThemedTextInput = memo(
               ref={ref}
               style={inputStyles}
               placeholderTextColor={placeholderTextColor}
-              cursorColor={'#007AFF'}
-              selectionColor={'#007AFF'}
+              cursorColor={primaryColor}
+              selectionColor={primaryColor}
               onFocus={handleFocus}
               onBlur={handleBlur}
               secureTextEntry={secureTextEntry && !passwordVisible}
