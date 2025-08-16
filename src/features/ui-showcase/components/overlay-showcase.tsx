@@ -6,6 +6,8 @@ import { ThemedOverlay } from '@/components/themed/themed-overlay';
 import { ThemedSelectionOverlay } from '@/components/themed/themed-selection-overlay';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
+import { ConfirmOverlay } from '@/components/ui/confirm-overlay';
+import { ActionSheetOverlay } from '@/components/ui/action-sheet-overlay';
 
 /**
  * Overlay Component Showcase
@@ -25,6 +27,10 @@ export const OverlayShowcase = () => {
   } | null>(null);
   const [selectionVisible, setSelectionVisible] = useState(false);
   const [selectedValue, setSelectedValue] = useState('option1');
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [destructiveConfirmVisible, setDestructiveConfirmVisible] = useState(false);
+  const [actionSheetVisible, setActionSheetVisible] = useState(false);
+  const [actionSheetSectionsVisible, setActionSheetSectionsVisible] = useState(false);
 
   return (
     <ThemedView style={styles.container}>
@@ -393,6 +399,121 @@ export const OverlayShowcase = () => {
             setSelectedValue(value);
             setSelectionVisible(false);
           }}
+        />
+      </View>
+
+      {/* Confirm Overlay Examples */}
+      <View style={styles.section}>
+        <ThemedText type="h6" style={styles.subTitle}>
+          Confirm Overlay
+        </ThemedText>
+        <View style={styles.buttonRow}>
+          <ThemedButton
+            onPress={() => setConfirmVisible(true)}
+            label="Normal Confirm"
+            variant="primary"
+            size="medium"
+            style={styles.variantButton}
+          />
+          <ThemedButton
+            onPress={() => setDestructiveConfirmVisible(true)}
+            label="Delete Confirm"
+            variant="danger"
+            size="medium"
+            style={styles.variantButton}
+          />
+        </View>
+
+        {/* Normal Confirmation */}
+        <ConfirmOverlay
+          visible={confirmVisible}
+          onClose={() => setConfirmVisible(false)}
+          onConfirm={() => {
+            alert('Action confirmed!');
+          }}
+          title="Confirm Action"
+          message="Are you sure you want to proceed with this action?"
+          confirmLabel="Proceed"
+          cancelLabel="Cancel"
+        />
+
+        {/* Destructive Confirmation */}
+        <ConfirmOverlay
+          visible={destructiveConfirmVisible}
+          onClose={() => setDestructiveConfirmVisible(false)}
+          onConfirm={() => {
+            alert('Item deleted!');
+          }}
+          title="Delete Item"
+          message="Are you sure you want to delete this item? This action cannot be undone."
+          confirmLabel="Delete"
+          cancelLabel="Keep"
+          isDestructive={true}
+        />
+      </View>
+
+      {/* Action Sheet Overlay Examples */}
+      <View style={styles.section}>
+        <ThemedText type="h6" style={styles.subTitle}>
+          Action Sheet Overlay
+        </ThemedText>
+        <View style={styles.buttonRow}>
+          <ThemedButton
+            onPress={() => setActionSheetVisible(true)}
+            label="Basic Actions"
+            variant="primary"
+            size="medium"
+            style={styles.variantButton}
+          />
+          <ThemedButton
+            onPress={() => setActionSheetSectionsVisible(true)}
+            label="With Subtitle"
+            variant="secondary"
+            size="medium"
+            style={styles.variantButton}
+          />
+        </View>
+
+        {/* Basic Action Sheet */}
+        <ActionSheetOverlay
+          visible={actionSheetVisible}
+          onClose={() => setActionSheetVisible(false)}
+          onAction={(actionId) => {
+            alert(`Selected action: ${actionId}`);
+          }}
+          title="Choose an Action"
+          actions={[
+            { id: 'edit', label: 'Edit', icon: 'pencil' },
+            { id: 'share', label: 'Share', icon: 'square.and.arrow.up' },
+            { id: 'copy', label: 'Copy Link', icon: 'doc' },
+            { id: 'download', label: 'Download', icon: 'square.and.arrow.down' },
+            { id: 'delete', label: 'Delete', icon: 'trash', isDestructive: true },
+          ]}
+        />
+
+        {/* Action Sheet with Subtitles */}
+        <ActionSheetOverlay
+          visible={actionSheetSectionsVisible}
+          onClose={() => setActionSheetSectionsVisible(false)}
+          onAction={(actionId) => {
+            alert(`Selected action: ${actionId}`);
+          }}
+          title="File Options"
+          subtitle="Select what you'd like to do with this file"
+          actions={[
+            { id: 'rename', label: 'Rename', icon: 'pencil', subtitle: 'Change the file name' },
+            {
+              id: 'move',
+              label: 'Move to Folder',
+              icon: 'folder',
+              subtitle: 'Organize your files',
+            },
+            { id: 'duplicate', label: 'Duplicate', icon: 'doc' },
+            { id: 'share-link', label: 'Share Link', icon: 'square.and.arrow.up' },
+            { id: 'export', label: 'Export', icon: 'square.and.arrow.down' },
+            { id: 'archive', label: 'Archive', icon: 'archivebox' },
+            { id: 'delete', label: 'Delete Permanently', icon: 'trash', isDestructive: true },
+          ]}
         />
       </View>
     </ThemedView>
