@@ -79,6 +79,7 @@ export default function DrawerLayout() {
                 { name: 'checkboxes', label: 'Checkboxes', icon: 'checkmark' },
                 { name: 'radios', label: 'Radio Buttons', icon: 'checkmark.circle' },
                 { name: 'switches', label: 'Switches', icon: 'switch.2' },
+                { name: 'overlays', label: 'Overlays', icon: 'square.stack' },
               ],
             },
           ]}
@@ -159,6 +160,16 @@ export default function DrawerLayout() {
         options={{
           title: 'Switches',
           drawerIcon: ({ color, size }) => <IconSymbol name="switch.2" color={color} size={size} />,
+        }}
+      />
+
+      <Drawer.Screen
+        name="overlays"
+        options={{
+          title: 'Overlays',
+          drawerIcon: ({ color, size }) => (
+            <IconSymbol name="square.stack" color={color} size={size} />
+          ),
         }}
       />
     </Drawer>
