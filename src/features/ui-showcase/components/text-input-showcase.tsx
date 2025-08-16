@@ -241,8 +241,6 @@ export const TextInputShowcase = () => {
           <ThemedTextInput
             label="Clean Search"
             placeholder="Search with default design..."
-            variant="default"
-            size="large"
             iconName="magnifyingglass"
             iconPosition="left"
             rounded
@@ -255,7 +253,6 @@ export const TextInputShowcase = () => {
             label="Success"
             placeholder="Success with subtle styling..."
             variant="subtle"
-            size="medium"
             status="success"
             iconName="checkmark.circle.fill"
             iconPosition="right"
