@@ -36,8 +36,8 @@ describe('ThemedTextInput', () => {
         <ThemedTextInput
           lightColor="#FF0000"
           darkColor="#00FF00"
-          placeholderLightColor="#0000FF"
-          placeholderDarkColor="#FFFF00"
+          lightPlaceholder="#0000FF"
+          darkPlaceholder="#FFFF00"
           placeholder="Enter text"
         />
       );
@@ -66,7 +66,7 @@ describe('ThemedTextInput', () => {
 
     render(<ThemedTextInput lightColor="#FF0000" darkColor="#00FF00" placeholder="Test" />);
 
-    expect(mockUseThemeColor).toHaveBeenCalledWith({ light: '#FF0000', dark: '#00FF00' }, 'text');
+    expect(mockUseThemeColor).toHaveBeenCalledWith('text', { light: '#FF0000', dark: '#00FF00' });
   });
 
   it('calls useThemeColor with correct parameters for placeholder color', () => {
@@ -74,17 +74,13 @@ describe('ThemedTextInput', () => {
     const mockUseThemeColor = require('@/hooks/use-theme-color').useThemeColor;
 
     render(
-      <ThemedTextInput
-        placeholderLightColor="#0000FF"
-        placeholderDarkColor="#FFFF00"
-        placeholder="Test"
-      />
+      <ThemedTextInput lightPlaceholder="#0000FF" darkPlaceholder="#FFFF00" placeholder="Test" />
     );
 
-    expect(mockUseThemeColor).toHaveBeenCalledWith(
-      { light: '#0000FF', dark: '#FFFF00' },
-      'placeholder'
-    );
+    expect(mockUseThemeColor).toHaveBeenCalledWith('placeholder', {
+      light: '#0000FF',
+      dark: '#FFFF00',
+    });
   });
 
   it('calls useThemeColor with default parameters when no colors provided', () => {
@@ -93,7 +89,7 @@ describe('ThemedTextInput', () => {
 
     render(<ThemedTextInput placeholder="Test" />);
 
-    expect(mockUseThemeColor).toHaveBeenCalledWith({}, 'text');
-    expect(mockUseThemeColor).toHaveBeenCalledWith({}, 'placeholder');
+    expect(mockUseThemeColor).toHaveBeenCalledWith('text', {});
+    expect(mockUseThemeColor).toHaveBeenCalledWith('placeholder', {});
   });
 });
