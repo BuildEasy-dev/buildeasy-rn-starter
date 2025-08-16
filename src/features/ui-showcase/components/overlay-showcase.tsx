@@ -8,10 +8,6 @@ import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ConfirmOverlay } from '@/components/ui/confirm-overlay';
 import { ActionSheetOverlay } from '@/components/ui/action-sheet-overlay';
-import {
-  NotificationOverlay,
-  type NotificationVariant,
-} from '@/components/ui/notification-overlay';
 import { InputOverlay } from '@/components/ui/input-overlay';
 
 /**
@@ -36,12 +32,6 @@ export const OverlayShowcase = () => {
   const [destructiveConfirmVisible, setDestructiveConfirmVisible] = useState(false);
   const [actionSheetVisible, setActionSheetVisible] = useState(false);
   const [actionSheetSectionsVisible, setActionSheetSectionsVisible] = useState(false);
-  const [notificationVisible, setNotificationVisible] = useState<{
-    variant: NotificationVariant;
-    title: string;
-    message?: string;
-    action?: boolean;
-  } | null>(null);
   const [inputOverlayVisible, setInputOverlayVisible] = useState(false);
   const [multilineInputVisible, setMultilineInputVisible] = useState(false);
   const [validatedInputVisible, setValidatedInputVisible] = useState(false);
@@ -611,85 +601,6 @@ export const OverlayShowcase = () => {
           }}
           submitLabel="Continue"
           cancelLabel="Cancel"
-        />
-      </View>
-
-      <View style={styles.section}>
-        <ThemedText type="h6" style={styles.subTitle}>
-          Notification Overlays
-        </ThemedText>
-        <View style={styles.buttonRow}>
-          <ThemedButton
-            onPress={() =>
-              setNotificationVisible({
-                variant: 'success',
-                title: 'Success!',
-                message: 'Your changes have been saved successfully.',
-              })
-            }
-            label="Success"
-            variant="secondary"
-            size="small"
-            style={styles.variantButton}
-          />
-          <ThemedButton
-            onPress={() =>
-              setNotificationVisible({
-                variant: 'error',
-                title: 'Error occurred',
-                message: 'Something went wrong. Please try again.',
-              })
-            }
-            label="Error"
-            variant="secondary"
-            size="small"
-            style={styles.variantButton}
-          />
-        </View>
-        <View style={styles.buttonRow}>
-          <ThemedButton
-            onPress={() =>
-              setNotificationVisible({
-                variant: 'info',
-                title: 'New update available',
-                message: 'Version 2.1.0 is ready to install.',
-                action: true,
-              })
-            }
-            label="Info with Action"
-            variant="secondary"
-            size="small"
-            style={styles.variantButton}
-          />
-          <ThemedButton
-            onPress={() =>
-              setNotificationVisible({
-                variant: 'warning',
-                title: 'Warning',
-                message: 'Low storage space detected.',
-              })
-            }
-            label="Warning"
-            variant="secondary"
-            size="small"
-            style={styles.variantButton}
-          />
-        </View>
-
-        <NotificationOverlay
-          visible={!!notificationVisible}
-          onClose={() => setNotificationVisible(null)}
-          variant={notificationVisible?.variant || 'info'}
-          title={notificationVisible?.title || ''}
-          message={notificationVisible?.message}
-          action={
-            notificationVisible?.action
-              ? {
-                  label: 'Update',
-                  onPress: () => console.log('Update pressed'),
-                }
-              : undefined
-          }
         />
       </View>
     </ThemedView>
