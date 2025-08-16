@@ -13,7 +13,6 @@ export const TextInputShowcase = () => {
   const [text, setText] = useState({
     default: '',
     subtle: '',
-    minimal: '',
     outlined: '',
     filled: '',
     small: '',
@@ -36,17 +35,6 @@ export const TextInputShowcase = () => {
         <ThemedText type="h6" style={styles.firstSectionTitle}>
           Modern Input Variants
         </ThemedText>
-        <View style={styles.row}>
-          <ThemedTextInput
-            label="Minimal Input"
-            placeholder="Clean, borderless design"
-            variant="minimal"
-            value={text.minimal}
-            onChangeText={(value) => setText({ ...text, minimal: value })}
-            style={styles.inputField}
-            helperText="Very light background - visible but minimal"
-          />
-        </View>
         <View style={styles.row}>
           <ThemedTextInput
             label="Subtle Input"
@@ -254,13 +242,13 @@ export const TextInputShowcase = () => {
         <View style={styles.row}>
           <ThemedTextInput
             label="Clean Search"
-            placeholder="Search with minimal design..."
-            variant="minimal"
+            placeholder="Search with default design..."
+            variant="default"
             size="large"
             iconName="magnifyingglass"
             iconPosition="left"
             rounded
-            helperText="Large minimal input with search icon"
+            helperText="Large default input with search icon"
             style={styles.inputField}
           />
         </View>
