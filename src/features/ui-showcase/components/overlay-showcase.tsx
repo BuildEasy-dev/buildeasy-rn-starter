@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 
 import { ThemedButton } from '@/components/themed/themed-button';
 import { ThemedOverlay } from '@/components/themed/themed-overlay';
-import { ThemedSelectionOverlay } from '@/components/themed/themed-selection-overlay';
+import { SelectionOverlay } from '@/components/ui/selection-overlay';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ConfirmOverlay } from '@/components/ui/confirm-overlay';
@@ -384,7 +384,7 @@ export const OverlayShowcase = () => {
           style={styles.fullWidthButton}
         />
 
-        <ThemedSelectionOverlay
+        <SelectionOverlay
           visible={selectionVisible}
           onClose={() => setSelectionVisible(false)}
           title="Choose an Option"

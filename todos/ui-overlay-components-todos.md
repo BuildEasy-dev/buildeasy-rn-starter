@@ -12,10 +12,11 @@ Implementation plan for common overlay components in `src/components/ui/`.
 - **Action**: Move/rename to `src/components/ui/loading-overlay.tsx`
 - **Features**: Activity indicator with optional message
 
-#### 2. 🔴 ConfirmOverlay
+#### 2. ✅ ConfirmOverlay
 
 - **Location**: `src/components/ui/confirm-overlay.tsx`
 - **Priority**: HIGH
+- **Status**: COMPLETED
 - **Features**:
   - Title and message text
   - Confirm/Cancel buttons
@@ -162,9 +163,9 @@ interface BaseOverlayProps {
 
 ### Phase 1: Setup (Week 1)
 
-- [ ] Create base component structure
-- [ ] Implement ConfirmOverlay
-- [ ] Implement ActionSheetOverlay
+- [x] Create base component structure
+- [x] Implement ConfirmOverlay
+- [x] Implement ActionSheetOverlay
 - [ ] Update index.ts exports
 
 ### Phase 2: Core Features (Week 2)

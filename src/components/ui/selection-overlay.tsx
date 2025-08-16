@@ -3,18 +3,18 @@ import { useCallback } from 'react';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 
-import { IconSymbol } from '../ui/icon-symbol';
-import { ThemedOverlay, type ThemedOverlayProps } from './themed-overlay';
-import { ThemedText } from './themed-text';
+import { IconSymbol } from './icon-symbol';
+import { ThemedOverlay, type ThemedOverlayProps } from '../themed/themed-overlay';
+import { ThemedText } from '../themed/themed-text';
 
-export interface ThemedSelectionOption {
+export interface SelectionOption {
   value: string;
   label: string;
 }
 
-export interface ThemedSelectionOverlayProps extends Omit<ThemedOverlayProps, 'children'> {
+export interface SelectionOverlayProps extends Omit<ThemedOverlayProps, 'children'> {
   title?: string;
-  options: ThemedSelectionOption[];
+  options: SelectionOption[];
   selectedValue?: string;
   onSelect: (value: string) => void;
   showDividers?: boolean;
@@ -25,7 +25,7 @@ export interface ThemedSelectionOverlayProps extends Omit<ThemedOverlayProps, 'c
  *
  * Provides a mobile-friendly bottom sheet interface for selecting from options
  */
-export function ThemedSelectionOverlay({
+export function SelectionOverlay({
   title,
   options,
   selectedValue,
@@ -35,7 +35,7 @@ export function ThemedSelectionOverlay({
   size = 'auto',
   animationSpeed = 'fast',
   ...overlayProps
-}: ThemedSelectionOverlayProps) {
+}: SelectionOverlayProps) {
   const primaryColor = useThemeColor('tint');
   const borderColor = useThemeColor('border');
 

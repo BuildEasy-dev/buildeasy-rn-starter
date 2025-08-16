@@ -5,7 +5,6 @@ export * from './themed-flashlist';
 export * from './themed-loading-overlay';
 export * from './themed-overlay';
 export * from './themed-radio';
-export * from './themed-selection-overlay';
 export * from './themed-safe-area-view';
 export * from './themed-scroll-view';
 export * from './themed-section-list';
