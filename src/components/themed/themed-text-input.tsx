@@ -280,8 +280,8 @@ export const ThemedTextInput = memo(
       const iconColor = focused ? '#007AFF' : '#8E8E93';
 
       const borderColor = useThemeColor('border', {
-        light: 'rgba(0,0,0,0.08)',
-        dark: 'rgba(255,255,255,0.12)',
+        light: 'rgba(0,0,0,0.15)', // Stronger border for better visibility
+        dark: 'rgba(255,255,255,0.25)',
       });
 
       // 2025 Design: Balance between minimal and recognizable
@@ -382,14 +382,14 @@ export const ThemedTextInput = memo(
               backgroundColor={getBackgroundColor()}
               borderColor={
                 variant === 'outline'
-                  ? focused
-                    ? '#007AFF'
-                    : borderColor
-                  : variant === 'subtle'
-                    ? 'transparent'
-                    : variant === 'minimal'
-                      ? 'transparent'
-                      : 'transparent'
+                  ? status === 'error'
+                    ? '#FF3B30'
+                    : status === 'success'
+                      ? '#34C759'
+                      : focused
+                        ? '#007AFF'
+                        : borderColor
+                  : 'transparent'
               }
               borderBottomColor={
                 variant === 'subtle'
