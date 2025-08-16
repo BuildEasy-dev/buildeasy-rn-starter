@@ -3,8 +3,8 @@ import { ActivityIndicator, StyleSheet, View, type ViewStyle } from 'react-nativ
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 
-import { ThemedOverlay, type ThemedOverlayProps } from './themed-overlay';
-import { ThemedText } from './themed-text';
+import { ThemedOverlay, type ThemedOverlayProps } from '@/components/themed/themed-overlay';
+import { ThemedText } from '@/components/themed/themed-text';
 
 export type ThemedLoadingOverlayProps = Omit<
   ThemedOverlayProps,
