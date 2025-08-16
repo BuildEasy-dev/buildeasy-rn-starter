@@ -1,4 +1,5 @@
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
+import { useCallback } from 'react';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 
@@ -38,9 +39,12 @@ export function ThemedSelectionOverlay({
   const primaryColor = useThemeColor('tint');
   const borderColor = useThemeColor('border');
 
-  const handleOptionPress = (value: string) => {
-    onSelect(value);
-  };
+  const handleOptionPress = useCallback(
+    (value: string) => {
+      onSelect(value);
+    },
+    [onSelect]
+  );
 
   return (
     <ThemedOverlay variant={variant} size={size} animationSpeed={animationSpeed} {...overlayProps}>

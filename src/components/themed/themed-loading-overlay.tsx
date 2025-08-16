@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 import { ActivityIndicator, StyleSheet, View, type ViewStyle } from 'react-native';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -44,11 +44,14 @@ export const ThemedLoadingOverlay = forwardRef<View, ThemedLoadingOverlayProps>(
       dark: darkIndicatorColor,
     });
 
-    // Combine styles for the content container
-    const combinedContentStyle: ViewStyle = {
-      ...styles.contentContainer,
-      ...(contentContainerStyle || {}),
-    };
+    // Memoize combined styles for the content container
+    const combinedContentStyle = useMemo(
+      (): ViewStyle => ({
+        ...styles.contentContainer,
+        ...(contentContainerStyle || {}),
+      }),
+      [contentContainerStyle]
+    );
 
     return (
       <ThemedOverlay
