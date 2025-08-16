@@ -44,7 +44,7 @@ export const TextInputShowcase = () => {
             value={text.minimal}
             onChangeText={(value) => setText({ ...text, minimal: value })}
             style={styles.inputField}
-            helperText="Pure minimal - no borders or background"
+            helperText="Very light background - visible but minimal"
           />
         </View>
         <View style={styles.row}>
@@ -66,7 +66,7 @@ export const TextInputShowcase = () => {
             value={text.default}
             onChangeText={(value) => setText({ ...text, default: value })}
             style={styles.inputField}
-            helperText="Subtle background - iOS Settings style"
+            helperText="iOS standard gray - clear but not intrusive"
           />
         </View>
         <View style={styles.row}>
@@ -77,7 +77,7 @@ export const TextInputShowcase = () => {
             value={text.filled}
             onChangeText={(value) => setText({ ...text, filled: value })}
             style={styles.inputField}
-            helperText="Darker background for contrast"
+            helperText="Stronger background for important inputs"
           />
         </View>
         <View style={styles.row}>

@@ -98,11 +98,12 @@ const StyledInput = styled(TextInput, {
 
     variant: {
       default: {
-        backgroundColor: '$backgroundSecondary',
+        // Uses dynamic background via getBackgroundColor()
         borderWidth: 0,
         borderColor: 'transparent',
       },
       subtle: {
+        // Transparent with bottom border only
         backgroundColor: 'transparent',
         borderWidth: 0,
         borderTopWidth: 0,
@@ -113,7 +114,7 @@ const StyledInput = styled(TextInput, {
         borderRadius: 0,
       },
       minimal: {
-        backgroundColor: 'transparent',
+        // Very light background for visibility
         borderWidth: 0,
         borderColor: 'transparent',
         borderTopWidth: 0,
@@ -127,7 +128,7 @@ const StyledInput = styled(TextInput, {
         borderColor: '$borderColor',
       },
       filled: {
-        backgroundColor: '$backgroundTertiary',
+        // Uses dynamic background via getBackgroundColor()
         borderWidth: 0,
         borderColor: 'transparent',
       },
@@ -283,30 +284,49 @@ export const ThemedTextInput = memo(
         dark: 'rgba(255,255,255,0.12)',
       });
 
-      // Modern background colors - lighter and more subtle
+      // 2025 Design: Balance between minimal and recognizable
       const defaultBackgroundColor = useThemeColor('backgroundSecondary', {
-        light: '#F7F7F7',
+        light: '#F2F2F7', // iOS standard light gray with better contrast
         dark: '#1C1C1E',
       });
 
       const filledBackgroundColor = useThemeColor('backgroundTertiary', {
-        light: '#EBEBEB',
+        light: '#E5E5EA', // More visible contrast
         dark: '#2C2C2E',
       });
 
-      // Get appropriate background based on variant
+      // Subtle background for minimal variant - still visible
+      const minimalBackgroundColor = useThemeColor('backgroundSecondary', {
+        light: '#FAFAFA', // Very light but still distinguishable
+        dark: '#0A0A0A',
+      });
+
+      // Get appropriate background based on variant - 2025 UX balance
       const getBackgroundColor = () => {
+        // Enhanced focus state for subtle variants
+        if (focused && variant === 'subtle') {
+          return focusBackgroundColor;
+        }
+
         switch (variant) {
           case 'filled':
             return filledBackgroundColor;
           case 'subtle':
+            return 'transparent'; // Keep subtle truly minimal unless focused
           case 'minimal':
+            return minimalBackgroundColor; // Very light but visible
           case 'outline':
             return 'transparent';
           default:
             return defaultBackgroundColor;
         }
       };
+
+      // Enhanced focus state backgrounds
+      const focusBackgroundColor = useThemeColor('backgroundSecondary', {
+        light: 'rgba(0, 122, 255, 0.05)', // Very light blue tint when focused
+        dark: 'rgba(10, 132, 255, 0.1)',
+      });
 
       const helperTextVariant =
         status === 'error' ? 'error' : status === 'success' ? 'success' : 'default';
