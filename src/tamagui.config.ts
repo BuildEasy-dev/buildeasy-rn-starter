@@ -24,6 +24,8 @@ const customThemes = {
     success: COLORS.SUCCESS,
     // Text/icon color - consistent across platforms
     color: COLORS.BLACK,
+    // Background colors for overlays and elevated surfaces
+    backgroundSecondary: config.themes.light.gray1,
     // Switch colors
     switchThumb: COLORS.WHITE,
     switchTrackActive: COLORS.BRAND_PRIMARY,
@@ -39,6 +41,8 @@ const customThemes = {
     success: COLORS.SUCCESS,
     // Text/icon color - consistent across platforms
     color: COLORS.WHITE,
+    // Background colors for overlays and elevated surfaces
+    backgroundSecondary: config.themes.dark.gray2,
     // Switch colors
     switchThumb: COLORS.WHITE,
     switchTrackActive: COLORS.BRAND_PRIMARY,

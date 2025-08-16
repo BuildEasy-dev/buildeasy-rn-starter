@@ -57,6 +57,7 @@ export const semanticTokens = {
   icon: 'color',
   placeholder: 'placeholderColor',
   separator: 'gray4',
+  border: 'borderColor',
 } as const;
 
 type SemanticTokenName = keyof typeof semanticTokens;
