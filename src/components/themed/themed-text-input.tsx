@@ -110,7 +110,7 @@ const StyledInput = styled(TextInput, {
         borderLeftWidth: 0,
         borderRightWidth: 0,
         borderBottomWidth: 1,
-        borderBottomColor: '$borderColor',
+        borderBottomColor: 'rgba(0,0,0,0.15)', // Direct color instead of token
         borderRadius: 0,
       },
       minimal: {
@@ -124,8 +124,7 @@ const StyledInput = styled(TextInput, {
       },
       outline: {
         backgroundColor: 'transparent',
-        borderWidth: 1,
-        borderColor: '$borderColor',
+        // Border styles controlled by React Native style prop to avoid conflicts
       },
       filled: {
         // Uses dynamic background via getBackgroundColor()
@@ -137,19 +136,19 @@ const StyledInput = styled(TextInput, {
     status: {
       default: {},
       error: {
-        borderColor: '$red9',
-        borderBottomColor: '$red9',
+        borderColor: '#FF3B30',
+        borderBottomColor: '#FF3B30',
       },
       success: {
-        borderColor: '$green9',
-        borderBottomColor: '$green9',
+        borderColor: '#34C759',
+        borderBottomColor: '#34C759',
       },
     },
 
     focused: {
       true: {
-        borderColor: '$blue9',
-        borderBottomColor: '$blue9',
+        borderColor: '#007AFF',
+        borderBottomColor: '#007AFF',
       },
       false: {},
     },
@@ -303,30 +302,22 @@ export const ThemedTextInput = memo(
 
       // Get appropriate background based on variant - 2025 UX balance
       const getBackgroundColor = () => {
-        // Enhanced focus state for subtle variants
-        if (focused && variant === 'subtle') {
-          return focusBackgroundColor;
-        }
-
+        // No background change on focus - only border color changes
         switch (variant) {
           case 'filled':
             return filledBackgroundColor;
           case 'subtle':
-            return 'transparent'; // Keep subtle truly minimal unless focused
+            return 'transparent'; // Always transparent for subtle
           case 'minimal':
             return minimalBackgroundColor; // Very light but visible
           case 'outline':
-            return 'transparent';
+            return 'transparent'; // Always transparent for outline
           default:
             return defaultBackgroundColor;
         }
       };
 
-      // Enhanced focus state backgrounds
-      const focusBackgroundColor = useThemeColor('backgroundSecondary', {
-        light: 'rgba(0, 122, 255, 0.05)', // Very light blue tint when focused
-        dark: 'rgba(10, 132, 255, 0.1)',
-      });
+      // Focus state only changes border color, no background change
 
       const helperTextVariant =
         status === 'error' ? 'error' : status === 'success' ? 'success' : 'default';
@@ -371,62 +362,132 @@ export const ThemedTextInput = memo(
               </Stack>
             )}
 
-            <StyledInput
-              ref={ref}
-              size={size}
-              variant={variant}
-              status={status}
-              focused={focused}
-              rounded={rounded}
-              borderRadius={borderRadius}
-              backgroundColor={getBackgroundColor()}
-              borderColor={
-                variant === 'outline'
-                  ? status === 'error'
-                    ? '#FF3B30'
-                    : status === 'success'
-                      ? '#34C759'
-                      : focused
-                        ? '#007AFF'
-                        : borderColor
-                  : 'transparent'
-              }
-              borderBottomColor={
-                variant === 'subtle'
-                  ? status === 'error'
-                    ? '#FF3B30'
-                    : status === 'success'
-                      ? '#34C759'
-                      : focused
-                        ? '#007AFF'
-                        : borderColor
-                  : undefined
-              }
-              // color={textColor} // Commented out due to Tamagui type issues
-              placeholderTextColor={placeholderTextColor}
-              cursorColor={'#007AFF'}
-              selectionColor={'#007AFF'}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              secureTextEntry={secureTextEntry && !passwordVisible}
-              accessibilityLabel={rest.accessibilityLabel || label || rest.placeholder}
-              accessibilityHint={rest.accessibilityHint}
-              accessibilityState={{
-                disabled: rest.editable === false,
-              }}
-              returnKeyType={rest.returnKeyType}
-              onSubmitEditing={rest.onSubmitEditing}
-              blurOnSubmit={rest.blurOnSubmit}
-              paddingLeft={iconName && iconPosition === 'left' ? computedIconSize + 20 : undefined}
-              paddingRight={
-                (iconName && iconPosition === 'right') || (secureTextEntry && showPasswordToggle)
-                  ? computedIconSize + 20
-                  : undefined
-              }
-              flex={1}
-              style={[{ color: textColor }, style]}
-              {...rest}
-            />
+            {variant === 'outline' ? (
+              // Use native TextInput for outline variant to avoid Tamagui conflicts
+              <TextInput
+                ref={ref}
+                placeholderTextColor={placeholderTextColor}
+                cursorColor={'#007AFF'}
+                selectionColor={'#007AFF'}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                secureTextEntry={secureTextEntry && !passwordVisible}
+                accessibilityLabel={rest.accessibilityLabel || label || rest.placeholder}
+                accessibilityHint={rest.accessibilityHint}
+                accessibilityState={{
+                  disabled: rest.editable === false,
+                }}
+                returnKeyType={rest.returnKeyType}
+                onSubmitEditing={rest.onSubmitEditing}
+                blurOnSubmit={rest.blurOnSubmit}
+                style={[
+                  {
+                    // Base styles for outline variant
+                    backgroundColor: getBackgroundColor(),
+                    borderRadius: borderRadius,
+                    borderWidth: 1,
+                    borderColor:
+                      status === 'error'
+                        ? '#FF3B30'
+                        : status === 'success'
+                          ? '#34C759'
+                          : focused
+                            ? '#007AFF'
+                            : '#D1D1D6',
+                    color: textColor,
+                    // Size-based styling
+                    ...(size === 'small' && {
+                      height: 40,
+                      fontSize: 14,
+                      lineHeight: 20,
+                      paddingHorizontal: 12,
+                      paddingVertical: 8,
+                    }),
+                    ...(size === 'medium' && {
+                      height: 48,
+                      fontSize: 16,
+                      lineHeight: 22,
+                      paddingHorizontal: 16,
+                      paddingVertical: 12,
+                    }),
+                    ...(size === 'large' && {
+                      height: 56,
+                      fontSize: 18,
+                      lineHeight: 24,
+                      paddingHorizontal: 20,
+                      paddingVertical: 16,
+                    }),
+                    // Icon spacing
+                    paddingLeft:
+                      iconName && iconPosition === 'left' ? computedIconSize + 20 : undefined,
+                    paddingRight:
+                      (iconName && iconPosition === 'right') ||
+                      (secureTextEntry && showPasswordToggle)
+                        ? computedIconSize + 20
+                        : undefined,
+                    flex: 1,
+                  },
+                  style,
+                ]}
+                {...rest}
+              />
+            ) : (
+              // Use Tamagui StyledInput for other variants
+              <StyledInput
+                ref={ref}
+                size={size}
+                variant={variant}
+                status={status}
+                focused={focused}
+                rounded={rounded}
+                borderRadius={borderRadius}
+                backgroundColor={getBackgroundColor()}
+                // color={textColor} // Commented out due to Tamagui type issues
+                placeholderTextColor={placeholderTextColor}
+                cursorColor={'#007AFF'}
+                selectionColor={'#007AFF'}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                secureTextEntry={secureTextEntry && !passwordVisible}
+                accessibilityLabel={rest.accessibilityLabel || label || rest.placeholder}
+                accessibilityHint={rest.accessibilityHint}
+                accessibilityState={{
+                  disabled: rest.editable === false,
+                }}
+                returnKeyType={rest.returnKeyType}
+                onSubmitEditing={rest.onSubmitEditing}
+                blurOnSubmit={rest.blurOnSubmit}
+                paddingLeft={
+                  iconName && iconPosition === 'left' ? computedIconSize + 20 : undefined
+                }
+                paddingRight={
+                  (iconName && iconPosition === 'right') || (secureTextEntry && showPasswordToggle)
+                    ? computedIconSize + 20
+                    : undefined
+                }
+                flex={1}
+                style={[
+                  { color: textColor },
+                  // Border styles for non-outline variants
+                  variant === 'subtle' && {
+                    borderBottomWidth: 1,
+                    borderBottomColor:
+                      status === 'error'
+                        ? '#FF3B30'
+                        : status === 'success'
+                          ? '#34C759'
+                          : focused
+                            ? '#007AFF'
+                            : borderColor,
+                    borderTopWidth: 0,
+                    borderLeftWidth: 0,
+                    borderRightWidth: 0,
+                  },
+                  style,
+                ]}
+                {...rest}
+              />
+            )}
 
             {iconName && iconPosition === 'right' && !showPasswordToggle && (
               <Stack position="absolute" right={12} zIndex={1} style={styles.iconContainer}>
