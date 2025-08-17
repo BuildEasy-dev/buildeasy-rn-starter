@@ -10,6 +10,7 @@ import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { ActionSheetModal } from '@/components/ui/action-sheet-modal';
 import { InputModal } from '@/components/ui/input-modal';
 import { NotificationModal } from '@/components/ui/notification-modal';
+import { useModal } from '@/hooks/use-modal';
 
 /**
  * Modal Component Showcase
@@ -38,6 +39,118 @@ export const ModalShowcase = () => {
   const [multilineInputVisible, setMultilineInputVisible] = useState(false);
   const [validatedInputVisible, setValidatedInputVisible] = useState(false);
   const [inputResult, setInputResult] = useState('No input yet');
+
+  // Global modal hook
+  const { confirm, input } = useModal();
+
+  // Global modal handlers
+  const handleGlobalConfirm = async () => {
+    const result = await confirm({
+      title: 'Global Confirm Modal',
+      message:
+        'This is a global confirm modal that can be called from anywhere without declaring it in the component.',
+      confirmLabel: 'Confirm',
+      cancelLabel: 'Cancel',
+      isDestructive: false,
+    });
+    alert(`Global confirm result: ${result ? 'Confirmed' : 'Cancelled'}`);
+  };
+
+  const handleGlobalDestructiveConfirm = async () => {
+    const result = await confirm({
+      title: 'Delete Confirmation',
+      message: 'Are you sure you want to delete this project? This action cannot be undone.',
+      confirmLabel: 'Delete',
+      cancelLabel: 'Keep',
+      isDestructive: true,
+    });
+    alert(`Delete confirmation result: ${result ? 'Deleted' : 'Kept'}`);
+  };
+
+  const handleGlobalInput = async () => {
+    const result = await input({
+      title: 'Global Input Modal',
+      placeholder: 'Enter project name',
+      submitLabel: 'Create',
+      cancelLabel: 'Cancel',
+      initialValue: '',
+      validate: (value) => {
+        if (value.length < 3) {
+          return 'Project name must be at least 3 characters';
+        }
+        if (value.length > 50) {
+          return 'Project name cannot exceed 50 characters';
+        }
+        return null;
+      },
+      maxLength: 50,
+      showCharacterCounter: true,
+    });
+
+    if (result) {
+      setInputResult(`Global input: "${result}"`);
+    } else {
+      alert('User cancelled input');
+    }
+  };
+
+  const handleGlobalMultilineInput = async () => {
+    const result = await input({
+      title: 'Multiline Input',
+      placeholder: 'Enter your feedback...',
+      submitLabel: 'Submit',
+      cancelLabel: 'Cancel',
+      multiline: true,
+      numberOfLines: 4,
+      maxLength: 200,
+      showCharacterCounter: true,
+    });
+
+    if (result) {
+      setInputResult(`Multiline input: "${result}"`);
+    }
+  };
+
+  const handleMultipleGlobalModals = async () => {
+    try {
+      // Demonstrate modal queue
+      const firstResult = await confirm({
+        title: 'Step 1 Confirmation',
+        message: 'This is the first modal, click confirm to continue',
+      });
+
+      if (!firstResult) {
+        alert('User cancelled at step 1');
+        return;
+      }
+
+      const userName = await input({
+        title: 'Step 2 Input',
+        placeholder: 'Enter your name',
+        validate: (value) => (value.trim().length === 0 ? 'Name cannot be empty' : null),
+      });
+
+      if (!userName) {
+        alert('User cancelled at step 2');
+        return;
+      }
+
+      const finalConfirm = await confirm({
+        title: 'Final Confirmation',
+        message: `Hello ${userName}, are you sure you want to submit?`,
+        confirmLabel: 'Submit',
+        cancelLabel: 'Modify',
+      });
+
+      if (finalConfirm) {
+        alert(`Operation completed! User: ${userName}`);
+      } else {
+        alert('User chose to modify');
+      }
+    } catch {
+      alert('An error occurred during the process');
+    }
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -394,56 +507,6 @@ export const ModalShowcase = () => {
         />
       </View>
 
-      {/* Confirm Modal Examples */}
-      <View style={styles.section}>
-        <ThemedText type="h6" style={styles.subTitle}>
-          Confirm Modal
-        </ThemedText>
-        <View style={styles.buttonRow}>
-          <ThemedButton
-            onPress={() => setConfirmVisible(true)}
-            label="Confirm"
-            variant="primary"
-            size="medium"
-            style={styles.variantButton}
-          />
-          <ThemedButton
-            onPress={() => setDestructiveConfirmVisible(true)}
-            label="Delete"
-            variant="danger"
-            size="medium"
-            style={styles.variantButton}
-          />
-        </View>
-
-        {/* Normal Confirmation */}
-        <ConfirmModal
-          visible={confirmVisible}
-          onClose={() => setConfirmVisible(false)}
-          onConfirm={() => {
-            alert('Action confirmed!');
-          }}
-          title="Confirm Action"
-          message="Are you sure you want to proceed with this action?"
-          confirmLabel="Proceed"
-          cancelLabel="Cancel"
-        />
-
-        {/* Destructive Confirmation */}
-        <ConfirmModal
-          visible={destructiveConfirmVisible}
-          onClose={() => setDestructiveConfirmVisible(false)}
-          onConfirm={() => {
-            alert('Item deleted!');
-          }}
-          title="Delete Item"
-          message="Are you sure you want to delete this item? This action cannot be undone."
-          confirmLabel="Delete"
-          cancelLabel="Keep"
-          isDestructive={true}
-        />
-      </View>
-
       {/* Action Sheet Modal Examples */}
       <View style={styles.section}>
         <ThemedText type="h6" style={styles.subTitle}>
@@ -509,24 +572,78 @@ export const ModalShowcase = () => {
         />
       </View>
 
+      {/* Global Modal System Examples */}
+      <View style={styles.section}>
+        <ThemedText type="h6" style={styles.subTitle}>
+          Global Modal System
+        </ThemedText>
+        <ThemedText style={styles.modalContent}>
+          These buttons demonstrate the global modal system - no need to declare modals in
+          components, callable from anywhere
+        </ThemedText>
+        <ThemedText style={styles.modalContent}>Last input result: {inputResult}</ThemedText>
+
+        <View style={styles.buttonRow}>
+          <ThemedButton
+            onPress={handleGlobalConfirm}
+            label="Global Confirm"
+            variant="primary"
+            size="medium"
+            style={styles.variantButton}
+          />
+          <ThemedButton
+            onPress={handleGlobalDestructiveConfirm}
+            label="Delete Confirm"
+            variant="danger"
+            size="medium"
+            style={styles.variantButton}
+          />
+        </View>
+
+        <View style={styles.buttonRow}>
+          <ThemedButton
+            onPress={handleGlobalInput}
+            label="Global Input"
+            variant="primary"
+            size="medium"
+            style={styles.variantButton}
+          />
+          <ThemedButton
+            onPress={handleGlobalMultilineInput}
+            label="Multiline Input"
+            variant="primary"
+            size="medium"
+            style={styles.variantButton}
+          />
+        </View>
+
+        <ThemedButton
+          onPress={handleMultipleGlobalModals}
+          label="Multi-Modal Flow Demo"
+          variant="primary"
+          size="medium"
+          style={styles.fullWidthButton}
+        />
+      </View>
+
       {/* Input Modal Examples */}
       <View style={styles.section}>
         <ThemedText type="h6" style={styles.subTitle}>
-          Input Modal
+          Input Modal (Traditional)
         </ThemedText>
-        <ThemedText style={styles.modalContent}>Last input result: {inputResult}</ThemedText>
+        <ThemedText style={styles.modalContent}>Traditional declarative approach:</ThemedText>
         <View style={styles.buttonRow}>
           <ThemedButton
             onPress={() => setInputModalVisible(true)}
             label="Single"
-            variant="primary"
+            variant="outline"
             size="medium"
             style={styles.variantButton}
           />
           <ThemedButton
             onPress={() => setMultilineInputVisible(true)}
             label="Multi"
-            variant="secondary"
+            variant="outline"
             size="medium"
             style={styles.variantButton}
           />
@@ -588,6 +705,57 @@ export const ModalShowcase = () => {
           }}
           submitLabel="Continue"
           cancelLabel="Cancel"
+        />
+      </View>
+
+      {/* Confirm Modal Examples */}
+      <View style={styles.section}>
+        <ThemedText type="h6" style={styles.subTitle}>
+          Confirm Modal (Traditional)
+        </ThemedText>
+        <ThemedText style={styles.modalContent}>Traditional declarative approach:</ThemedText>
+        <View style={styles.buttonRow}>
+          <ThemedButton
+            onPress={() => setConfirmVisible(true)}
+            label="Confirm"
+            variant="outline"
+            size="medium"
+            style={styles.variantButton}
+          />
+          <ThemedButton
+            onPress={() => setDestructiveConfirmVisible(true)}
+            label="Delete"
+            variant="danger"
+            size="medium"
+            style={styles.variantButton}
+          />
+        </View>
+
+        {/* Normal Confirmation */}
+        <ConfirmModal
+          visible={confirmVisible}
+          onClose={() => setConfirmVisible(false)}
+          onConfirm={() => {
+            alert('Action confirmed!');
+          }}
+          title="Confirm Action"
+          message="Are you sure you want to proceed with this action?"
+          confirmLabel="Proceed"
+          cancelLabel="Cancel"
+        />
+
+        {/* Destructive Confirmation */}
+        <ConfirmModal
+          visible={destructiveConfirmVisible}
+          onClose={() => setDestructiveConfirmVisible(false)}
+          onConfirm={() => {
+            alert('Item deleted!');
+          }}
+          title="Delete Item"
+          message="Are you sure you want to delete this item? This action cannot be undone."
+          confirmLabel="Delete"
+          cancelLabel="Keep"
+          isDestructive={true}
         />
       </View>
     </ThemedView>
