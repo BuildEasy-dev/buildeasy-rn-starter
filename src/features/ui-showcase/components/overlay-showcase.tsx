@@ -28,6 +28,8 @@ export const OverlayShowcase = () => {
   } | null>(null);
   const [selectionVisible, setSelectionVisible] = useState(false);
   const [selectedValue, setSelectedValue] = useState('option1');
+  const [selectionWithHeightVisible, setSelectionWithHeightVisible] = useState(false);
+  const [selectedHeightValue, setSelectedHeightValue] = useState('height1');
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [destructiveConfirmVisible, setDestructiveConfirmVisible] = useState(false);
   const [actionSheetVisible, setActionSheetVisible] = useState(false);
@@ -381,13 +383,22 @@ export const OverlayShowcase = () => {
         <ThemedText type="h6" style={styles.subTitle}>
           Selection Overlay
         </ThemedText>
-        <ThemedButton
-          onPress={() => setSelectionVisible(true)}
-          label={`Selected: ${selectedValue}`}
-          variant="outline"
-          size="medium"
-          style={styles.fullWidthButton}
-        />
+        <View style={styles.buttonRow}>
+          <ThemedButton
+            onPress={() => setSelectionVisible(true)}
+            label="Default Height"
+            variant="outline"
+            size="medium"
+            style={styles.variantButton}
+          />
+          <ThemedButton
+            onPress={() => setSelectionWithHeightVisible(true)}
+            label="70% Height"
+            variant="primary"
+            size="medium"
+            style={styles.variantButton}
+          />
+        </View>
 
         <SelectionOverlay
           visible={selectionVisible}
@@ -398,11 +409,38 @@ export const OverlayShowcase = () => {
             { value: 'option2', label: 'Option 2' },
             { value: 'option3', label: 'Option 3' },
             { value: 'option4', label: 'Option 4' },
+            { value: 'option5', label: 'Option 5' },
+            { value: 'option6', label: 'Option 6' },
+            { value: 'option7', label: 'Option 7' },
+            { value: 'option8', label: 'Option 8' },
+            { value: 'option9', label: 'Option 9' },
+            { value: 'option10', label: 'Option 10' },
           ]}
           selectedValue={selectedValue}
           onSelect={(value) => {
             setSelectedValue(value);
             setSelectionVisible(false);
+          }}
+        />
+
+        {/* Selection Overlay with Custom Height */}
+        <SelectionOverlay
+          visible={selectionWithHeightVisible}
+          onClose={() => setSelectionWithHeightVisible(false)}
+          title="Custom Height (70%)"
+          height="70%"
+          options={[
+            { value: 'height1', label: 'First Option' },
+            { value: 'height2', label: 'Second Option' },
+            { value: 'height3', label: 'Third Option' },
+            { value: 'height4', label: 'Fourth Option' },
+            { value: 'height5', label: 'Fifth Option' },
+            { value: 'height6', label: 'Sixth Option' },
+          ]}
+          selectedValue={selectedHeightValue}
+          onSelect={(value) => {
+            setSelectedHeightValue(value);
+            setSelectionWithHeightVisible(false);
           }}
         />
       </View>

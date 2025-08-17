@@ -6,6 +6,7 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { animationUtils, animations } from '@/constants/animations';
 import { overlayUtils, type OverlayVariant, type OverlaySize } from '@/constants/overlays';
@@ -57,6 +58,7 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
     ref
   ) => {
     const [modalVisible, setModalVisible] = useState(visible);
+    const insets = useSafeAreaInsets();
 
     // Memoize variant and animation configurations to prevent recalculation
     const variantConfig = useMemo(() => overlayUtils.getVariantConfig(variant), [variant]);
@@ -198,11 +200,55 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
     // Memoize container style based on variant
     const containerStyle = useMemo(() => overlayUtils.getContainerStyle(variant), [variant]);
 
-    // Memoize content style based on variant and size
-    const baseContentStyle = useMemo(
-      () => overlayUtils.mergeContentStyle(variant, size, contentContainerStyle),
-      [variant, size, contentContainerStyle]
-    );
+    // Memoize content style based on variant and size with safe area insets
+    const baseContentStyle = useMemo(() => {
+      const mergedStyle = overlayUtils.mergeContentStyle(variant, size, contentContainerStyle);
+
+      // Apply safe area padding based on variant
+      if (variant === 'bottom') {
+        const currentPadding =
+          typeof mergedStyle.paddingBottom === 'number' ? mergedStyle.paddingBottom : 0;
+        return {
+          ...mergedStyle,
+          paddingBottom: currentPadding + (insets.bottom || 18),
+        };
+      } else if (variant === 'top') {
+        const currentPadding =
+          typeof mergedStyle.paddingTop === 'number' ? mergedStyle.paddingTop : 0;
+        return {
+          ...mergedStyle,
+          paddingTop: currentPadding + (insets.top || 0),
+        };
+      } else if (variant === 'fullscreen') {
+        // Apply safe area insets on all sides for fullscreen
+        const currentPaddingTop =
+          typeof mergedStyle.paddingTop === 'number' ? mergedStyle.paddingTop : 0;
+        const currentPaddingBottom =
+          typeof mergedStyle.paddingBottom === 'number' ? mergedStyle.paddingBottom : 0;
+        const currentPaddingLeft =
+          typeof mergedStyle.paddingLeft === 'number' ? mergedStyle.paddingLeft : 0;
+        const currentPaddingRight =
+          typeof mergedStyle.paddingRight === 'number' ? mergedStyle.paddingRight : 0;
+
+        return {
+          ...mergedStyle,
+          paddingTop: currentPaddingTop + insets.top,
+          paddingBottom: currentPaddingBottom + insets.bottom,
+          paddingLeft: currentPaddingLeft + insets.left,
+          paddingRight: currentPaddingRight + insets.right,
+        };
+      }
+
+      return mergedStyle;
+    }, [
+      variant,
+      size,
+      contentContainerStyle,
+      insets.bottom,
+      insets.top,
+      insets.left,
+      insets.right,
+    ]);
 
     // Memoize default styling
     const defaultOverlayStyle = useMemo(

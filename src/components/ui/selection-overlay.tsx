@@ -1,5 +1,5 @@
-import { TouchableOpacity, View, StyleSheet } from 'react-native';
-import { useCallback } from 'react';
+import { TouchableOpacity, View, StyleSheet, type DimensionValue } from 'react-native';
+import { useCallback, useMemo } from 'react';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 
@@ -18,6 +18,11 @@ export interface SelectionOverlayProps extends Omit<ThemedOverlayProps, 'childre
   selectedValue?: string;
   onSelect: (value: string) => void;
   showDividers?: boolean;
+  /**
+   * Height of the overlay content
+   * Accepts number for fixed height or string for percentage (e.g., '70%')
+   */
+  height?: DimensionValue;
 }
 
 /**
@@ -30,14 +35,18 @@ export function SelectionOverlay({
   options,
   selectedValue,
   onSelect,
+  onClose,
   showDividers = true,
+  height,
   variant = 'bottom',
   size = 'auto',
   animationSpeed = 'fast',
+  contentContainerStyle,
   ...overlayProps
 }: SelectionOverlayProps) {
   const primaryColor = useThemeColor('tint');
   const borderColor = useThemeColor('border');
+  const textSecondary = useThemeColor('textSecondary');
 
   const handleOptionPress = useCallback(
     (value: string) => {
@@ -46,14 +55,50 @@ export function SelectionOverlay({
     [onSelect]
   );
 
+  const handleClose = useCallback(() => {
+    if (onClose) {
+      onClose();
+    }
+  }, [onClose]);
+
+  // Merge height with contentContainerStyle
+  const mergedContentStyle = useMemo(() => {
+    if (height) {
+      return {
+        ...contentContainerStyle,
+        height,
+      };
+    }
+    return contentContainerStyle;
+  }, [height, contentContainerStyle]);
+
   return (
-    <ThemedOverlay variant={variant} size={size} animationSpeed={animationSpeed} {...overlayProps}>
+    <ThemedOverlay
+      variant={variant}
+      size={size}
+      animationSpeed={animationSpeed}
+      onClose={onClose}
+      contentContainerStyle={mergedContentStyle}
+      {...overlayProps}
+    >
       <View style={styles.container}>
         {title && (
           <View style={[styles.header, { borderBottomColor: borderColor }]}>
             <ThemedText type="h5" style={styles.title}>
               {title}
             </ThemedText>
+            {onClose && (
+              <TouchableOpacity
+                onPress={handleClose}
+                style={styles.closeButton}
+                activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel="Close"
+                accessibilityHint="Closes the selection overlay"
+              >
+                <IconSymbol name="xmark" size={20} color={textSecondary} />
+              </TouchableOpacity>
+            )}
           </View>
         )}
 
@@ -97,6 +142,9 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 12,
@@ -106,6 +154,12 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     fontWeight: '600',
+    flex: 1,
+  },
+  closeButton: {
+    position: 'absolute',
+    right: 20,
+    padding: 4,
   },
   optionsContainer: {
     paddingHorizontal: 4,
