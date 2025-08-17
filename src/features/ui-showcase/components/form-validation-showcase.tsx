@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView } from 'react-native';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedButton } from '@/components/themed/themed-button';
@@ -39,7 +39,12 @@ export function FormValidationShowcase() {
   };
 
   const renderTabButtons = () => (
-    <View style={styles.tabContainer}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.tabScrollContent}
+      style={styles.tabScrollContainer}
+    >
       {(['login', 'signup', 'profile', 'advanced'] as TabType[]).map((tab) => (
         <ThemedButton
           key={tab}
@@ -50,7 +55,7 @@ export function FormValidationShowcase() {
           onPress={() => setActiveTab(tab)}
         />
       ))}
-    </View>
+    </ScrollView>
   );
 
   const renderContent = () => {
@@ -446,14 +451,16 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     textAlign: 'center',
   },
-  tabContainer: {
-    flexDirection: 'row',
+  tabScrollContainer: {
     marginBottom: 24,
-    gap: 6,
+  },
+  tabScrollContent: {
+    paddingHorizontal: 16,
+    gap: 8,
   },
   tabButton: {
-    flex: 1,
-    minWidth: 60,
+    minWidth: 85,
+    marginHorizontal: 4,
   },
   contentContainer: {
     flex: 1,
