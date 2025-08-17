@@ -3,7 +3,7 @@ import { TextInputShowcase } from '@/features/ui-showcase/components/text-input-
 
 export default function TextInputsScreen() {
   return (
-    <ScreenWrapper>
+    <ScreenWrapper safeArea="bottom">
       <TextInputShowcase />
     </ScreenWrapper>
   );

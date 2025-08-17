@@ -3,7 +3,7 @@ import { RadioShowcase } from '@/features/ui-showcase/components/radio-showcase'
 
 export default function RadiosScreen() {
   return (
-    <ScreenWrapper scrollable padding={8}>
+    <ScreenWrapper scrollable padding={8} safeArea="bottom">
       <RadioShowcase />
     </ScreenWrapper>
   );

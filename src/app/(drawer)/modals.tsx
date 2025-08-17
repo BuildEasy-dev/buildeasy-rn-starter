@@ -13,7 +13,7 @@ export default function ModalsScreen() {
   const isDark = colorScheme === 'dark';
 
   return (
-    <ScreenWrapper scrollable padding={8}>
+    <ScreenWrapper scrollable padding={8} safeArea="bottom">
       <View style={styles.tabContainer}>
         <View style={[styles.buttonGroup, { backgroundColor: isDark ? '#2C2C2E' : '#F2F2F7' }]}>
           <TouchableOpacity

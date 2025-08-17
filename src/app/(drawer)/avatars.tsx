@@ -1,10 +1,10 @@
 import { ScreenWrapper } from '@/components/layout/wrappers/screen-wrapper';
-import { IconShowcase } from '@/features/ui-showcase/components/icon-showcase';
+import { AvatarShowcase } from '@/features/ui-showcase/components/avatar-showcase';
 
-export default function IconsScreen() {
+export default function AvatarsScreen() {
   return (
     <ScreenWrapper scrollable padding={8} safeArea="bottom">
-      <IconShowcase />
+      <AvatarShowcase />
     </ScreenWrapper>
   );
 }
