@@ -165,13 +165,13 @@ function SignUpFormExample() {
             name="firstName"
             label="First Name"
             placeholder="John"
-            style={styles.halfWidth}
+            containerStyle={styles.halfWidth}
           />
           <FormTextInput
             name="lastName"
             label="Last Name"
             placeholder="Doe"
-            style={styles.halfWidth}
+            containerStyle={styles.halfWidth}
           />
         </View>
 
@@ -256,8 +256,8 @@ function ProfileFormExample() {
         </ThemedText>
 
         <View style={styles.rowContainer}>
-          <FormTextInput name="firstName" label="First Name" style={styles.halfWidth} />
-          <FormTextInput name="lastName" label="Last Name" style={styles.halfWidth} />
+          <FormTextInput name="firstName" label="First Name" containerStyle={styles.halfWidth} />
+          <FormTextInput name="lastName" label="Last Name" containerStyle={styles.halfWidth} />
         </View>
 
         <FormTextInput
