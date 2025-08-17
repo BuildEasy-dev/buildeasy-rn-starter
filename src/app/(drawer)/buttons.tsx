@@ -3,7 +3,7 @@ import { ButtonShowcase } from '@/features/ui-showcase/components/button-showcas
 
 export default function ButtonsScreen() {
   return (
-    <ScreenWrapper scrollable padding={8}>
+    <ScreenWrapper scrollable padding={8} safeArea="bottom">
       <ButtonShowcase />
     </ScreenWrapper>
   );

@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { Image } from 'expo-image';
 import type { ImageSource } from 'expo-image';
 import { ThemedText } from '@/components/themed';
@@ -72,6 +72,20 @@ interface ImageAvatarProps {
 
 export function ImageAvatar({ source, size = 40 }: ImageAvatarProps) {
   const { width, height, borderRadius } = useAvatarSize(size);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleLoadStart = () => {
+    setIsLoading(true);
+  };
+
+  const handleLoadEnd = () => {
+    setIsLoading(false);
+  };
+
+  const handleError = (error: any) => {
+    console.warn('ImageAvatar: Failed to load image', { source, error });
+    setIsLoading(false);
+  };
 
   return (
     <View style={styles.imageContainer}>
@@ -80,12 +94,18 @@ export function ImageAvatar({ source, size = 40 }: ImageAvatarProps) {
         style={{ width, height, borderRadius }}
         contentFit="cover"
         transition={200}
-        onError={(error) => {
-          // TODO: Consider adding fallback UI (e.g., default user icon) for better UX
-          // This keeps the component simple and focused on just displaying images
-          console.warn('ImageAvatar: Failed to load image', { source, error });
-        }}
+        cachePolicy="memory-disk"
+        recyclingKey={typeof source === 'object' && 'uri' in source ? source.uri : undefined}
+        onLoadStart={handleLoadStart}
+        onLoadEnd={handleLoadEnd}
+        onError={handleError}
+        priority="high"
       />
+      {isLoading && (
+        <View style={[styles.loadingOverlay, { width, height, borderRadius }]}>
+          <ActivityIndicator size="small" color="#666" />
+        </View>
+      )}
     </View>
   );
 }
@@ -98,6 +118,15 @@ const styles = StyleSheet.create({
   imageContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(240, 240, 240, 0.8)',
   },
   text: {},
 });

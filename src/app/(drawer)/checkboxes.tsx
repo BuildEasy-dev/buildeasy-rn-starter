@@ -3,7 +3,7 @@ import { CheckboxShowcase } from '@/features/ui-showcase/components/checkbox-sho
 
 export default function CheckboxesScreen() {
   return (
-    <ScreenWrapper scrollable padding={8}>
+    <ScreenWrapper scrollable padding={8} safeArea="bottom">
       <CheckboxShowcase />
     </ScreenWrapper>
   );

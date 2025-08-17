@@ -4,7 +4,7 @@ import { TypographyShowcase } from '@/features/ui-showcase';
 
 export default function TypographyPage() {
   return (
-    <ScreenWrapper scrollable>
+    <ScreenWrapper scrollable safeArea="bottom">
       <TypographyShowcase />
     </ScreenWrapper>
   );

@@ -3,7 +3,7 @@ import { SwitchShowcase } from '@/features/ui-showcase/components/switch-showcas
 
 export default function SwitchesScreen() {
   return (
-    <ScreenWrapper scrollable padding={8}>
+    <ScreenWrapper scrollable padding={8} safeArea="bottom">
       <SwitchShowcase />
     </ScreenWrapper>
   );
