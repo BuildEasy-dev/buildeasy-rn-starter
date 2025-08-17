@@ -16,7 +16,6 @@ import { InputOverlay } from '@/components/ui/input-overlay';
  */
 export const OverlayShowcase = () => {
   const [basicOverlayVisible, setBasicOverlayVisible] = useState(false);
-  const [customOverlayVisible, setCustomOverlayVisible] = useState(false);
   const [noCloseOverlayVisible, setNoCloseOverlayVisible] = useState(false);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [topNotificationVisible, setTopNotificationVisible] = useState(false);
@@ -47,7 +46,7 @@ export const OverlayShowcase = () => {
         </ThemedText>
         <ThemedButton
           onPress={() => setBasicOverlayVisible(true)}
-          label="Show Basic Overlay"
+          label="Basic Overlay"
           variant="primary"
           size="medium"
         />
@@ -71,47 +70,11 @@ export const OverlayShowcase = () => {
 
       <View style={styles.section}>
         <ThemedText type="h6" style={styles.subTitle}>
-          Custom Style
-        </ThemedText>
-        <ThemedButton
-          onPress={() => setCustomOverlayVisible(true)}
-          label="Show Custom Overlay"
-          variant="primary"
-          size="medium"
-        />
-
-        <ThemedOverlay
-          visible={customOverlayVisible}
-          onClose={() => setCustomOverlayVisible(false)}
-          lightColor="#f8f9fa"
-          darkColor="#2d3748"
-          backdropOpacity={0.7}
-          animationDuration={500}
-          contentContainerStyle={styles.customContent}
-        >
-          <ThemedText type="h5" style={styles.customOverlayTitle}>
-            Custom Overlay
-          </ThemedText>
-          <ThemedText style={styles.overlayContent}>
-            This overlay uses custom background colors, opacity, and animation duration.
-          </ThemedText>
-          <ThemedButton
-            onPress={() => setCustomOverlayVisible(false)}
-            label="Close"
-            variant="primary"
-            size="medium"
-            style={styles.overlayButton}
-          />
-        </ThemedOverlay>
-      </View>
-
-      <View style={styles.section}>
-        <ThemedText type="h6" style={styles.subTitle}>
           Disabled Backdrop Close
         </ThemedText>
         <ThemedButton
           onPress={() => setNoCloseOverlayVisible(true)}
-          label="Show Forced Action Overlay"
+          label="No Backdrop Close"
           variant="primary"
           size="medium"
         />
@@ -146,14 +109,14 @@ export const OverlayShowcase = () => {
         <View style={styles.buttonRow}>
           <ThemedButton
             onPress={() => setBottomSheetVisible(true)}
-            label="Bottom Sheet"
+            label="Bottom"
             variant="secondary"
             size="small"
             style={styles.variantButton}
           />
           <ThemedButton
             onPress={() => setTopNotificationVisible(true)}
-            label="Top Notification"
+            label="Top"
             variant="secondary"
             size="small"
             style={styles.variantButton}
@@ -170,7 +133,7 @@ export const OverlayShowcase = () => {
           />
           <ThemedButton
             onPress={() => setAlertVisible(true)}
-            label="Alert Dialog"
+            label="Alert"
             variant="danger"
             size="small"
             style={styles.variantButton}
@@ -348,7 +311,7 @@ export const OverlayShowcase = () => {
 
         <ThemedButton
           onPress={() => setSizeDemoVisible({ variant: 'center', size: 'large' })}
-          label="Large Size Modal"
+          label="Large"
           variant="outline"
           size="medium"
           style={styles.fullWidthButton}
@@ -386,14 +349,14 @@ export const OverlayShowcase = () => {
         <View style={styles.buttonRow}>
           <ThemedButton
             onPress={() => setSelectionVisible(true)}
-            label="Default Height"
+            label="Default"
             variant="outline"
             size="medium"
             style={styles.variantButton}
           />
           <ThemedButton
             onPress={() => setSelectionWithHeightVisible(true)}
-            label="70% Height"
+            label="70%"
             variant="primary"
             size="medium"
             style={styles.variantButton}
@@ -503,14 +466,14 @@ export const OverlayShowcase = () => {
         <View style={styles.buttonRow}>
           <ThemedButton
             onPress={() => setActionSheetVisible(true)}
-            label="Basic Actions"
+            label="Basic"
             variant="primary"
             size="medium"
             style={styles.variantButton}
           />
           <ThemedButton
             onPress={() => setActionSheetSectionsVisible(true)}
-            label="With Subtitle"
+            label="Subtitle"
             variant="secondary"
             size="medium"
             style={styles.variantButton}
@@ -569,14 +532,14 @@ export const OverlayShowcase = () => {
         <View style={styles.buttonRow}>
           <ThemedButton
             onPress={() => setInputOverlayVisible(true)}
-            label="Single Line"
+            label="Single"
             variant="primary"
             size="medium"
             style={styles.variantButton}
           />
           <ThemedButton
             onPress={() => setMultilineInputVisible(true)}
-            label="Multi-line"
+            label="Multi"
             variant="secondary"
             size="medium"
             style={styles.variantButton}
@@ -584,7 +547,7 @@ export const OverlayShowcase = () => {
         </View>
         <ThemedButton
           onPress={() => setValidatedInputVisible(true)}
-          label="With Validation"
+          label="Validation"
           variant="outline"
           size="medium"
           style={styles.fullWidthButton}
@@ -678,15 +641,6 @@ const styles = StyleSheet.create({
   variantButton: {
     flex: 1,
     marginHorizontal: 4,
-  },
-  customContent: {
-    borderRadius: 16,
-    padding: 24,
-    minWidth: '85%',
-  },
-  customOverlayTitle: {
-    marginBottom: 16,
-    textAlign: 'center',
   },
   fullWidthButton: {
     marginBottom: 8,
