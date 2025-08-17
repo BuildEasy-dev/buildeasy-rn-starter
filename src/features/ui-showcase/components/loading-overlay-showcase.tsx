@@ -45,7 +45,7 @@ export const LoadingOverlayShowcase = () => {
         </ThemedText>
         <ThemedButton
           onPress={handleSimpleLoading}
-          label="Show Basic Loading"
+          label="Basic Loading"
           variant="primary"
           size="medium"
         />
@@ -63,7 +63,7 @@ export const LoadingOverlayShowcase = () => {
         </ThemedText>
         <ThemedButton
           onPress={handleMessageLoading}
-          label="Show Loading with Message"
+          label="With Message"
           variant="primary"
           size="medium"
         />
@@ -77,7 +77,7 @@ export const LoadingOverlayShowcase = () => {
         </ThemedText>
         <ThemedButton
           onPress={handleCustomLoading}
-          label="Show Custom Loading"
+          label="Custom Style"
           variant="primary"
           size="medium"
         />
