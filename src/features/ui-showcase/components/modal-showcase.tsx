@@ -224,14 +224,14 @@ export const ModalShowcase = () => {
           <ThemedButton
             onPress={() => setBottomSheetVisible(true)}
             label="Bottom"
-            variant="secondary"
+            variant="outline"
             size="small"
             style={styles.variantButton}
           />
           <ThemedButton
             onPress={() => setTopNotificationVisible(true)}
             label="Top"
-            variant="secondary"
+            variant="outline"
             size="small"
             style={styles.variantButton}
           />
@@ -241,7 +241,7 @@ export const ModalShowcase = () => {
           <ThemedButton
             onPress={() => setFullscreenVisible(true)}
             label="Fullscreen"
-            variant="secondary"
+            variant="outline"
             size="small"
             style={styles.variantButton}
           />
@@ -523,7 +523,7 @@ export const ModalShowcase = () => {
           <ThemedButton
             onPress={() => setActionSheetSectionsVisible(true)}
             label="Subtitle"
-            variant="secondary"
+            variant="outline"
             size="medium"
             style={styles.variantButton}
           />
@@ -586,14 +586,14 @@ export const ModalShowcase = () => {
         <View style={styles.buttonRow}>
           <ThemedButton
             onPress={handleGlobalConfirm}
-            label="Global Confirm"
-            variant="primary"
+            label="Confirm"
+            variant="outline"
             size="medium"
             style={styles.variantButton}
           />
           <ThemedButton
             onPress={handleGlobalDestructiveConfirm}
-            label="Delete Confirm"
+            label="Delete"
             variant="danger"
             size="medium"
             style={styles.variantButton}
@@ -603,15 +603,15 @@ export const ModalShowcase = () => {
         <View style={styles.buttonRow}>
           <ThemedButton
             onPress={handleGlobalInput}
-            label="Global Input"
-            variant="primary"
+            label="Single"
+            variant="outline"
             size="medium"
             style={styles.variantButton}
           />
           <ThemedButton
             onPress={handleGlobalMultilineInput}
-            label="Multiline Input"
-            variant="primary"
+            label="Multi"
+            variant="outline"
             size="medium"
             style={styles.variantButton}
           />
@@ -619,8 +619,8 @@ export const ModalShowcase = () => {
 
         <ThemedButton
           onPress={handleMultipleGlobalModals}
-          label="Multi-Modal Flow Demo"
-          variant="primary"
+          label="Validation"
+          variant="outline"
           size="medium"
           style={styles.fullWidthButton}
         />
