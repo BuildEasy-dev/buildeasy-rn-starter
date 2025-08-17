@@ -453,14 +453,14 @@ export const OverlayShowcase = () => {
         <View style={styles.buttonRow}>
           <ThemedButton
             onPress={() => setConfirmVisible(true)}
-            label="Normal Confirm"
+            label="Confirm"
             variant="primary"
             size="medium"
             style={styles.variantButton}
           />
           <ThemedButton
             onPress={() => setDestructiveConfirmVisible(true)}
-            label="Delete Confirm"
+            label="Delete"
             variant="danger"
             size="medium"
             style={styles.variantButton}
