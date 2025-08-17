@@ -9,6 +9,7 @@ import { ThemedView } from '@/components/themed/themed-view';
 import { ConfirmOverlay } from '@/components/ui/confirm-overlay';
 import { ActionSheetOverlay } from '@/components/ui/action-sheet-overlay';
 import { InputOverlay } from '@/components/ui/input-overlay';
+import { NotificationOverlay } from '@/components/ui/notification-overlay';
 
 /**
  * Overlay Component Showcase
@@ -180,27 +181,12 @@ export const OverlayShowcase = () => {
         </ThemedOverlay>
 
         {/* Top Notification */}
-        <ThemedOverlay
+        <NotificationOverlay
           visible={topNotificationVisible}
           onClose={() => setTopNotificationVisible(false)}
-          variant="top"
-          animationSpeed="fast"
-          backdropOpacity={0.3}
-        >
-          <ThemedText type="h6" style={styles.notificationTitle}>
-            🔔 Notification
-          </ThemedText>
-          <ThemedText style={styles.notificationContent}>
-            This is a top notification overlay. Great for alerts and status messages.
-          </ThemedText>
-          <ThemedButton
-            onPress={() => setTopNotificationVisible(false)}
-            label="Dismiss"
-            variant="ghost"
-            size="small"
-            style={styles.notificationButton}
-          />
-        </ThemedOverlay>
+          title="Notification"
+          message="This is a top notification overlay. Great for alerts and status messages."
+        />
 
         {/* Fullscreen Modal */}
         <ThemedOverlay
@@ -654,20 +640,6 @@ const styles = StyleSheet.create({
   sheetButton: {
     flex: 1,
     marginHorizontal: 4,
-  },
-  // Top notification styles
-  notificationTitle: {
-    marginTop: 24,
-    marginBottom: 8,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  notificationContent: {
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  notificationButton: {
-    alignSelf: 'center',
   },
   // Fullscreen styles
   fullscreenContent: {
