@@ -12,7 +12,7 @@ export interface CreateDrawerOptionsProps {
   position?: 'left' | 'right';
   /**
    * Drawer type - Controls how the drawer animates and appears
-   * - 'front': Drawer slides over the screen with an overlay
+   * - 'front': Drawer slides over the screen with an modal
    * - 'back': Screen slides away to reveal drawer behind it
    * - 'slide': Both screen and drawer slide together
    * - 'permanent': Drawer is always visible (good for tablets)
@@ -32,12 +32,12 @@ export interface CreateDrawerOptionsProps {
    */
   hideStatusBar?: boolean;
   /**
-   * Overlay color when drawer is open
+   * Modal color when drawer is open
    * The semi-transparent color that covers the main content when drawer is open
    * Supports rgba, hex, or named colors (e.g., 'rgba(0, 0, 0, 0.5)')
    * @default 'rgba(0, 0, 0, 0.5)'
    */
-  overlayColor?: string;
+  modalColor?: string;
   /**
    * Whether swipe gestures are enabled
    * Controls if users can open/close the drawer by swiping from the screen edge
@@ -94,7 +94,7 @@ export function createDrawerOptions(
       }) as 'front' | 'back' | 'slide' | 'permanent',
       width = 280,
       hideStatusBar = false,
-      overlayColor = 'rgba(0, 0, 0, 0.5)',
+      modalColor = 'rgba(0, 0, 0, 0.5)',
       swipeEnabled = true,
       swipeEdgeWidth = 20,
       headerShown = false,
@@ -138,8 +138,8 @@ export function createDrawerOptions(
         marginVertical: 2, // Vertical margin for drawer items
       },
 
-      // Overlay and interaction
-      overlayColor, // Color of the overlay when drawer is open
+      // Modal and interaction
+      modalColor, // Color of the modal when drawer is open
       drawerHideStatusBarOnOpen: hideStatusBar, // Whether to hide status bar when drawer opens
       swipeEnabled, // Whether swipe gestures are enabled
       swipeEdgeWidth, // Width of the edge area for swipe gesture detection

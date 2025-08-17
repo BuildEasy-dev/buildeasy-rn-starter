@@ -1,10 +1,10 @@
-import { TouchableOpacity, View, StyleSheet } from 'react-native';
-import { useCallback } from 'react';
+import { TouchableOpacity, View, StyleSheet, type DimensionValue } from 'react-native';
+import { useCallback, useMemo } from 'react';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 import { IconSymbol } from './icon-symbol';
-import { ThemedOverlay, type ThemedOverlayProps } from '../themed/themed-overlay';
+import { ThemedModal, type ThemedModalProps } from '../themed/themed-modal';
 import { ThemedText } from '../themed/themed-text';
 
 export interface SelectionOption {
@@ -12,32 +12,41 @@ export interface SelectionOption {
   label: string;
 }
 
-export interface SelectionOverlayProps extends Omit<ThemedOverlayProps, 'children'> {
+export interface SelectionModalProps extends Omit<ThemedModalProps, 'children'> {
   title?: string;
   options: SelectionOption[];
   selectedValue?: string;
   onSelect: (value: string) => void;
   showDividers?: boolean;
+  /**
+   * Height of the modal content
+   * Accepts number for fixed height or string for percentage (e.g., '70%')
+   */
+  height?: DimensionValue;
 }
 
 /**
- * A selection overlay component built on top of ThemedOverlay
+ * A selection modal component built on top of ThemedModal
  *
  * Provides a mobile-friendly bottom sheet interface for selecting from options
  */
-export function SelectionOverlay({
+export function SelectionModal({
   title,
   options,
   selectedValue,
   onSelect,
+  onClose,
   showDividers = true,
+  height,
   variant = 'bottom',
   size = 'auto',
   animationSpeed = 'fast',
-  ...overlayProps
-}: SelectionOverlayProps) {
+  contentContainerStyle,
+  ...modalProps
+}: SelectionModalProps) {
   const primaryColor = useThemeColor('tint');
   const borderColor = useThemeColor('border');
+  const textSecondary = useThemeColor('textSecondary');
 
   const handleOptionPress = useCallback(
     (value: string) => {
@@ -46,14 +55,50 @@ export function SelectionOverlay({
     [onSelect]
   );
 
+  const handleClose = useCallback(() => {
+    if (onClose) {
+      onClose();
+    }
+  }, [onClose]);
+
+  // Merge height with contentContainerStyle
+  const mergedContentStyle = useMemo(() => {
+    if (height) {
+      return {
+        ...contentContainerStyle,
+        height,
+      };
+    }
+    return contentContainerStyle;
+  }, [height, contentContainerStyle]);
+
   return (
-    <ThemedOverlay variant={variant} size={size} animationSpeed={animationSpeed} {...overlayProps}>
+    <ThemedModal
+      variant={variant}
+      size={size}
+      animationSpeed={animationSpeed}
+      onClose={onClose}
+      contentContainerStyle={mergedContentStyle}
+      {...modalProps}
+    >
       <View style={styles.container}>
         {title && (
           <View style={[styles.header, { borderBottomColor: borderColor }]}>
             <ThemedText type="h5" style={styles.title}>
               {title}
             </ThemedText>
+            {onClose && (
+              <TouchableOpacity
+                onPress={handleClose}
+                style={styles.closeButton}
+                activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel="Close"
+                accessibilityHint="Closes the selection modal"
+              >
+                <IconSymbol name="xmark" size={20} color={textSecondary} />
+              </TouchableOpacity>
+            )}
           </View>
         )}
 
@@ -87,7 +132,7 @@ export function SelectionOverlay({
           })}
         </View>
       </View>
-    </ThemedOverlay>
+    </ThemedModal>
   );
 }
 
@@ -97,6 +142,9 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 12,
@@ -106,6 +154,12 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     fontWeight: '600',
+    flex: 1,
+  },
+  closeButton: {
+    position: 'absolute',
+    right: 20,
+    padding: 4,
   },
   optionsContainer: {
     paddingHorizontal: 4,

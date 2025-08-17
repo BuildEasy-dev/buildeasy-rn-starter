@@ -40,9 +40,9 @@ const PhotoGridItem = memo(
       return getOptimizedImageUrl(item.image.url, IMAGE_SIZES.THUMBNAIL, 75);
     }, [item.image.url]);
 
-    // Only show overlays for special items
+    // Only show modals for special items
     const showMultipleIndicator = item.stats.comments > 10;
-    const showPopularOverlay = item.isLiked;
+    const showPopularModal = item.isLiked;
 
     return (
       <Pressable
@@ -67,8 +67,8 @@ const PhotoGridItem = memo(
           </ThemedView>
         )}
 
-        {/* Popular post overlay - simplified */}
-        {showPopularOverlay && (
+        {/* Popular post modal - simplified */}
+        {showPopularModal && (
           <ThemedView style={styles.popularBadge}>
             <IconSymbol name="heart.fill" size={14} color="white" />
           </ThemedView>

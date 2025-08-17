@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import { ThemedButton } from '@/components/themed/themed-button';
-import { ThemedLoadingOverlay } from '@/components/ui/loading-overlay';
+import { ThemedLoadingModal } from '@/components/ui/loading-modal';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
 
 /**
- * Loading Overlay Component Showcase
- * Demonstrates different styles and configurations of ThemedLoadingOverlay component
+ * Loading Modal Component Showcase
+ * Demonstrates different styles and configurations of ThemedLoadingModal component
  */
-export const LoadingOverlayShowcase = () => {
+export const LoadingModalShowcase = () => {
   const [simpleLoading, setSimpleLoading] = useState(false);
   const [messageLoading, setMessageLoading] = useState(false);
   const [customLoading, setCustomLoading] = useState(false);
@@ -45,12 +45,12 @@ export const LoadingOverlayShowcase = () => {
         </ThemedText>
         <ThemedButton
           onPress={handleSimpleLoading}
-          label="Show Basic Loading"
+          label="Basic Loading"
           variant="primary"
           size="medium"
         />
 
-        <ThemedLoadingOverlay
+        <ThemedLoadingModal
           visible={simpleLoading}
           size="auto"
           contentContainerStyle={styles.basicLoadingContent}
@@ -63,12 +63,12 @@ export const LoadingOverlayShowcase = () => {
         </ThemedText>
         <ThemedButton
           onPress={handleMessageLoading}
-          label="Show Loading with Message"
+          label="With Message"
           variant="primary"
           size="medium"
         />
 
-        <ThemedLoadingOverlay visible={messageLoading} message="Loading data, please wait..." />
+        <ThemedLoadingModal visible={messageLoading} message="Loading data, please wait..." />
       </View>
 
       <View style={styles.section}>
@@ -77,12 +77,12 @@ export const LoadingOverlayShowcase = () => {
         </ThemedText>
         <ThemedButton
           onPress={handleCustomLoading}
-          label="Show Custom Loading"
+          label="Custom Style"
           variant="primary"
           size="medium"
         />
 
-        <ThemedLoadingOverlay
+        <ThemedLoadingModal
           visible={customLoading}
           message="Custom loading in progress..."
           lightIndicatorColor="#8b5cf6"

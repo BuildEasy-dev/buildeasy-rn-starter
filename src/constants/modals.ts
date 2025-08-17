@@ -1,17 +1,17 @@
 import { ViewStyle, DimensionValue } from 'react-native';
 
 /**
- * Overlay component related constants and configurations
+ * Modal component related constants and configurations
  */
 
-export type OverlayVariant = 'center' | 'bottom' | 'top' | 'fullscreen' | 'alert';
-export type OverlaySize = 'small' | 'medium' | 'large' | 'auto';
+export type ModalVariant = 'center' | 'bottom' | 'top' | 'fullscreen' | 'alert';
+export type ModalSize = 'small' | 'medium' | 'large' | 'auto';
 
 /**
- * Overlay variant configurations
+ * Modal variant configurations
  */
-export const overlayVariants: Record<
-  OverlayVariant,
+export const modalVariants: Record<
+  ModalVariant,
   {
     justifyContent: ViewStyle['justifyContent'];
     alignItems: ViewStyle['alignItems'];
@@ -98,10 +98,10 @@ export const overlayVariants: Record<
 };
 
 /**
- * Overlay size configurations
+ * Modal size configurations
  */
-export const overlaySizes: Record<
-  OverlaySize,
+export const modalSizes: Record<
+  ModalSize,
   {
     minWidth: DimensionValue;
     maxWidth: DimensionValue;
@@ -133,9 +133,9 @@ export const overlaySizes: Record<
 /**
  * Default configurations
  */
-export const overlayDefaults = {
-  variant: 'center' as OverlayVariant,
-  size: 'medium' as OverlaySize,
+export const modalDefaults = {
+  variant: 'center' as ModalVariant,
+  size: 'medium' as ModalSize,
   animationSpeed: 'normal' as 'fast' | 'normal' | 'slow',
   backdropOpacity: 0.5,
   closeOnBackdropPress: true,
@@ -154,31 +154,31 @@ export const backdropConfig = {
 /**
  * Utility functions
  */
-export const overlayUtils = {
+export const modalUtils = {
   /**
    * Get variant configuration
    */
-  getVariantConfig: (variant: OverlayVariant) => {
-    return overlayVariants[variant];
+  getVariantConfig: (variant: ModalVariant) => {
+    return modalVariants[variant];
   },
 
   /**
    * Get size configuration
    */
-  getSizeConfig: (size: OverlaySize) => {
-    return overlaySizes[size];
+  getSizeConfig: (size: ModalSize) => {
+    return modalSizes[size];
   },
 
   /**
    * Merge content styles
    */
   mergeContentStyle: (
-    variant: OverlayVariant,
-    size: OverlaySize,
+    variant: ModalVariant,
+    size: ModalSize,
     customStyle?: ViewStyle
   ): ViewStyle => {
-    const variantConfig = overlayVariants[variant];
-    const sizeConfig = overlaySizes[size];
+    const variantConfig = modalVariants[variant];
+    const sizeConfig = modalSizes[size];
 
     // These variants should ignore size configuration width constraints
     const shouldIgnoreWidthConstraints = ['bottom', 'top', 'fullscreen'].includes(variant);
@@ -201,8 +201,8 @@ export const overlayUtils = {
   /**
    * Get container style
    */
-  getContainerStyle: (variant: OverlayVariant): ViewStyle => {
-    const config = overlayVariants[variant];
+  getContainerStyle: (variant: ModalVariant): ViewStyle => {
+    const config = modalVariants[variant];
     return {
       flex: 1,
       justifyContent: config.justifyContent,
@@ -212,9 +212,9 @@ export const overlayUtils = {
 };
 
 export default {
-  variants: overlayVariants,
-  sizes: overlaySizes,
-  defaults: overlayDefaults,
+  variants: modalVariants,
+  sizes: modalSizes,
+  defaults: modalDefaults,
   backdrop: backdropConfig,
-  utils: overlayUtils,
+  utils: modalUtils,
 };

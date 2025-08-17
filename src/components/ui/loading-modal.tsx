@@ -3,11 +3,11 @@ import { ActivityIndicator, StyleSheet, View, type ViewStyle } from 'react-nativ
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 
-import { ThemedOverlay, type ThemedOverlayProps } from '@/components/themed/themed-overlay';
+import { ThemedModal, type ThemedModalProps } from '@/components/themed/themed-modal';
 import { ThemedText } from '@/components/themed/themed-text';
 
-export type ThemedLoadingOverlayProps = Omit<
-  ThemedOverlayProps,
+export type ThemedLoadingModalProps = Omit<
+  ThemedModalProps,
   'children' | 'closeOnBackdropPress'
 > & {
   message?: string;
@@ -18,11 +18,11 @@ export type ThemedLoadingOverlayProps = Omit<
 };
 
 /**
- * A theme-aware Loading Overlay component that displays an activity indicator.
+ * A theme-aware Loading Modal component that displays an activity indicator.
  *
- * Built on top of ThemedOverlay with added loading indicator and optional message.
+ * Built on top of ThemedModal with added loading indicator and optional message.
  */
-export const ThemedLoadingOverlay = forwardRef<View, ThemedLoadingOverlayProps>(
+export const ThemedLoadingModal = forwardRef<View, ThemedLoadingModalProps>(
   (
     {
       style,
@@ -54,7 +54,7 @@ export const ThemedLoadingOverlay = forwardRef<View, ThemedLoadingOverlayProps>(
     );
 
     return (
-      <ThemedOverlay
+      <ThemedModal
         ref={ref}
         lightColor={lightColor || '#ffffff'}
         darkColor={darkColor || '#1c1c1e'}
@@ -68,12 +68,12 @@ export const ThemedLoadingOverlay = forwardRef<View, ThemedLoadingOverlayProps>(
 
           {message && <ThemedText style={styles.message}>{message}</ThemedText>}
         </View>
-      </ThemedOverlay>
+      </ThemedModal>
     );
   }
 );
 
-ThemedLoadingOverlay.displayName = 'ThemedLoadingOverlay';
+ThemedLoadingModal.displayName = 'ThemedLoadingModal';
 
 const styles = StyleSheet.create({
   contentContainer: {

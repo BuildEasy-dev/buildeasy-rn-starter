@@ -2,10 +2,10 @@ import { useCallback, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import { ThemedButton } from '@/components/themed/themed-button';
-import { ThemedOverlay, type ThemedOverlayProps } from '@/components/themed/themed-overlay';
+import { ThemedModal, type ThemedModalProps } from '@/components/themed/themed-modal';
 import { ThemedText } from '@/components/themed/themed-text';
 
-export interface ConfirmOverlayProps extends Omit<ThemedOverlayProps, 'children'> {
+export interface ConfirmModalProps extends Omit<ThemedModalProps, 'children'> {
   /**
    * Called when the confirm button is pressed
    */
@@ -46,19 +46,19 @@ export interface ConfirmOverlayProps extends Omit<ThemedOverlayProps, 'children'
   confirmDisabled?: boolean;
 
   /**
-   * Whether to automatically close the overlay when confirm is pressed
+   * Whether to automatically close the modal when confirm is pressed
    * @default true
    */
   closeOnConfirm?: boolean;
 }
 
 /**
- * A confirmation dialog overlay component built on top of ThemedOverlay
+ * A confirmation dialog modal component built on top of ThemedModal
  *
  * Provides a standard confirmation interface with title, message,
  * and confirm/cancel actions. Supports destructive action styling.
  */
-export function ConfirmOverlay({
+export function ConfirmModal({
   onConfirm,
   onClose,
   title,
@@ -72,8 +72,8 @@ export function ConfirmOverlay({
   size = 'small',
   animationSpeed = 'fast',
   closeOnBackdropPress = false,
-  ...overlayProps
-}: ConfirmOverlayProps) {
+  ...modalProps
+}: ConfirmModalProps) {
   // Stable handlers to prevent unnecessary re-renders
   const handleConfirm = useCallback(() => {
     onConfirm();
@@ -94,13 +94,13 @@ export function ConfirmOverlay({
   }, [isDestructive]);
 
   return (
-    <ThemedOverlay
+    <ThemedModal
       variant={variant}
       size={size}
       animationSpeed={animationSpeed}
       closeOnBackdropPress={closeOnBackdropPress}
       onClose={onClose}
-      {...overlayProps}
+      {...modalProps}
     >
       <View style={styles.container}>
         {/* Title */}
@@ -139,7 +139,7 @@ export function ConfirmOverlay({
           />
         </View>
       </View>
-    </ThemedOverlay>
+    </ThemedModal>
   );
 }
 

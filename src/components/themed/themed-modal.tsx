@@ -6,12 +6,13 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { animationUtils, animations } from '@/constants/animations';
-import { overlayUtils, type OverlayVariant, type OverlaySize } from '@/constants/overlays';
+import { modalUtils, type ModalVariant, type ModalSize } from '@/constants/modals';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
-export type ThemedOverlayProps = Omit<ViewProps, 'style'> & {
+export type ThemedModalProps = Omit<ViewProps, 'style'> & {
   lightColor?: string;
   darkColor?: string;
   visible: boolean;
@@ -23,19 +24,19 @@ export type ThemedOverlayProps = Omit<ViewProps, 'style'> & {
   contentContainerStyle?: ViewStyle;
   style?: ViewStyle;
   // New properties
-  variant?: OverlayVariant;
-  size?: OverlaySize;
+  variant?: ModalVariant;
+  size?: ModalSize;
   animationSpeed?: 'fast' | 'normal' | 'slow';
   lazy?: boolean;
 };
 
 /**
- * A theme-aware Overlay component that adapts to light and dark mode.
+ * A theme-aware Modal component that adapts to light and dark mode.
  *
- * Provides a modal overlay with customizable background and content.
+ * Provides a modal modal with customizable background and content.
  * Supports multiple variants (center, bottom, top, fullscreen, alert) and sizes.
  */
-const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
+const ThemedModalComponent = forwardRef<View, ThemedModalProps>(
   (
     {
       style,
@@ -57,9 +58,10 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
     ref
   ) => {
     const [modalVisible, setModalVisible] = useState(visible);
+    const insets = useSafeAreaInsets();
 
     // Memoize variant and animation configurations to prevent recalculation
-    const variantConfig = useMemo(() => overlayUtils.getVariantConfig(variant), [variant]);
+    const variantConfig = useMemo(() => modalUtils.getVariantConfig(variant), [variant]);
     const animationPreset = useMemo(
       () =>
         animationUtils.getPreset(variantConfig.animationPreset as keyof typeof animations.presets),
@@ -90,7 +92,7 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
     const scaleAnim = useSharedValue(initialValues.scale);
     const translateYAnim = useSharedValue(initialValues.translateY);
 
-    // Get theme colors - use backgroundSecondary for overlays to provide proper visual separation
+    // Get theme colors - use backgroundSecondary for modals to provide proper visual separation
     const backgroundColor = useThemeColor('backgroundSecondary', {
       light: lightColor,
       dark: darkColor,
@@ -196,16 +198,60 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
     });
 
     // Memoize container style based on variant
-    const containerStyle = useMemo(() => overlayUtils.getContainerStyle(variant), [variant]);
+    const containerStyle = useMemo(() => modalUtils.getContainerStyle(variant), [variant]);
 
-    // Memoize content style based on variant and size
-    const baseContentStyle = useMemo(
-      () => overlayUtils.mergeContentStyle(variant, size, contentContainerStyle),
-      [variant, size, contentContainerStyle]
-    );
+    // Memoize content style based on variant and size with safe area insets
+    const baseContentStyle = useMemo(() => {
+      const mergedStyle = modalUtils.mergeContentStyle(variant, size, contentContainerStyle);
+
+      // Apply safe area padding based on variant
+      if (variant === 'bottom') {
+        const currentPadding =
+          typeof mergedStyle.paddingBottom === 'number' ? mergedStyle.paddingBottom : 0;
+        return {
+          ...mergedStyle,
+          paddingBottom: currentPadding + (insets.bottom || 18),
+        };
+      } else if (variant === 'top') {
+        const currentPadding =
+          typeof mergedStyle.paddingTop === 'number' ? mergedStyle.paddingTop : 0;
+        return {
+          ...mergedStyle,
+          paddingTop: currentPadding + (insets.top || 0),
+        };
+      } else if (variant === 'fullscreen') {
+        // Apply safe area insets on all sides for fullscreen
+        const currentPaddingTop =
+          typeof mergedStyle.paddingTop === 'number' ? mergedStyle.paddingTop : 0;
+        const currentPaddingBottom =
+          typeof mergedStyle.paddingBottom === 'number' ? mergedStyle.paddingBottom : 0;
+        const currentPaddingLeft =
+          typeof mergedStyle.paddingLeft === 'number' ? mergedStyle.paddingLeft : 0;
+        const currentPaddingRight =
+          typeof mergedStyle.paddingRight === 'number' ? mergedStyle.paddingRight : 0;
+
+        return {
+          ...mergedStyle,
+          paddingTop: currentPaddingTop + insets.top,
+          paddingBottom: currentPaddingBottom + insets.bottom,
+          paddingLeft: currentPaddingLeft + insets.left,
+          paddingRight: currentPaddingRight + insets.right,
+        };
+      }
+
+      return mergedStyle;
+    }, [
+      variant,
+      size,
+      contentContainerStyle,
+      insets.bottom,
+      insets.top,
+      insets.left,
+      insets.right,
+    ]);
 
     // Memoize default styling
-    const defaultOverlayStyle = useMemo(
+    const defaultModalStyle = useMemo(
       () => ({
         borderRadius: 12,
         shadowColor: '#000',
@@ -222,8 +268,8 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
 
     // Memoize merged content style
     const mergedContentStyle = useMemo(
-      () => [defaultOverlayStyle, baseContentStyle],
-      [defaultOverlayStyle, baseContentStyle]
+      () => [defaultModalStyle, baseContentStyle],
+      [defaultModalStyle, baseContentStyle]
     );
 
     // Memoize lazy loading content rendering
@@ -248,8 +294,8 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
               style={styles.backdropPressable}
               onPress={handleBackdropPress}
               accessibilityRole="button"
-              accessibilityLabel="Close overlay"
-              accessibilityHint="Closes the overlay when pressed"
+              accessibilityLabel="Close modal"
+              accessibilityHint="Closes the modal when pressed"
             />
           </Animated.View>
 
@@ -265,10 +311,10 @@ const ThemedOverlayComponent = forwardRef<View, ThemedOverlayProps>(
   }
 );
 
-ThemedOverlayComponent.displayName = 'ThemedOverlay';
+ThemedModalComponent.displayName = 'ThemedModal';
 
 // Memoize the component to prevent unnecessary re-renders
-export const ThemedOverlay = memo(ThemedOverlayComponent);
+export const ThemedModal = memo(ThemedModalComponent);
 
 const styles = StyleSheet.create({
   backdrop: {

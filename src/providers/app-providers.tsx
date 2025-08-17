@@ -8,6 +8,7 @@ import { TamaguiProvider } from '@tamagui/core';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { tamaguiConfig } from '@/tamagui.config';
+import { ModalProvider } from './modal-provider';
 
 export function AppProviders({ children }: PropsWithChildren) {
   const colorScheme = useColorScheme();
@@ -19,7 +20,7 @@ export function AppProviders({ children }: PropsWithChildren) {
           <ActionSheetProvider>
             <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme ?? 'light'}>
               <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                {children}
+                <ModalProvider>{children}</ModalProvider>
               </ThemeProvider>
             </TamaguiProvider>
           </ActionSheetProvider>
