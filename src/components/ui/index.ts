@@ -4,5 +4,4 @@ export * from './confirm-modal';
 export * from './icon-symbol';
 export * from './input-modal';
 export * from './loading-modal';
-export * from './segmented-control';
 export * from './selection-modal';
