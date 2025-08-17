@@ -1,6 +1,5 @@
-import { Stack, styled } from '@tamagui/core';
 import React, { forwardRef, useState, memo, useEffect } from 'react';
-import { Pressable, type ViewStyle, type PressableProps } from 'react-native';
+import { Pressable, View, StyleSheet, type ViewStyle, type PressableProps } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -30,42 +29,24 @@ export type ThemedCheckboxProps = Omit<PressableProps, 'onPress' | 'style'> & {
   style?: ViewStyle;
 };
 
-const StyledCheckboxContainer = styled(Stack, {
-  name: 'StyledCheckboxContainer',
-  flexDirection: 'row',
-  alignItems: 'center',
-  padding: '$2',
-});
-
-const StyledCheckbox = styled(Stack, {
-  name: 'StyledCheckbox',
-  borderWidth: 2,
-  borderRadius: '$1',
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderColor: '$border',
-
-  variants: {
-    size: {
-      small: {
-        width: 16,
-        height: 16,
-      },
-      medium: {
-        width: 20,
-        height: 20,
-      },
-      large: {
-        width: 24,
-        height: 24,
-      },
-    },
+// Size configurations
+const sizeConfigs = {
+  small: {
+    width: 16,
+    height: 16,
+    borderRadius: 3,
   },
-
-  defaultVariants: {
-    size: 'medium',
+  medium: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
   },
-});
+  large: {
+    width: 24,
+    height: 24,
+    borderRadius: 5,
+  },
+};
 
 // Helper function to get icon size based on checkbox size
 const getIconSize = (size: 'small' | 'medium' | 'large'): number => {
@@ -80,11 +61,6 @@ const getIconSize = (size: 'small' | 'medium' | 'large'): number => {
       return 14;
   }
 };
-
-const StyledLabel = styled(Stack, {
-  name: 'StyledLabel',
-  marginLeft: '$2',
-});
 
 export const ThemedCheckbox = memo(
   forwardRef<React.ElementRef<typeof Pressable>, ThemedCheckboxProps>(
@@ -191,6 +167,8 @@ export const ThemedCheckbox = memo(
         opacity: checkmarkOpacity.value,
       }));
 
+      const sizeConfig = sizeConfigs[size];
+
       return (
         <Pressable
           ref={ref}
@@ -205,27 +183,32 @@ export const ThemedCheckbox = memo(
           onBlur={handleBlur}
           {...rest}
         >
-          <StyledCheckboxContainer>
+          <View style={styles.container}>
             <Animated.View style={animatedCheckboxStyle}>
-              <StyledCheckbox
-                size={size}
-                style={{
-                  borderColor: checkboxBorderColor,
-                  opacity: checkboxOpacity,
-                }}
+              <View
+                style={[
+                  styles.checkbox,
+                  sizeConfig,
+                  {
+                    borderColor: checkboxBorderColor,
+                    opacity: checkboxOpacity,
+                  },
+                ]}
               >
                 <Animated.View style={animatedCheckmarkStyle}>
                   <IconSymbol name="checkmark" size={getIconSize(size)} color="white" />
                 </Animated.View>
-              </StyledCheckbox>
+              </View>
             </Animated.View>
 
             {label && (
-              <StyledLabel style={{ opacity: disabled ? 0.6 : 1 }}>
-                <ThemedText type="body2">{label}</ThemedText>
-              </StyledLabel>
+              <View style={styles.labelContainer}>
+                <ThemedText type="body2" style={[styles.label, { opacity: disabled ? 0.6 : 1 }]}>
+                  {label}
+                </ThemedText>
+              </View>
             )}
-          </StyledCheckboxContainer>
+          </View>
         </Pressable>
       );
     }
@@ -233,3 +216,22 @@ export const ThemedCheckbox = memo(
 );
 
 ThemedCheckbox.displayName = 'ThemedCheckbox';
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 8,
+  },
+  checkbox: {
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  labelContainer: {
+    marginLeft: 8,
+  },
+  label: {
+    // Additional label styles can be added here
+  },
+});
