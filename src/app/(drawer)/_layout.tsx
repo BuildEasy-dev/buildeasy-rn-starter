@@ -79,6 +79,7 @@ export default function DrawerLayout() {
                 { name: 'checkboxes', label: 'Checkboxes', icon: 'checkmark' },
                 { name: 'radios', label: 'Radio Buttons', icon: 'checkmark.circle' },
                 { name: 'switches', label: 'Switches', icon: 'switch.2' },
+                { name: 'form-validation', label: 'Form Validation', icon: 'checkmark.shield' },
                 { name: 'avatars', label: 'Avatars', icon: 'person.crop.circle' },
                 { name: 'modals', label: 'Modals', icon: 'square.stack' },
               ],
@@ -161,6 +162,16 @@ export default function DrawerLayout() {
         options={{
           title: 'Switches',
           drawerIcon: ({ color, size }) => <IconSymbol name="switch.2" color={color} size={size} />,
+        }}
+      />
+
+      <Drawer.Screen
+        name="form-validation"
+        options={{
+          title: 'Form Validation',
+          drawerIcon: ({ color, size }) => (
+            <IconSymbol name="checkmark.shield" color={color} size={size} />
+          ),
         }}
       />
 
