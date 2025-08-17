@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
 
-import { ThemedOverlay, ThemedOverlayProps } from '@/components/themed/themed-overlay';
+import { ThemedModal, ThemedModalProps } from '@/components/themed/themed-modal';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedButton } from '@/components/themed/themed-button';
 
-export interface NotificationOverlayProps extends Omit<ThemedOverlayProps, 'children' | 'variant'> {
+export interface NotificationModalProps extends Omit<ThemedModalProps, 'children' | 'variant'> {
   /**
    * Title of the notification
    */
@@ -31,14 +31,14 @@ export interface NotificationOverlayProps extends Omit<ThemedOverlayProps, 'chil
 }
 
 /**
- * NotificationOverlay Component
+ * NotificationModal Component
  *
- * A specialized overlay for displaying notifications at the top of the screen.
+ * A specialized modal for displaying notifications at the top of the screen.
  * Slides down from the top with a subtle backdrop.
  *
  * @example
  * ```tsx
- * <NotificationOverlay
+ * <NotificationModal
  *   visible={showNotification}
  *   onClose={() => setShowNotification(false)}
  *   title="New Message"
@@ -47,7 +47,7 @@ export interface NotificationOverlayProps extends Omit<ThemedOverlayProps, 'chil
  * />
  * ```
  */
-export const NotificationOverlay = ({
+export const NotificationModal = ({
   visible,
   onClose,
   title,
@@ -58,7 +58,7 @@ export const NotificationOverlay = ({
   animationSpeed = 'fast',
   backdropOpacity = 0.3,
   ...props
-}: NotificationOverlayProps) => {
+}: NotificationModalProps) => {
   const handleDismiss = () => {
     if (onDismiss) {
       onDismiss();
@@ -67,7 +67,7 @@ export const NotificationOverlay = ({
   };
 
   return (
-    <ThemedOverlay
+    <ThemedModal
       visible={visible}
       onClose={onClose}
       variant="top"
@@ -86,7 +86,7 @@ export const NotificationOverlay = ({
         size="small"
         style={styles.button}
       />
-    </ThemedOverlay>
+    </ThemedModal>
   );
 };
 

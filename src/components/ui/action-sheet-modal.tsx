@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedButton } from '@/components/themed/themed-button';
-import { ThemedOverlay, type ThemedOverlayProps } from '@/components/themed/themed-overlay';
+import { ThemedModal, type ThemedModalProps } from '@/components/themed/themed-modal';
 import { ThemedText } from '@/components/themed/themed-text';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { Separator } from '@/components/ui/separator';
@@ -44,7 +44,7 @@ export interface ActionSheetAction {
   subtitle?: string;
 }
 
-export interface ActionSheetOverlayProps extends Omit<ThemedOverlayProps, 'children'> {
+export interface ActionSheetModalProps extends Omit<ThemedModalProps, 'children'> {
   /**
    * Called when an action is selected
    */
@@ -78,20 +78,20 @@ export interface ActionSheetOverlayProps extends Omit<ThemedOverlayProps, 'child
   cancelLabel?: string;
 
   /**
-   * Whether to automatically close the overlay when an action is selected
+   * Whether to automatically close the modal when an action is selected
    * @default true
    */
   closeOnAction?: boolean;
 }
 
 /**
- * An action sheet overlay component built on top of ThemedOverlay
+ * An action sheet modal component built on top of ThemedModal
  *
  * Provides a mobile-friendly action sheet interface with support for
  * destructive actions and icons. Perfect for context menus and
  * action selection interfaces, following iOS design patterns.
  */
-export function ActionSheetOverlay({
+export function ActionSheetModal({
   onAction,
   onClose,
   title,
@@ -103,8 +103,8 @@ export function ActionSheetOverlay({
   variant = 'bottom',
   animationSpeed = 'fast',
   closeOnBackdropPress = true,
-  ...overlayProps
-}: ActionSheetOverlayProps) {
+  ...modalProps
+}: ActionSheetModalProps) {
   const borderColor = useThemeColor('border');
   const textSecondary = useThemeColor('textSecondary');
 
@@ -184,12 +184,12 @@ export function ActionSheetOverlay({
   );
 
   return (
-    <ThemedOverlay
+    <ThemedModal
       variant={variant}
       animationSpeed={animationSpeed}
       closeOnBackdropPress={closeOnBackdropPress}
       onClose={onClose}
-      {...overlayProps}
+      {...modalProps}
     >
       <View style={styles.container}>
         {/* Header */}
@@ -226,7 +226,7 @@ export function ActionSheetOverlay({
           </View>
         )}
       </View>
-    </ThemedOverlay>
+    </ThemedModal>
   );
 }
 

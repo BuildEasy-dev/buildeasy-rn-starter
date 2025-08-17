@@ -2,11 +2,11 @@ import { useCallback, useMemo, useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
 
 import { ThemedButton } from '@/components/themed/themed-button';
-import { ThemedOverlay, type ThemedOverlayProps } from '@/components/themed/themed-overlay';
+import { ThemedModal, type ThemedModalProps } from '@/components/themed/themed-modal';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedTextInput } from '@/components/themed/themed-text-input';
 
-export interface InputOverlayProps extends Omit<ThemedOverlayProps, 'children'> {
+export interface InputModalProps extends Omit<ThemedModalProps, 'children'> {
   /**
    * Called when the submit button is pressed
    */
@@ -74,7 +74,7 @@ export interface InputOverlayProps extends Omit<ThemedOverlayProps, 'children'> 
   disableSubmitIfEmpty?: boolean;
 
   /**
-   * Whether to automatically close the overlay when submit is pressed
+   * Whether to automatically close the modal when submit is pressed
    * @default true
    */
   closeOnSubmit?: boolean;
@@ -96,13 +96,13 @@ export interface InputOverlayProps extends Omit<ThemedOverlayProps, 'children'> 
 }
 
 /**
- * An input dialog overlay component built on top of ThemedOverlay
+ * An input dialog modal component built on top of ThemedModal
  *
  * Provides a standard input interface with title, text input, validation,
  * character counter, and submit/cancel actions. Supports both single-line
  * and multi-line input modes.
  */
-export function InputOverlay({
+export function InputModal({
   onSubmit,
   onClose,
   title,
@@ -124,22 +124,22 @@ export function InputOverlay({
   size = 'medium',
   animationSpeed = 'fast',
   closeOnBackdropPress = false,
-  ...overlayProps
-}: InputOverlayProps) {
+  ...modalProps
+}: InputModalProps) {
   const [value, setValue] = useState(initialValue);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const inputRef = useRef<TextInput>(null);
 
-  // Auto-focus the input when overlay becomes visible
+  // Auto-focus the input when modal becomes visible
   useEffect(() => {
-    if (overlayProps.visible) {
-      // Small delay to ensure the overlay animation has started
+    if (modalProps.visible) {
+      // Small delay to ensure the modal animation has started
       const timer = setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [overlayProps.visible]);
+  }, [modalProps.visible]);
 
   // Validate input value when it changes
   useEffect(() => {
@@ -208,13 +208,13 @@ export function InputOverlay({
   }, [errorMessage]);
 
   return (
-    <ThemedOverlay
+    <ThemedModal
       variant={variant}
       size={size}
       animationSpeed={animationSpeed}
       closeOnBackdropPress={closeOnBackdropPress}
       onClose={onClose}
-      {...overlayProps}
+      {...modalProps}
     >
       <View style={styles.container}>
         {/* Title */}
@@ -276,13 +276,13 @@ export function InputOverlay({
           />
         </View>
       </View>
-    </ThemedOverlay>
+    </ThemedModal>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    // No additional padding needed - overlay variant handles this
+    // No additional padding needed - modal variant handles this
   },
   title: {
     marginBottom: 20,

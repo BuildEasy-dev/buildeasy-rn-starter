@@ -19,7 +19,7 @@ export interface SelectionModalProps extends Omit<ThemedModalProps, 'children'> 
   onSelect: (value: string) => void;
   showDividers?: boolean;
   /**
-   * Height of the overlay content
+   * Height of the modal content
    * Accepts number for fixed height or string for percentage (e.g., '70%')
    */
   height?: DimensionValue;

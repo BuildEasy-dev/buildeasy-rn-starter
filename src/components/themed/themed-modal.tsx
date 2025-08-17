@@ -33,7 +33,7 @@ export type ThemedModalProps = Omit<ViewProps, 'style'> & {
 /**
  * A theme-aware Modal component that adapts to light and dark mode.
  *
- * Provides a modal overlay with customizable background and content.
+ * Provides a modal modal with customizable background and content.
  * Supports multiple variants (center, bottom, top, fullscreen, alert) and sizes.
  */
 const ThemedModalComponent = forwardRef<View, ThemedModalProps>(
@@ -92,7 +92,7 @@ const ThemedModalComponent = forwardRef<View, ThemedModalProps>(
     const scaleAnim = useSharedValue(initialValues.scale);
     const translateYAnim = useSharedValue(initialValues.translateY);
 
-    // Get theme colors - use backgroundSecondary for overlays to provide proper visual separation
+    // Get theme colors - use backgroundSecondary for modals to provide proper visual separation
     const backgroundColor = useThemeColor('backgroundSecondary', {
       light: lightColor,
       dark: darkColor,
@@ -251,7 +251,7 @@ const ThemedModalComponent = forwardRef<View, ThemedModalProps>(
     ]);
 
     // Memoize default styling
-    const defaultOverlayStyle = useMemo(
+    const defaultModalStyle = useMemo(
       () => ({
         borderRadius: 12,
         shadowColor: '#000',
@@ -268,8 +268,8 @@ const ThemedModalComponent = forwardRef<View, ThemedModalProps>(
 
     // Memoize merged content style
     const mergedContentStyle = useMemo(
-      () => [defaultOverlayStyle, baseContentStyle],
-      [defaultOverlayStyle, baseContentStyle]
+      () => [defaultModalStyle, baseContentStyle],
+      [defaultModalStyle, baseContentStyle]
     );
 
     // Memoize lazy loading content rendering

@@ -3,24 +3,24 @@ import { View, StyleSheet } from 'react-native';
 
 import { ScreenWrapper } from '@/components/layout/wrappers/screen-wrapper';
 import { ThemedButton } from '@/components/themed';
-import { OverlayShowcase } from '@/features/ui-showcase/components/overlay-showcase';
-import { LoadingOverlayShowcase } from '@/features/ui-showcase/components/loading-overlay-showcase';
+import { ModalShowcase } from '@/features/ui-showcase/components/modal-showcase';
+import { LoadingModalShowcase } from '@/features/ui-showcase/components/loading-modal-showcase';
 
-export default function OverlaysScreen() {
-  const [activeTab, setActiveTab] = useState<'overlay' | 'loading'>('overlay');
+export default function ModalsScreen() {
+  const [activeTab, setActiveTab] = useState<'modal' | 'loading'>('modal');
 
   return (
     <ScreenWrapper scrollable padding={8}>
       <View style={styles.tabContainer}>
         <ThemedButton
-          label="Overlay Examples"
-          variant={activeTab === 'overlay' ? 'primary' : 'outline'}
+          label="Modal Examples"
+          variant={activeTab === 'modal' ? 'primary' : 'outline'}
           size="medium"
           style={styles.tabButton}
-          onPress={() => setActiveTab('overlay')}
+          onPress={() => setActiveTab('modal')}
         />
         <ThemedButton
-          label="Loading Overlay"
+          label="Loading Modal"
           variant={activeTab === 'loading' ? 'primary' : 'outline'}
           size="medium"
           style={styles.tabButton}
@@ -28,7 +28,7 @@ export default function OverlaysScreen() {
         />
       </View>
 
-      {activeTab === 'overlay' ? <OverlayShowcase /> : <LoadingOverlayShowcase />}
+      {activeTab === 'modal' ? <ModalShowcase /> : <LoadingModalShowcase />}
     </ScreenWrapper>
   );
 }

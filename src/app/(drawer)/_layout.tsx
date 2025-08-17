@@ -79,7 +79,7 @@ export default function DrawerLayout() {
                 { name: 'checkboxes', label: 'Checkboxes', icon: 'checkmark' },
                 { name: 'radios', label: 'Radio Buttons', icon: 'checkmark.circle' },
                 { name: 'switches', label: 'Switches', icon: 'switch.2' },
-                { name: 'overlays', label: 'Overlays', icon: 'square.stack' },
+                { name: 'modals', label: 'Modals', icon: 'square.stack' },
               ],
             },
           ]}
@@ -164,9 +164,9 @@ export default function DrawerLayout() {
       />
 
       <Drawer.Screen
-        name="overlays"
+        name="modals"
         options={{
-          title: 'Overlays',
+          title: 'Modals',
           drawerIcon: ({ color, size }) => (
             <IconSymbol name="square.stack" color={color} size={size} />
           ),

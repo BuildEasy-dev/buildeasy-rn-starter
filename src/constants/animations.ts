@@ -48,19 +48,6 @@ export const animations = {
    * Provides standardized animation parameters for different scenarios
    */
   transforms: {
-    // Overlay animations
-    overlay: {
-      enter: {
-        opacity: 1,
-        scale: 1,
-        translateY: 0,
-      },
-      exit: {
-        opacity: 0,
-        scale: 0.9,
-        translateY: 0,
-      },
-    },
     // Modal animations
     modal: {
       enter: {

@@ -2,7 +2,7 @@ export * from './themed-button';
 export * from './themed-checkbox';
 export * from './themed-flatlist';
 export * from './themed-flashlist';
-export * from './themed-overlay';
+export * from './themed-modal';
 export * from './themed-radio';
 export * from './themed-safe-area-view';
 export * from './themed-scroll-view';

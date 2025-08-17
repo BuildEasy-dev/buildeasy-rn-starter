@@ -2,22 +2,22 @@ import { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import { ThemedButton } from '@/components/themed/themed-button';
-import { ThemedOverlay } from '@/components/themed/themed-overlay';
-import { SelectionOverlay } from '@/components/ui/selection-overlay';
+import { ThemedModal } from '@/components/themed/themed-modal';
+import { SelectionModal } from '@/components/ui/selection-modal';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedView } from '@/components/themed/themed-view';
-import { ConfirmOverlay } from '@/components/ui/confirm-overlay';
-import { ActionSheetOverlay } from '@/components/ui/action-sheet-overlay';
-import { InputOverlay } from '@/components/ui/input-overlay';
-import { NotificationOverlay } from '@/components/ui/notification-overlay';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { ActionSheetModal } from '@/components/ui/action-sheet-modal';
+import { InputModal } from '@/components/ui/input-modal';
+import { NotificationModal } from '@/components/ui/notification-modal';
 
 /**
- * Overlay Component Showcase
- * Demonstrates different variants and sizes of ThemedOverlay component
+ * Modal Component Showcase
+ * Demonstrates different variants and sizes of ThemedModal component
  */
-export const OverlayShowcase = () => {
-  const [basicOverlayVisible, setBasicOverlayVisible] = useState(false);
-  const [noCloseOverlayVisible, setNoCloseOverlayVisible] = useState(false);
+export const ModalShowcase = () => {
+  const [basicModalVisible, setBasicModalVisible] = useState(false);
+  const [noCloseModalVisible, setNoCloseModalVisible] = useState(false);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [topNotificationVisible, setTopNotificationVisible] = useState(false);
   const [fullscreenVisible, setFullscreenVisible] = useState(false);
@@ -34,7 +34,7 @@ export const OverlayShowcase = () => {
   const [destructiveConfirmVisible, setDestructiveConfirmVisible] = useState(false);
   const [actionSheetVisible, setActionSheetVisible] = useState(false);
   const [actionSheetSectionsVisible, setActionSheetSectionsVisible] = useState(false);
-  const [inputOverlayVisible, setInputOverlayVisible] = useState(false);
+  const [inputModalVisible, setInputModalVisible] = useState(false);
   const [multilineInputVisible, setMultilineInputVisible] = useState(false);
   const [validatedInputVisible, setValidatedInputVisible] = useState(false);
   const [inputResult, setInputResult] = useState('No input yet');
@@ -46,27 +46,27 @@ export const OverlayShowcase = () => {
           Basic Usage
         </ThemedText>
         <ThemedButton
-          onPress={() => setBasicOverlayVisible(true)}
-          label="Basic Overlay"
+          onPress={() => setBasicModalVisible(true)}
+          label="Basic Modal"
           variant="primary"
           size="medium"
         />
 
-        <ThemedOverlay visible={basicOverlayVisible} onClose={() => setBasicOverlayVisible(false)}>
-          <ThemedText type="h5" style={styles.overlayTitle}>
-            Basic Overlay
+        <ThemedModal visible={basicModalVisible} onClose={() => setBasicModalVisible(false)}>
+          <ThemedText type="h5" style={styles.modalTitle}>
+            Basic Modal
           </ThemedText>
-          <ThemedText style={styles.overlayContent}>
-            This is a simple overlay example. Click the background to close.
+          <ThemedText style={styles.modalContent}>
+            This is a simple modal example. Click the background to close.
           </ThemedText>
           <ThemedButton
-            onPress={() => setBasicOverlayVisible(false)}
+            onPress={() => setBasicModalVisible(false)}
             label="Close"
             variant="primary"
             size="medium"
-            style={styles.overlayButton}
+            style={styles.modalButton}
           />
-        </ThemedOverlay>
+        </ThemedModal>
       </View>
 
       <View style={styles.section}>
@@ -74,37 +74,37 @@ export const OverlayShowcase = () => {
           Disabled Backdrop Close
         </ThemedText>
         <ThemedButton
-          onPress={() => setNoCloseOverlayVisible(true)}
+          onPress={() => setNoCloseModalVisible(true)}
           label="No Backdrop Close"
           variant="primary"
           size="medium"
         />
 
-        <ThemedOverlay
-          visible={noCloseOverlayVisible}
-          onClose={() => setNoCloseOverlayVisible(false)}
+        <ThemedModal
+          visible={noCloseModalVisible}
+          onClose={() => setNoCloseModalVisible(false)}
           closeOnBackdropPress={false}
         >
-          <ThemedText type="h5" style={styles.overlayTitle}>
-            Forced Action Overlay
+          <ThemedText type="h5" style={styles.modalTitle}>
+            Forced Action Modal
           </ThemedText>
-          <ThemedText style={styles.overlayContent}>
-            This overlay has disabled backdrop press closing. You must use the button to close it.
+          <ThemedText style={styles.modalContent}>
+            This modal has disabled backdrop press closing. You must use the button to close it.
           </ThemedText>
           <ThemedButton
-            onPress={() => setNoCloseOverlayVisible(false)}
+            onPress={() => setNoCloseModalVisible(false)}
             label="Confirm and Close"
             variant="primary"
             size="medium"
-            style={styles.overlayButton}
+            style={styles.modalButton}
           />
-        </ThemedOverlay>
+        </ThemedModal>
       </View>
 
       {/* Variant Examples */}
       <View style={styles.section}>
         <ThemedText type="h6" style={styles.subTitle}>
-          Overlay Variants
+          Modal Variants
         </ThemedText>
 
         <View style={styles.buttonRow}>
@@ -142,7 +142,7 @@ export const OverlayShowcase = () => {
         </View>
 
         {/* Bottom Sheet */}
-        <ThemedOverlay
+        <ThemedModal
           visible={bottomSheetVisible}
           onClose={() => setBottomSheetVisible(false)}
           variant="bottom"
@@ -151,8 +151,8 @@ export const OverlayShowcase = () => {
           <ThemedText type="h5" style={styles.sheetTitle}>
             Bottom Sheet
           </ThemedText>
-          <ThemedText style={styles.overlayContent}>
-            This is a bottom sheet overlay that slides up from the bottom. Perfect for action sheets
+          <ThemedText style={styles.modalContent}>
+            This is a bottom sheet modal that slides up from the bottom. Perfect for action sheets
             and mobile-friendly menus.
           </ThemedText>
           <View style={styles.buttonRow}>
@@ -176,20 +176,20 @@ export const OverlayShowcase = () => {
             label="Close"
             variant="primary"
             size="medium"
-            style={styles.overlayButton}
+            style={styles.modalButton}
           />
-        </ThemedOverlay>
+        </ThemedModal>
 
         {/* Top Notification */}
-        <NotificationOverlay
+        <NotificationModal
           visible={topNotificationVisible}
           onClose={() => setTopNotificationVisible(false)}
           title="Notification"
-          message="This is a top notification overlay. Great for alerts and status messages."
+          message="This is a top notification modal. Great for alerts and status messages."
         />
 
         {/* Fullscreen Modal */}
-        <ThemedOverlay
+        <ThemedModal
           visible={fullscreenVisible}
           onClose={() => setFullscreenVisible(false)}
           variant="fullscreen"
@@ -210,8 +210,8 @@ export const OverlayShowcase = () => {
             </View>
             <View style={styles.fullscreenBody}>
               <ThemedText style={styles.fullscreenText}>
-                This is a fullscreen overlay perfect for detailed views, forms, or immersive
-                content. It takes up the entire screen and provides a dedicated space for complex
+                This is a fullscreen modal perfect for detailed views, forms, or immersive content.
+                It takes up the entire screen and provides a dedicated space for complex
                 interactions.
               </ThemedText>
               <ThemedText style={styles.fullscreenText}>
@@ -236,10 +236,10 @@ export const OverlayShowcase = () => {
               />
             </View>
           </View>
-        </ThemedOverlay>
+        </ThemedModal>
 
         {/* Alert Dialog */}
-        <ThemedOverlay
+        <ThemedModal
           visible={alertVisible}
           onClose={() => setAlertVisible(false)}
           variant="alert"
@@ -269,7 +269,7 @@ export const OverlayShowcase = () => {
               style={styles.alertButton}
             />
           </View>
-        </ThemedOverlay>
+        </ThemedModal>
       </View>
 
       {/* Size Examples */}
@@ -303,34 +303,34 @@ export const OverlayShowcase = () => {
           style={styles.fullWidthButton}
         />
 
-        {/* Size Demo Overlay */}
-        <ThemedOverlay
+        {/* Size Demo Modal */}
+        <ThemedModal
           visible={!!sizeDemoVisible}
           onClose={() => setSizeDemoVisible(null)}
           variant={sizeDemoVisible?.variant || 'center'}
           size={sizeDemoVisible?.size || 'medium'}
         >
-          <ThemedText type="h5" style={styles.overlayTitle}>
+          <ThemedText type="h5" style={styles.modalTitle}>
             {sizeDemoVisible?.size?.toUpperCase()} Size
           </ThemedText>
-          <ThemedText style={styles.overlayContent}>
-            This overlay demonstrates the &apos;{sizeDemoVisible?.size}&apos; size variant.
-            Different sizes offer different padding and width constraints.
+          <ThemedText style={styles.modalContent}>
+            This modal demonstrates the &apos;{sizeDemoVisible?.size}&apos; size variant. Different
+            sizes offer different padding and width constraints.
           </ThemedText>
           <ThemedButton
             onPress={() => setSizeDemoVisible(null)}
             label="Close"
             variant="primary"
             size="medium"
-            style={styles.overlayButton}
+            style={styles.modalButton}
           />
-        </ThemedOverlay>
+        </ThemedModal>
       </View>
 
-      {/* Selection Overlay Example */}
+      {/* Selection Modal Example */}
       <View style={styles.section}>
         <ThemedText type="h6" style={styles.subTitle}>
-          Selection Overlay
+          Selection Modal
         </ThemedText>
         <View style={styles.buttonRow}>
           <ThemedButton
@@ -349,7 +349,7 @@ export const OverlayShowcase = () => {
           />
         </View>
 
-        <SelectionOverlay
+        <SelectionModal
           visible={selectionVisible}
           onClose={() => setSelectionVisible(false)}
           title="Choose an Option"
@@ -372,8 +372,8 @@ export const OverlayShowcase = () => {
           }}
         />
 
-        {/* Selection Overlay with Custom Height */}
-        <SelectionOverlay
+        {/* Selection Modal with Custom Height */}
+        <SelectionModal
           visible={selectionWithHeightVisible}
           onClose={() => setSelectionWithHeightVisible(false)}
           title="Custom Height (70%)"
@@ -394,10 +394,10 @@ export const OverlayShowcase = () => {
         />
       </View>
 
-      {/* Confirm Overlay Examples */}
+      {/* Confirm Modal Examples */}
       <View style={styles.section}>
         <ThemedText type="h6" style={styles.subTitle}>
-          Confirm Overlay
+          Confirm Modal
         </ThemedText>
         <View style={styles.buttonRow}>
           <ThemedButton
@@ -417,7 +417,7 @@ export const OverlayShowcase = () => {
         </View>
 
         {/* Normal Confirmation */}
-        <ConfirmOverlay
+        <ConfirmModal
           visible={confirmVisible}
           onClose={() => setConfirmVisible(false)}
           onConfirm={() => {
@@ -430,7 +430,7 @@ export const OverlayShowcase = () => {
         />
 
         {/* Destructive Confirmation */}
-        <ConfirmOverlay
+        <ConfirmModal
           visible={destructiveConfirmVisible}
           onClose={() => setDestructiveConfirmVisible(false)}
           onConfirm={() => {
@@ -444,10 +444,10 @@ export const OverlayShowcase = () => {
         />
       </View>
 
-      {/* Action Sheet Overlay Examples */}
+      {/* Action Sheet Modal Examples */}
       <View style={styles.section}>
         <ThemedText type="h6" style={styles.subTitle}>
-          Action Sheet Overlay
+          Action Sheet Modal
         </ThemedText>
         <View style={styles.buttonRow}>
           <ThemedButton
@@ -467,7 +467,7 @@ export const OverlayShowcase = () => {
         </View>
 
         {/* Basic Action Sheet */}
-        <ActionSheetOverlay
+        <ActionSheetModal
           visible={actionSheetVisible}
           onClose={() => setActionSheetVisible(false)}
           onAction={(actionId) => {
@@ -484,7 +484,7 @@ export const OverlayShowcase = () => {
         />
 
         {/* Action Sheet with Subtitles */}
-        <ActionSheetOverlay
+        <ActionSheetModal
           visible={actionSheetSectionsVisible}
           onClose={() => setActionSheetSectionsVisible(false)}
           onAction={(actionId) => {
@@ -509,15 +509,15 @@ export const OverlayShowcase = () => {
         />
       </View>
 
-      {/* Input Overlay Examples */}
+      {/* Input Modal Examples */}
       <View style={styles.section}>
         <ThemedText type="h6" style={styles.subTitle}>
-          Input Overlay
+          Input Modal
         </ThemedText>
-        <ThemedText style={styles.overlayContent}>Last input result: {inputResult}</ThemedText>
+        <ThemedText style={styles.modalContent}>Last input result: {inputResult}</ThemedText>
         <View style={styles.buttonRow}>
           <ThemedButton
-            onPress={() => setInputOverlayVisible(true)}
+            onPress={() => setInputModalVisible(true)}
             label="Single"
             variant="primary"
             size="medium"
@@ -540,9 +540,9 @@ export const OverlayShowcase = () => {
         />
 
         {/* Single Line Input */}
-        <InputOverlay
-          visible={inputOverlayVisible}
-          onClose={() => setInputOverlayVisible(false)}
+        <InputModal
+          visible={inputModalVisible}
+          onClose={() => setInputModalVisible(false)}
           onSubmit={(value) => {
             setInputResult(`Single line: "${value}"`);
           }}
@@ -554,7 +554,7 @@ export const OverlayShowcase = () => {
         />
 
         {/* Multi-line Input */}
-        <InputOverlay
+        <InputModal
           visible={multilineInputVisible}
           onClose={() => setMultilineInputVisible(false)}
           onSubmit={(value) => {
@@ -571,7 +571,7 @@ export const OverlayShowcase = () => {
         />
 
         {/* Validated Input */}
-        <InputOverlay
+        <InputModal
           visible={validatedInputVisible}
           onClose={() => setValidatedInputVisible(false)}
           onSubmit={(value) => {
@@ -608,15 +608,15 @@ const styles = StyleSheet.create({
   subTitle: {
     marginBottom: 12,
   },
-  overlayTitle: {
+  modalTitle: {
     marginBottom: 16,
     textAlign: 'center',
   },
-  overlayContent: {
+  modalContent: {
     marginBottom: 8,
     textAlign: 'center',
   },
-  overlayButton: {
+  modalButton: {
     marginTop: 16,
   },
   buttonRow: {
