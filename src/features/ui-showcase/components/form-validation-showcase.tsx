@@ -25,12 +25,25 @@ type TabType = 'login' | 'signup' | 'profile' | 'advanced';
 export function FormValidationShowcase() {
   const [activeTab, setActiveTab] = useState<TabType>('login');
 
+  const getTabLabel = (tab: TabType) => {
+    switch (tab) {
+      case 'login':
+        return 'Login';
+      case 'signup':
+        return 'Signup';
+      case 'profile':
+        return 'Profile';
+      case 'advanced':
+        return 'Advanced';
+    }
+  };
+
   const renderTabButtons = () => (
     <View style={styles.tabContainer}>
       {(['login', 'signup', 'profile', 'advanced'] as TabType[]).map((tab) => (
         <ThemedButton
           key={tab}
-          label={tab.charAt(0).toUpperCase() + tab.slice(1)}
+          label={getTabLabel(tab)}
           variant={activeTab === tab ? 'primary' : 'ghost'}
           size="small"
           style={styles.tabButton}
@@ -436,10 +449,11 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
     marginBottom: 24,
-    gap: 8,
+    gap: 6,
   },
   tabButton: {
     flex: 1,
+    minWidth: 60,
   },
   contentContainer: {
     flex: 1,
