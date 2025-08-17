@@ -12,6 +12,8 @@ import {
   useForm,
   zodResolver,
 } from '@/components/form';
+import { Controller } from 'react-hook-form';
+import { ThemedCheckbox } from '@/components/themed';
 import { loginSchema, signUpSchema, profileSchema, z } from '@/schemas';
 
 type TabType = 'login' | 'signup' | 'profile' | 'advanced';
@@ -132,7 +134,13 @@ function LoginFormExample() {
           autoComplete="current-password"
         />
 
-        <FormCheckbox name="rememberMe" label="Remember me" />
+        <Controller
+          name="rememberMe"
+          control={methods.control}
+          render={({ field: { onChange, value } }) => (
+            <ThemedCheckbox value={!!value} onValueChange={onChange} label="Remember me" />
+          )}
+        />
 
         <ThemedButton
           label="Sign In"
