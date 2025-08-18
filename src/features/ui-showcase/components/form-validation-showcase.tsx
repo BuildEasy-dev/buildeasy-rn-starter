@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, ScrollView, Pressable } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView, useWindowDimensions } from 'react-native';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedButton } from '@/components/themed/themed-button';
@@ -17,8 +18,6 @@ import { Controller } from 'react-hook-form';
 import { ThemedCheckbox } from '@/components/themed';
 import { loginSchema, signUpSchema, profileSchema, z } from '@/schemas';
 
-type TabType = 'login' | 'signup' | 'profile' | 'advanced';
-
 /**
  * Form Validation Showcase
  *
@@ -26,66 +25,53 @@ type TabType = 'login' | 'signup' | 'profile' | 'advanced';
  * across different form types and validation scenarios.
  */
 export function FormValidationShowcase() {
-  const [activeTab, setActiveTab] = useState<TabType>('login');
+  const layout = useWindowDimensions();
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'login', title: 'Login' },
+    { key: 'signup', title: 'Signup' },
+    { key: 'profile', title: 'Profile' },
+    { key: 'advanced', title: 'Advanced' },
+  ]);
 
-  const primaryColor = useThemeColor('primary');
-  const textColor = useThemeColor('text');
-  const borderColor = useThemeColor('border');
   const backgroundColor = useThemeColor('background');
+  const textColor = useThemeColor('text');
+  const primaryColor = useThemeColor('primary');
+  const borderColor = useThemeColor('border');
 
-  const tabs: { key: TabType; label: string }[] = [
-    { key: 'login', label: 'Login' },
-    { key: 'signup', label: 'Signup' },
-    { key: 'profile', label: 'Profile' },
-    { key: 'advanced', label: 'Advanced' },
-  ];
+  const renderScene = SceneMap({
+    login: LoginFormExample,
+    signup: SignUpFormExample,
+    profile: ProfileFormExample,
+    advanced: AdvancedFormExample,
+  });
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'login':
-        return <LoginFormExample />;
-      case 'signup':
-        return <SignUpFormExample />;
-      case 'profile':
-        return <ProfileFormExample />;
-      case 'advanced':
-        return <AdvancedFormExample />;
-      default:
-        return <LoginFormExample />;
-    }
-  };
+  const renderTabBar = (props: any) => (
+    <TabBar
+      {...props}
+      indicatorStyle={[styles.indicator, { backgroundColor: primaryColor }]}
+      style={[styles.tabBar, { backgroundColor, borderBottomColor: borderColor }]}
+      labelStyle={[styles.tabLabel, { color: textColor }]}
+      activeColor={primaryColor}
+      inactiveColor={textColor}
+      pressColor={primaryColor + '20'}
+      scrollEnabled={true}
+      tabStyle={styles.tabStyle}
+    />
+  );
 
   return (
     <ThemedView style={styles.container}>
-      {/* Custom Tab Bar */}
-      <View style={[styles.tabBar, { backgroundColor, borderBottomColor: borderColor }]}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.tabBarContent}
-        >
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.key;
-            return (
-              <Pressable
-                key={tab.key}
-                onPress={() => setActiveTab(tab.key)}
-                style={[styles.tab, isActive && styles.activeTab]}
-              >
-                <ThemedText
-                  style={[styles.tabLabel, { color: isActive ? primaryColor : textColor }]}
-                >
-                  {tab.label}
-                </ThemedText>
-                {isActive && <View style={[styles.indicator, { backgroundColor: primaryColor }]} />}
-              </Pressable>
-            );
-          })}
-        </ScrollView>
-      </View>
-
-      {/* Tab Content */}
-      <View style={styles.contentContainer}>{renderContent()}</View>
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        renderTabBar={renderTabBar}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+        swipeEnabled={true}
+        lazy={true}
+        lazyPreloadDistance={1}
+      />
     </ThemedView>
   );
 }
@@ -458,37 +444,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tabBar: {
-    height: 48,
+    elevation: 0,
+    shadowOpacity: 0,
     borderBottomWidth: 1,
   },
-  tabBarContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-  },
-  tab: {
-    paddingHorizontal: 16,
-    height: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  activeTab: {
-    // Active tab styles
+  tabStyle: {
+    width: 'auto',
+    minWidth: 80,
   },
   tabLabel: {
     fontSize: 14,
     fontWeight: '600',
+    textTransform: 'capitalize',
   },
   indicator: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     height: 3,
-  },
-  contentContainer: {
-    flex: 1,
   },
   scrollView: {
     flex: 1,
