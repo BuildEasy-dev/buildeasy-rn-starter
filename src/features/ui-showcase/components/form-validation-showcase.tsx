@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView, Pressable } from 'react-native';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedButton } from '@/components/themed/themed-button';
+import { useThemeColor } from '@/hooks/use-theme-color';
 import {
   FormProvider,
   FormTextInput,
@@ -27,38 +28,17 @@ type TabType = 'login' | 'signup' | 'profile' | 'advanced';
 export function FormValidationShowcase() {
   const [activeTab, setActiveTab] = useState<TabType>('login');
 
-  const getTabLabel = (tab: TabType) => {
-    switch (tab) {
-      case 'login':
-        return 'Login';
-      case 'signup':
-        return 'Signup';
-      case 'profile':
-        return 'Profile';
-      case 'advanced':
-        return 'Advanced';
-    }
-  };
+  const primaryColor = useThemeColor('primary');
+  const textColor = useThemeColor('text');
+  const borderColor = useThemeColor('border');
+  const backgroundColor = useThemeColor('background');
 
-  const renderTabButtons = () => (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.tabScrollContent}
-      style={styles.tabScrollContainer}
-    >
-      {(['login', 'signup', 'profile', 'advanced'] as TabType[]).map((tab) => (
-        <ThemedButton
-          key={tab}
-          label={getTabLabel(tab)}
-          variant={activeTab === tab ? 'primary' : 'ghost'}
-          size="small"
-          style={styles.tabButton}
-          onPress={() => setActiveTab(tab)}
-        />
-      ))}
-    </ScrollView>
-  );
+  const tabs: { key: TabType; label: string }[] = [
+    { key: 'login', label: 'Login' },
+    { key: 'signup', label: 'Signup' },
+    { key: 'profile', label: 'Profile' },
+    { key: 'advanced', label: 'Advanced' },
+  ];
 
   const renderContent = () => {
     switch (activeTab) {
@@ -77,15 +57,34 @@ export function FormValidationShowcase() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="h4" weight="bold" style={styles.title}>
-        Form Validation Showcase
-      </ThemedText>
-      <ThemedText type="body2" variant="muted" style={styles.subtitle}>
-        React Hook Form + Zod integration with themed components
-      </ThemedText>
+      {/* Custom Tab Bar */}
+      <View style={[styles.tabBar, { backgroundColor, borderBottomColor: borderColor }]}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabBarContent}
+        >
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.key;
+            return (
+              <Pressable
+                key={tab.key}
+                onPress={() => setActiveTab(tab.key)}
+                style={[styles.tab, isActive && styles.activeTab]}
+              >
+                <ThemedText
+                  style={[styles.tabLabel, { color: isActive ? primaryColor : textColor }]}
+                >
+                  {tab.label}
+                </ThemedText>
+                {isActive && <View style={[styles.indicator, { backgroundColor: primaryColor }]} />}
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      </View>
 
-      {renderTabButtons()}
-
+      {/* Tab Content */}
       <View style={styles.contentContainer}>{renderContent()}</View>
     </ThemedView>
   );
@@ -110,49 +109,51 @@ function LoginFormExample() {
   };
 
   return (
-    <FormProvider methods={methods}>
-      <View style={styles.formContainer}>
-        <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
-          Login Form
-        </ThemedText>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <FormProvider methods={methods}>
+        <View style={styles.formContainer}>
+          <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
+            Login Form
+          </ThemedText>
 
-        <FormTextInput
-          name="email"
-          label="Email"
-          placeholder="Enter your email"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-        />
+          <FormTextInput
+            name="email"
+            label="Email"
+            placeholder="Enter your email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+          />
 
-        <FormTextInput
-          name="password"
-          label="Password"
-          placeholder="Enter your password"
-          secureTextEntry
-          showPasswordToggle
-          autoComplete="current-password"
-        />
+          <FormTextInput
+            name="password"
+            label="Password"
+            placeholder="Enter your password"
+            secureTextEntry
+            showPasswordToggle
+            autoComplete="current-password"
+          />
 
-        <Controller
-          name="rememberMe"
-          control={methods.control}
-          render={({ field: { onChange, value } }) => (
-            <ThemedCheckbox value={!!value} onValueChange={onChange} label="Remember me" />
-          )}
-        />
+          <Controller
+            name="rememberMe"
+            control={methods.control}
+            render={({ field: { onChange, value } }) => (
+              <ThemedCheckbox value={!!value} onValueChange={onChange} label="Remember me" />
+            )}
+          />
 
-        <ThemedButton
-          label="Sign In"
-          isLoading={methods.formState.isSubmitting}
-          onPress={methods.handleSubmit(onSubmit)}
-          fullWidth
-          style={styles.submitButton}
-        />
+          <ThemedButton
+            label="Sign In"
+            isLoading={methods.formState.isSubmitting}
+            onPress={methods.handleSubmit(onSubmit)}
+            fullWidth
+            style={styles.submitButton}
+          />
 
-        <FormStateDisplay formState={methods.formState} />
-      </View>
-    </FormProvider>
+          <FormStateDisplay formState={methods.formState} />
+        </View>
+      </FormProvider>
+    </ScrollView>
   );
 }
 
@@ -180,75 +181,77 @@ function SignUpFormExample() {
   };
 
   return (
-    <FormProvider methods={methods}>
-      <View style={styles.formContainer}>
-        <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
-          Sign Up Form
-        </ThemedText>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <FormProvider methods={methods}>
+        <View style={styles.formContainer}>
+          <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
+            Sign Up Form
+          </ThemedText>
 
-        <View style={styles.rowContainer}>
+          <View style={styles.rowContainer}>
+            <FormTextInput
+              name="firstName"
+              label="First Name"
+              placeholder="John"
+              containerStyle={styles.halfWidth}
+            />
+            <FormTextInput
+              name="lastName"
+              label="Last Name"
+              placeholder="Doe"
+              containerStyle={styles.halfWidth}
+            />
+          </View>
+
           <FormTextInput
-            name="firstName"
-            label="First Name"
-            placeholder="John"
-            containerStyle={styles.halfWidth}
+            name="username"
+            label="Username"
+            placeholder="johndoe"
+            autoCapitalize="none"
           />
+
           <FormTextInput
-            name="lastName"
-            label="Last Name"
-            placeholder="Doe"
-            containerStyle={styles.halfWidth}
+            name="email"
+            label="Email"
+            placeholder="john@example.com"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
           />
+
+          <FormTextInput
+            name="password"
+            label="Password"
+            placeholder="Enter a strong password"
+            secureTextEntry
+            showPasswordToggle
+            helperText="Must contain uppercase, lowercase, number, and special character"
+          />
+
+          <FormTextInput
+            name="confirmPassword"
+            label="Confirm Password"
+            placeholder="Confirm your password"
+            secureTextEntry
+            showPasswordToggle
+          />
+
+          <FormCheckbox name="acceptTerms" label="I accept the terms and conditions" />
+
+          <FormCheckbox name="subscribeNewsletter" label="Subscribe to newsletter (optional)" />
+
+          <ThemedButton
+            label="Create Account"
+            isLoading={methods.formState.isSubmitting}
+            onPress={methods.handleSubmit(onSubmit)}
+            fullWidth
+            style={styles.submitButton}
+          />
+
+          <FormStateDisplay formState={methods.formState} />
         </View>
-
-        <FormTextInput
-          name="username"
-          label="Username"
-          placeholder="johndoe"
-          autoCapitalize="none"
-        />
-
-        <FormTextInput
-          name="email"
-          label="Email"
-          placeholder="john@example.com"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-        />
-
-        <FormTextInput
-          name="password"
-          label="Password"
-          placeholder="Enter a strong password"
-          secureTextEntry
-          showPasswordToggle
-          helperText="Must contain uppercase, lowercase, number, and special character"
-        />
-
-        <FormTextInput
-          name="confirmPassword"
-          label="Confirm Password"
-          placeholder="Confirm your password"
-          secureTextEntry
-          showPasswordToggle
-        />
-
-        <FormCheckbox name="acceptTerms" label="I accept the terms and conditions" />
-
-        <FormCheckbox name="subscribeNewsletter" label="Subscribe to newsletter (optional)" />
-
-        <ThemedButton
-          label="Create Account"
-          isLoading={methods.formState.isSubmitting}
-          onPress={methods.handleSubmit(onSubmit)}
-          fullWidth
-          style={styles.submitButton}
-        />
-
-        <FormStateDisplay formState={methods.formState} />
-      </View>
-    </FormProvider>
+      </FormProvider>
+    </ScrollView>
   );
 }
 
@@ -275,61 +278,63 @@ function ProfileFormExample() {
   };
 
   return (
-    <FormProvider methods={methods}>
-      <View style={styles.formContainer}>
-        <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
-          Profile Form
-        </ThemedText>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <FormProvider methods={methods}>
+        <View style={styles.formContainer}>
+          <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
+            Profile Form
+          </ThemedText>
 
-        <View style={styles.rowContainer}>
-          <FormTextInput name="firstName" label="First Name" containerStyle={styles.halfWidth} />
-          <FormTextInput name="lastName" label="Last Name" containerStyle={styles.halfWidth} />
+          <View style={styles.rowContainer}>
+            <FormTextInput name="firstName" label="First Name" containerStyle={styles.halfWidth} />
+            <FormTextInput name="lastName" label="Last Name" containerStyle={styles.halfWidth} />
+          </View>
+
+          <FormTextInput
+            name="email"
+            label="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+
+          <FormTextInput
+            name="phone"
+            label="Phone (Optional)"
+            placeholder="+1 (555) 123-4567"
+            keyboardType="phone-pad"
+          />
+
+          <FormTextInput
+            name="bio"
+            label="Bio (Optional)"
+            placeholder="Tell us about yourself..."
+            multiline
+            numberOfLines={3}
+            style={styles.textArea}
+          />
+
+          <FormTextInput name="location" label="Location (Optional)" placeholder="New York, NY" />
+
+          <FormTextInput
+            name="website"
+            label="Website (Optional)"
+            placeholder="https://example.com"
+            keyboardType="url"
+            autoCapitalize="none"
+          />
+
+          <ThemedButton
+            label="Update Profile"
+            isLoading={methods.formState.isSubmitting}
+            onPress={methods.handleSubmit(onSubmit)}
+            fullWidth
+            style={styles.submitButton}
+          />
+
+          <FormStateDisplay formState={methods.formState} />
         </View>
-
-        <FormTextInput
-          name="email"
-          label="Email"
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-
-        <FormTextInput
-          name="phone"
-          label="Phone (Optional)"
-          placeholder="+1 (555) 123-4567"
-          keyboardType="phone-pad"
-        />
-
-        <FormTextInput
-          name="bio"
-          label="Bio (Optional)"
-          placeholder="Tell us about yourself..."
-          multiline
-          numberOfLines={3}
-          style={styles.textArea}
-        />
-
-        <FormTextInput name="location" label="Location (Optional)" placeholder="New York, NY" />
-
-        <FormTextInput
-          name="website"
-          label="Website (Optional)"
-          placeholder="https://example.com"
-          keyboardType="url"
-          autoCapitalize="none"
-        />
-
-        <ThemedButton
-          label="Update Profile"
-          isLoading={methods.formState.isSubmitting}
-          onPress={methods.handleSubmit(onSubmit)}
-          fullWidth
-          style={styles.submitButton}
-        />
-
-        <FormStateDisplay formState={methods.formState} />
-      </View>
-    </FormProvider>
+      </FormProvider>
+    </ScrollView>
   );
 }
 
@@ -368,47 +373,49 @@ function AdvancedFormExample() {
   };
 
   return (
-    <FormProvider methods={methods}>
-      <View style={styles.formContainer}>
-        <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
-          Advanced Form Features
-        </ThemedText>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <FormProvider methods={methods}>
+        <View style={styles.formContainer}>
+          <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
+            Advanced Form Features
+          </ThemedText>
 
-        <ThemedText type="body2" weight="medium" style={styles.sectionTitle}>
-          Plan Selection
-        </ThemedText>
+          <ThemedText type="body2" weight="medium" style={styles.sectionTitle}>
+            Plan Selection
+          </ThemedText>
 
-        <View style={styles.radioGroup}>
-          <FormRadio name="plan" value="basic" label="Basic Plan ($0/month)" />
-          <FormRadio name="plan" value="premium" label="Premium Plan ($10/month)" />
-          <FormRadio name="plan" value="enterprise" label="Enterprise Plan ($50/month)" />
+          <View style={styles.radioGroup}>
+            <FormRadio name="plan" value="basic" label="Basic Plan ($0/month)" />
+            <FormRadio name="plan" value="premium" label="Premium Plan ($10/month)" />
+            <FormRadio name="plan" value="enterprise" label="Enterprise Plan ($50/month)" />
+          </View>
+
+          <ThemedText type="body2" weight="medium" style={styles.sectionTitle}>
+            Notification Settings
+          </ThemedText>
+
+          <FormSwitch name="notifications" />
+          <ThemedText type="caption" style={styles.switchLabel}>
+            Enable push notifications
+          </ThemedText>
+
+          {/* Conditional field based on notifications toggle */}
+          {watchNotifications && (
+            <FormCheckbox name="marketingEmails" label="Receive marketing emails" />
+          )}
+
+          <ThemedButton
+            label="Save Preferences"
+            isLoading={methods.formState.isSubmitting}
+            onPress={methods.handleSubmit(onSubmit)}
+            fullWidth
+            style={styles.submitButton}
+          />
+
+          <FormStateDisplay formState={methods.formState} />
         </View>
-
-        <ThemedText type="body2" weight="medium" style={styles.sectionTitle}>
-          Notification Settings
-        </ThemedText>
-
-        <FormSwitch name="notifications" />
-        <ThemedText type="caption" style={styles.switchLabel}>
-          Enable push notifications
-        </ThemedText>
-
-        {/* Conditional field based on notifications toggle */}
-        {watchNotifications && (
-          <FormCheckbox name="marketingEmails" label="Receive marketing emails" />
-        )}
-
-        <ThemedButton
-          label="Save Preferences"
-          isLoading={methods.formState.isSubmitting}
-          onPress={methods.handleSubmit(onSubmit)}
-          fullWidth
-          style={styles.submitButton}
-        />
-
-        <FormStateDisplay formState={methods.formState} />
-      </View>
-    </FormProvider>
+      </FormProvider>
+    </ScrollView>
   );
 }
 
@@ -449,29 +456,46 @@ function FormStateDisplay({ formState }: { formState: any }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
   },
-  title: {
-    marginBottom: 8,
-    textAlign: 'center',
+  tabBar: {
+    height: 48,
+    borderBottomWidth: 1,
   },
-  subtitle: {
-    marginBottom: 24,
-    textAlign: 'center',
-  },
-  tabScrollContainer: {
-    marginBottom: 24,
-  },
-  tabScrollContent: {
+  tabBarContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 16,
-    gap: 8,
   },
-  tabButton: {
-    minWidth: 85,
-    marginHorizontal: 4,
+  tab: {
+    paddingHorizontal: 16,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  activeTab: {
+    // Active tab styles
+  },
+  tabLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  indicator: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 3,
   },
   contentContainer: {
     flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 32,
   },
   formContainer: {
     gap: 16,
