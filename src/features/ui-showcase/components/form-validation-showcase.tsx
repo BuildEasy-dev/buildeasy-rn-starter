@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, ScrollView, useWindowDimensions } from 'react-native';
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { View, StyleSheet, Alert, ScrollView } from 'react-native';
 import { ThemedView } from '@/components/themed/themed-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { ThemedButton } from '@/components/themed/themed-button';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { ThemedTabView, SceneMap } from '@/components/themed/themed-tab-view';
 import {
   FormProvider,
   FormTextInput,
@@ -69,7 +68,6 @@ const profileSchema = z.object({
  * across different form types and validation scenarios.
  */
 export function FormValidationShowcase() {
-  const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'login', title: 'Login' },
@@ -77,40 +75,18 @@ export function FormValidationShowcase() {
     { key: 'profile', title: 'Profile' },
   ]);
 
-  const backgroundColor = useThemeColor('background');
-  const textColor = useThemeColor('text');
-  const primaryColor = useThemeColor('primary');
-  const borderColor = useThemeColor('border');
-
   const renderScene = SceneMap({
     login: LoginFormExample,
     signup: SignUpFormExample,
     profile: ProfileFormExample,
   });
 
-  const renderTabBar = (props: any) => (
-    <TabBar
-      {...props}
-      indicatorStyle={[styles.indicator, { backgroundColor: primaryColor }]}
-      style={[styles.tabBar, { backgroundColor, borderBottomColor: borderColor }]}
-      labelStyle={[styles.tabLabel, { color: textColor }]}
-      activeColor={primaryColor}
-      inactiveColor={textColor}
-      pressColor={primaryColor + '20'}
-      scrollEnabled={true}
-      tabStyle={styles.tabStyle}
-    />
-  );
-
   return (
     <ThemedView style={styles.container}>
-      <TabView
+      <ThemedTabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
-        renderTabBar={renderTabBar}
         onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-        swipeEnabled={true}
         lazy={true}
         lazyPreloadDistance={1}
       />
@@ -391,23 +367,6 @@ function FormStateDisplay({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  tabBar: {
-    elevation: 0,
-    shadowOpacity: 0,
-    borderBottomWidth: 1,
-  },
-  tabStyle: {
-    width: 'auto',
-    minWidth: 80,
-  },
-  tabLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    textTransform: 'capitalize',
-  },
-  indicator: {
-    height: 3,
   },
   scrollView: {
     flex: 1,
