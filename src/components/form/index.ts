@@ -28,7 +28,7 @@ export {
   type FormCheckboxProps,
   type FormRadioProps,
   type FormSwitchProps,
-} from './typed-inputs';
+} from './form-inputs';
 
 /**
  * React Hook Form types
@@ -67,4 +67,4 @@ export { FormGroup, FormRow, type FormGroupProps, type FormRowProps } from './fo
  * Validation schemas
  * @description Re-exported Zod schemas for form validation
  */
-export * from './validation.schema';
+export * from './form-schema';
