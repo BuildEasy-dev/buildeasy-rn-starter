@@ -31,7 +31,6 @@ export function FormValidationShowcase() {
     { key: 'login', title: 'Login' },
     { key: 'signup', title: 'Signup' },
     { key: 'profile', title: 'Profile' },
-    { key: 'advanced', title: 'Advanced' },
   ]);
 
   const backgroundColor = useThemeColor('background');
@@ -43,7 +42,6 @@ export function FormValidationShowcase() {
     login: LoginFormExample,
     signup: SignUpFormExample,
     profile: ProfileFormExample,
-    advanced: AdvancedFormExample,
   });
 
   const renderTabBar = (props: any) => (
@@ -311,87 +309,6 @@ function ProfileFormExample() {
 
           <ThemedButton
             label="Update Profile"
-            isLoading={methods.formState.isSubmitting}
-            onPress={methods.handleSubmit(onSubmit)}
-            fullWidth
-            style={styles.submitButton}
-          />
-
-          <FormStateDisplay formState={methods.formState} />
-        </View>
-      </FormProvider>
-    </ScrollView>
-  );
-}
-
-// ============================================================================
-// Advanced Form Example
-// ============================================================================
-
-function AdvancedFormExample() {
-  const advancedSchema = signUpSchema.extend({
-    plan: z.enum(['basic', 'premium', 'enterprise']),
-    notifications: z.boolean(),
-    marketingEmails: z.boolean().optional(),
-  });
-
-  const methods = useForm({
-    resolver: zodResolver(advancedSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      acceptTerms: false,
-      subscribeNewsletter: false,
-      plan: 'basic',
-      notifications: false,
-      marketingEmails: false,
-    },
-  });
-
-  const watchNotifications = methods.watch('notifications');
-
-  const onSubmit = (data: any) => {
-    Alert.alert('Advanced Form Submitted', JSON.stringify(data, null, 2));
-  };
-
-  return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-      <FormProvider methods={methods}>
-        <View style={styles.formContainer}>
-          <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
-            Advanced Form Features
-          </ThemedText>
-
-          <ThemedText type="body2" weight="medium" style={styles.sectionTitle}>
-            Plan Selection
-          </ThemedText>
-
-          <View style={styles.radioGroup}>
-            <FormRadio name="plan" value="basic" label="Basic Plan ($0/month)" />
-            <FormRadio name="plan" value="premium" label="Premium Plan ($10/month)" />
-            <FormRadio name="plan" value="enterprise" label="Enterprise Plan ($50/month)" />
-          </View>
-
-          <ThemedText type="body2" weight="medium" style={styles.sectionTitle}>
-            Notification Settings
-          </ThemedText>
-
-          <FormSwitch name="notifications" />
-          <ThemedText type="caption" style={styles.switchLabel}>
-            Enable push notifications
-          </ThemedText>
-
-          {/* Conditional field based on notifications toggle */}
-          {watchNotifications && (
-            <FormCheckbox name="marketingEmails" label="Receive marketing emails" />
-          )}
-
-          <ThemedButton
-            label="Save Preferences"
             isLoading={methods.formState.isSubmitting}
             onPress={methods.handleSubmit(onSubmit)}
             fullWidth
