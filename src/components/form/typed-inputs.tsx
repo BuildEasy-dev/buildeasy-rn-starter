@@ -67,7 +67,22 @@ export const FormTextInput = forwardRef<
   const actualControl = control || methods?.control;
 
   if (!actualControl) {
-    throw new Error('FormTextInput must be used within FormProvider or with control prop');
+    if (__DEV__) {
+      console.warn(
+        'FormTextInput: Missing FormProvider context or control prop. ' +
+          'Please wrap your form in FormProvider or pass a control prop.'
+      );
+    }
+    return (
+      <ThemedTextInput
+        ref={ref}
+        value=""
+        onChangeText={() => {}}
+        helperText="⚠️ Form context missing"
+        status="error"
+        {...props}
+      />
+    );
   }
 
   return (
@@ -139,7 +154,13 @@ export const FormCheckbox = forwardRef<React.ElementRef<typeof ThemedCheckbox>, 
     const actualControl = control || methods?.control;
 
     if (!actualControl) {
-      throw new Error('FormCheckbox must be used within FormProvider or with control prop');
+      if (__DEV__) {
+        console.warn(
+          'FormCheckbox: Missing FormProvider context or control prop. ' +
+            'Please wrap your form in FormProvider or pass a control prop.'
+        );
+      }
+      return <ThemedCheckbox ref={ref} value={false} onValueChange={() => {}} {...props} />;
     }
 
     return (
@@ -206,7 +227,21 @@ export const FormRadio = forwardRef<React.ElementRef<typeof ThemedRadio>, FormRa
     const actualControl = control || methods?.control;
 
     if (!actualControl) {
-      throw new Error('FormRadio must be used within FormProvider or with control prop');
+      if (__DEV__) {
+        console.warn(
+          'FormRadio: Missing FormProvider context or control prop. ' +
+            'Please wrap your form in FormProvider or pass a control prop.'
+        );
+      }
+      return (
+        <ThemedRadio
+          ref={ref}
+          value={value}
+          selectedValue={undefined}
+          onValueChange={() => {}}
+          {...props}
+        />
+      );
     }
 
     return (
@@ -265,7 +300,13 @@ export function FormSwitch<
   const actualControl = control || methods?.control;
 
   if (!actualControl) {
-    throw new Error('FormSwitch must be used within FormProvider or with control prop');
+    if (__DEV__) {
+      console.warn(
+        'FormSwitch: Missing FormProvider context or control prop. ' +
+          'Please wrap your form in FormProvider or pass a control prop.'
+      );
+    }
+    return <ThemedSwitch value={false} onValueChange={() => {}} {...props} />;
   }
 
   return (

@@ -58,6 +58,12 @@ export { z } from 'zod';
 export { zodResolver } from '@hookform/resolvers/zod';
 
 /**
+ * Form layout components
+ * @description Components for structuring form layouts
+ */
+export { FormGroup, FormRow, type FormGroupProps, type FormRowProps } from './form-layout';
+
+/**
  * Validation schemas
  * @description Re-exported Zod schemas for form validation
  */

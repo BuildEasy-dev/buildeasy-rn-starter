@@ -9,14 +9,13 @@ import {
   FormProvider,
   FormTextInput,
   FormCheckbox,
-  FormRadio,
-  FormSwitch,
+  FormGroup,
+  FormRow,
   useForm,
   zodResolver,
 } from '@/components/form';
-import { Controller } from 'react-hook-form';
-import { ThemedCheckbox } from '@/components/themed';
 import { loginSchema, signUpSchema, profileSchema, z } from '@/schemas';
+import type { SubmitHandler } from 'react-hook-form';
 
 /**
  * Form Validation Showcase
@@ -88,18 +87,14 @@ function LoginFormExample() {
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit: SubmitHandler<z.infer<typeof loginSchema>> = (data) => {
     Alert.alert('Login Form Submitted', JSON.stringify(data, null, 2));
   };
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <FormProvider methods={methods}>
-        <View style={styles.formContainer}>
-          <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
-            Login Form
-          </ThemedText>
-
+        <FormGroup title="Login Form">
           <FormTextInput
             name="email"
             label="Email"
@@ -118,24 +113,17 @@ function LoginFormExample() {
             autoComplete="current-password"
           />
 
-          <Controller
-            name="rememberMe"
-            control={methods.control}
-            render={({ field: { onChange, value } }) => (
-              <ThemedCheckbox value={!!value} onValueChange={onChange} label="Remember me" />
-            )}
-          />
+          <FormCheckbox name="rememberMe" label="Remember me" />
 
           <ThemedButton
             label="Sign In"
             isLoading={methods.formState.isSubmitting}
             onPress={methods.handleSubmit(onSubmit)}
             fullWidth
-            style={styles.submitButton}
           />
 
           <FormStateDisplay formState={methods.formState} />
-        </View>
+        </FormGroup>
       </FormProvider>
     </ScrollView>
   );
@@ -160,32 +148,21 @@ function SignUpFormExample() {
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit: SubmitHandler<z.infer<typeof signUpSchema>> = (data) => {
     Alert.alert('Sign Up Form Submitted', JSON.stringify(data, null, 2));
   };
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <FormProvider methods={methods}>
-        <View style={styles.formContainer}>
-          <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
-            Sign Up Form
-          </ThemedText>
-
-          <View style={styles.rowContainer}>
-            <FormTextInput
-              name="firstName"
-              label="First Name"
-              placeholder="John"
-              containerStyle={styles.halfWidth}
-            />
-            <FormTextInput
-              name="lastName"
-              label="Last Name"
-              placeholder="Doe"
-              containerStyle={styles.halfWidth}
-            />
-          </View>
+        <FormGroup
+          title="Sign Up Form"
+          description="Create your account with the information below"
+        >
+          <FormRow>
+            <FormTextInput name="firstName" label="First Name" placeholder="John" />
+            <FormTextInput name="lastName" label="Last Name" placeholder="Doe" />
+          </FormRow>
 
           <FormTextInput
             name="username"
@@ -229,11 +206,10 @@ function SignUpFormExample() {
             isLoading={methods.formState.isSubmitting}
             onPress={methods.handleSubmit(onSubmit)}
             fullWidth
-            style={styles.submitButton}
           />
 
           <FormStateDisplay formState={methods.formState} />
-        </View>
+        </FormGroup>
       </FormProvider>
     </ScrollView>
   );
@@ -257,22 +233,18 @@ function ProfileFormExample() {
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit: SubmitHandler<z.infer<typeof profileSchema>> = (data) => {
     Alert.alert('Profile Form Submitted', JSON.stringify(data, null, 2));
   };
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <FormProvider methods={methods}>
-        <View style={styles.formContainer}>
-          <ThemedText type="h6" weight="semibold" style={styles.formTitle}>
-            Profile Form
-          </ThemedText>
-
-          <View style={styles.rowContainer}>
-            <FormTextInput name="firstName" label="First Name" containerStyle={styles.halfWidth} />
-            <FormTextInput name="lastName" label="Last Name" containerStyle={styles.halfWidth} />
-          </View>
+        <FormGroup title="Basic Information">
+          <FormRow>
+            <FormTextInput name="firstName" label="First Name" />
+            <FormTextInput name="lastName" label="Last Name" />
+          </FormRow>
 
           <FormTextInput
             name="email"
@@ -280,43 +252,49 @@ function ProfileFormExample() {
             keyboardType="email-address"
             autoCapitalize="none"
           />
+        </FormGroup>
 
+        <FormGroup
+          title="Contact Details"
+          description="Optional information to help others connect"
+        >
           <FormTextInput
             name="phone"
-            label="Phone (Optional)"
+            label="Phone"
             placeholder="+1 (555) 123-4567"
             keyboardType="phone-pad"
           />
 
+          <FormTextInput name="location" label="Location" placeholder="New York, NY" />
+
+          <FormTextInput
+            name="website"
+            label="Website"
+            placeholder="https://example.com"
+            keyboardType="url"
+            autoCapitalize="none"
+          />
+        </FormGroup>
+
+        <FormGroup title="About">
           <FormTextInput
             name="bio"
-            label="Bio (Optional)"
+            label="Bio"
             placeholder="Tell us about yourself..."
             multiline
             numberOfLines={3}
             style={styles.textArea}
           />
+        </FormGroup>
 
-          <FormTextInput name="location" label="Location (Optional)" placeholder="New York, NY" />
+        <ThemedButton
+          label="Update Profile"
+          isLoading={methods.formState.isSubmitting}
+          onPress={methods.handleSubmit(onSubmit)}
+          fullWidth
+        />
 
-          <FormTextInput
-            name="website"
-            label="Website (Optional)"
-            placeholder="https://example.com"
-            keyboardType="url"
-            autoCapitalize="none"
-          />
-
-          <ThemedButton
-            label="Update Profile"
-            isLoading={methods.formState.isSubmitting}
-            onPress={methods.handleSubmit(onSubmit)}
-            fullWidth
-            style={styles.submitButton}
-          />
-
-          <FormStateDisplay formState={methods.formState} />
-        </View>
+        <FormStateDisplay formState={methods.formState} />
       </FormProvider>
     </ScrollView>
   );
@@ -326,7 +304,16 @@ function ProfileFormExample() {
 // Form State Display Component
 // ============================================================================
 
-function FormStateDisplay({ formState }: { formState: any }) {
+function FormStateDisplay({
+  formState,
+}: {
+  formState: {
+    isValid: boolean;
+    isDirty: boolean;
+    touchedFields: Record<string, any>;
+    errors: Record<string, any>;
+  };
+}) {
   const hasErrors = Object.keys(formState.errors).length > 0;
 
   return (
@@ -384,25 +371,9 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 32,
   },
-  formContainer: {
-    gap: 16,
-  },
-  formTitle: {
-    marginBottom: 8,
-  },
-  rowContainer: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  halfWidth: {
-    flex: 1,
-  },
   textArea: {
     minHeight: 80,
     textAlignVertical: 'top',
-  },
-  submitButton: {
-    marginTop: 8,
   },
   formStateContainer: {
     marginTop: 16,
@@ -413,18 +384,5 @@ const styles = StyleSheet.create({
   },
   formStateTitle: {
     marginBottom: 4,
-  },
-  sectionTitle: {
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  radioGroup: {
-    gap: 8,
-    marginBottom: 16,
-  },
-  switchLabel: {
-    marginTop: -8,
-    marginBottom: 8,
-    marginLeft: 4,
   },
 });
