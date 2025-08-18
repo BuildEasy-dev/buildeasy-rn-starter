@@ -152,7 +152,7 @@ export const ThemedCheckbox = memo(
 
       const checkboxOpacity = disabled ? 0.6 : pressed ? 0.8 : 1;
 
-      // Animated styles
+      // Animated styles - combine background and border on same element
       const animatedCheckboxStyle = useAnimatedStyle(() => ({
         transform: [{ scale: checkboxScale.value }],
         backgroundColor: interpolateColor(
@@ -160,6 +160,8 @@ export const ThemedCheckbox = memo(
           [0, 1],
           ['transparent', checkColor]
         ),
+        borderColor: checkboxBorderColor,
+        opacity: checkboxOpacity,
       }));
 
       const animatedCheckmarkStyle = useAnimatedStyle(() => ({
@@ -184,21 +186,10 @@ export const ThemedCheckbox = memo(
           {...rest}
         >
           <View style={styles.container}>
-            <Animated.View style={animatedCheckboxStyle}>
-              <View
-                style={[
-                  styles.checkbox,
-                  sizeConfig,
-                  {
-                    borderColor: checkboxBorderColor,
-                    opacity: checkboxOpacity,
-                  },
-                ]}
-              >
-                <Animated.View style={animatedCheckmarkStyle}>
-                  <IconSymbol name="checkmark" size={getIconSize(size)} color="white" />
-                </Animated.View>
-              </View>
+            <Animated.View style={[styles.checkbox, sizeConfig, animatedCheckboxStyle]}>
+              <Animated.View style={animatedCheckmarkStyle}>
+                <IconSymbol name="checkmark" size={getIconSize(size)} color="white" />
+              </Animated.View>
             </Animated.View>
 
             {label && (
