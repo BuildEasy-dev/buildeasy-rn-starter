@@ -14,8 +14,53 @@ import {
   useForm,
   zodResolver,
 } from '@/components/form';
-import { loginSchema, signUpSchema, profileSchema, z } from '@/schemas';
+import {
+  emailSchema,
+  nameSchema,
+  usernameSchema,
+  strongPasswordSchema,
+  termsAcceptanceSchema,
+  urlSchema,
+} from '@/components/form/form-schema';
 import type { SubmitHandler } from 'react-hook-form';
+import { z } from 'zod';
+
+// ============================================================================
+// Schema Definitions
+// ============================================================================
+
+// Form schemas
+const loginSchema = z.object({
+  email: emailSchema,
+  password: z.string().min(1, 'Password is required'),
+  rememberMe: z.boolean().optional().default(false),
+});
+
+const signUpSchema = z
+  .object({
+    firstName: nameSchema,
+    lastName: nameSchema,
+    username: usernameSchema,
+    email: emailSchema,
+    password: strongPasswordSchema,
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+    acceptTerms: termsAcceptanceSchema,
+    subscribeNewsletter: z.boolean().optional().default(false),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+const profileSchema = z.object({
+  firstName: nameSchema,
+  lastName: nameSchema,
+  email: emailSchema,
+  phone: z.string().optional().or(z.literal('')),
+  bio: z.string().max(500, 'Bio must be less than 500 characters').optional().or(z.literal('')),
+  location: z.string().optional().or(z.literal('')),
+  website: urlSchema,
+});
 
 /**
  * Form Validation Showcase

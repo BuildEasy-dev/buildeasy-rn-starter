@@ -15,12 +15,21 @@ const schema = z.object({
 function MyForm() {
   const methods = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {
+      email: '',
+      name: '',
+    },
   });
+
+  const onSubmit = (data: z.infer<typeof schema>) => {
+    console.log('Form data:', data);
+  };
 
   return (
     <FormProvider methods={methods}>
       <FormTextInput name="email" label="Email" />
       <FormTextInput name="name" label="Name" />
+      <Button onPress={methods.handleSubmit(onSubmit)}>Submit</Button>
     </FormProvider>
   );
 }
