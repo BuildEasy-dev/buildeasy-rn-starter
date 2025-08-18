@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ThemedButton } from '@/components/themed/themed-button';
 import { ThemedModal } from '@/components/themed/themed-modal';
 import { SelectionModal } from '@/components/ui/selection-modal';
 import { ThemedText } from '@/components/themed/themed-text';
-import { ThemedView } from '@/components/themed/themed-view';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { ActionSheetModal } from '@/components/ui/action-sheet-modal';
 import { InputModal } from '@/components/ui/input-modal';
@@ -153,7 +152,7 @@ export const ModalShowcase = () => {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.container}>
       <View style={styles.section}>
         <ThemedText type="h6" style={styles.firstSubTitle}>
           Basic Usage
@@ -758,13 +757,17 @@ export const ModalShowcase = () => {
           isDestructive={true}
         />
       </View>
-    </ThemedView>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   container: {
     paddingHorizontal: 16,
+    paddingBottom: 32,
   },
   firstSubTitle: {
     marginTop: 0,
