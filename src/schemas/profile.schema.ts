@@ -6,7 +6,7 @@ import {
   urlSchema,
   optionalStringSchema,
   imageFileSchema,
-} from './common.schema';
+} from '@/components/form/validation.schema';
 
 /**
  * User profile-related schemas

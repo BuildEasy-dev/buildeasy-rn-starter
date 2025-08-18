@@ -5,7 +5,7 @@ import {
   nameSchema,
   usernameSchema,
   termsAcceptanceSchema,
-} from './common.schema';
+} from '@/components/form/validation.schema';
 
 /**
  * Authentication-related schemas

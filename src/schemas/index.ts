@@ -4,12 +4,6 @@
  */
 
 /**
- * Common validation utilities
- * @description Exports reusable validation patterns and helper functions
- */
-export * from './common.schema';
-
-/**
  * Authentication schemas
  * @description Exports login, signup, password reset, and other auth-related schemas
  */

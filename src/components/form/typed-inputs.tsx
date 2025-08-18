@@ -1,3 +1,8 @@
+/**
+ * Typed form input components
+ * @fileoverview Form input components with automatic validation and theming integration
+ */
+
 import React, { forwardRef } from 'react';
 import {
   Controller,
@@ -17,24 +22,30 @@ import {
   type ThemedSwitchProps,
 } from '@/components/themed';
 
-// ============================================================================
-// FormTextInput
-// ============================================================================
-
+/**
+ * Props for the FormTextInput component
+ * @template TFieldValues - The form values type
+ * @template TName - The field name type
+ */
 export type FormTextInputProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = Omit<ThemedTextInputProps, 'value' | 'onChangeText' | 'onBlur' | 'ref'> & {
+  /** The name of the form field */
   name: TName;
+  /** Optional form control - uses context if not provided */
   control?: Control<TFieldValues>;
 };
 
 /**
- * FormTextInput - Text input with form validation
- *
- * Integrates ThemedTextInput with React Hook Form for automatic validation
- * and error handling.
- *
+ * Text input with form validation
+ * @description Integrates ThemedTextInput with React Hook Form for automatic validation
+ * and error handling
+ * @template TFieldValues - The form values type
+ * @template TName - The field name type
+ * @param props - The form text input properties
+ * @param ref - The forwarded ref
+ * @returns The text input component with form validation
  * @example
  * ```tsx
  * <FormTextInput
@@ -87,21 +98,29 @@ export const FormTextInput = forwardRef<
   );
 });
 
-// ============================================================================
-// FormCheckbox
-// ============================================================================
-
+/**
+ * Props for the FormCheckbox component
+ * @template TFieldValues - The form values type
+ * @template TName - The field name type
+ */
 export type FormCheckboxProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = Omit<ThemedCheckboxProps, 'value' | 'onValueChange' | 'ref'> & {
+  /** The name of the form field */
   name: TName;
+  /** Optional form control - uses context if not provided */
   control?: Control<TFieldValues>;
 };
 
 /**
- * FormCheckbox - Checkbox with form validation
- *
+ * Checkbox with form validation
+ * @description Integrates ThemedCheckbox with React Hook Form for boolean field validation
+ * @template TFieldValues - The form values type
+ * @template TName - The field name type
+ * @param props - The form checkbox properties
+ * @param ref - The forwarded ref
+ * @returns The checkbox component with form validation
  * @example
  * ```tsx
  * <FormCheckbox
@@ -135,22 +154,32 @@ export const FormCheckbox = forwardRef<React.ElementRef<typeof ThemedCheckbox>, 
   }
 );
 
-// ============================================================================
-// FormRadio
-// ============================================================================
-
+/**
+ * Props for the FormRadio component
+ * @template TFieldValues - The form values type
+ * @template TName - The field name type
+ * @template TValue - The value type for the radio button
+ */
 export type FormRadioProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TValue = string | number,
 > = Omit<ThemedRadioProps<TValue>, 'selectedValue' | 'onValueChange' | 'ref'> & {
+  /** The name of the form field */
   name: TName;
+  /** Optional form control - uses context if not provided */
   control?: Control<TFieldValues>;
 };
 
 /**
- * FormRadio - Radio button with form validation
- *
+ * Radio button with form validation
+ * @description Integrates ThemedRadio with React Hook Form for single-choice field validation
+ * @template TFieldValues - The form values type
+ * @template TName - The field name type
+ * @template TValue - The value type for the radio button
+ * @param props - The form radio properties
+ * @param ref - The forwarded ref
+ * @returns The radio button component with form validation
  * @example
  * ```tsx
  * <FormRadio
@@ -198,21 +227,28 @@ export const FormRadio = forwardRef<React.ElementRef<typeof ThemedRadio>, FormRa
   }
 );
 
-// ============================================================================
-// FormSwitch
-// ============================================================================
-
+/**
+ * Props for the FormSwitch component
+ * @template TFieldValues - The form values type
+ * @template TName - The field name type
+ */
 export type FormSwitchProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = Omit<ThemedSwitchProps, 'value' | 'onValueChange'> & {
+  /** The name of the form field */
   name: TName;
+  /** Optional form control - uses context if not provided */
   control?: Control<TFieldValues>;
 };
 
 /**
- * FormSwitch - Switch with form validation
- *
+ * Switch with form validation
+ * @description Integrates ThemedSwitch with React Hook Form for boolean toggle field validation
+ * @template TFieldValues - The form values type
+ * @template TName - The field name type
+ * @param props - The form switch properties
+ * @returns The switch component with form validation
  * @example
  * ```tsx
  * <FormSwitch

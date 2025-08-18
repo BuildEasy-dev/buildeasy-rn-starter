@@ -1,10 +1,24 @@
-// Form Provider
+/**
+ * Form components exports
+ * @fileoverview Central export point for all form-related components, hooks, and utilities
+ */
+
+/**
+ * Form Provider component
+ * @description Context wrapper for React Hook Form integration
+ */
 export { FormProvider, type FormProviderProps } from './form-provider';
 
-// Form Field
+/**
+ * Form Field component
+ * @description Generic form field wrapper with validation
+ */
 export { FormField, type FormFieldProps } from './form-field';
 
-// Typed Input Components
+/**
+ * Typed Input Components
+ * @description Form input components with automatic validation and theming
+ */
 export {
   FormTextInput,
   FormCheckbox,
@@ -16,7 +30,10 @@ export {
   type FormSwitchProps,
 } from './typed-inputs';
 
-// Re-export useful types from react-hook-form
+/**
+ * React Hook Form types
+ * @description Re-exported useful types from react-hook-form for convenience
+ */
 export type {
   UseFormReturn,
   FieldValues,
@@ -27,9 +44,21 @@ export type {
   SubmitErrorHandler,
 } from 'react-hook-form';
 
-// Re-export essential hooks
+/**
+ * React Hook Form hooks
+ * @description Re-exported essential hooks from react-hook-form
+ */
 export { useForm, useFormContext, useController, useWatch } from 'react-hook-form';
 
-// Re-export zod and resolver
+/**
+ * Zod integration
+ * @description Re-exported Zod library and resolver for form validation
+ */
 export { z } from 'zod';
 export { zodResolver } from '@hookform/resolvers/zod';
+
+/**
+ * Validation schemas
+ * @description Re-exported Zod schemas for form validation
+ */
+export * from './validation.schema';
