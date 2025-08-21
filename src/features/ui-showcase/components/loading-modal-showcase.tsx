@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ThemedButton } from '@/components/themed/themed-button';
 import { ThemedLoadingModal } from '@/components/ui/loading-modal';
 import { ThemedText } from '@/components/themed/themed-text';
-import { ThemedView } from '@/components/themed/themed-view';
 
 /**
  * Loading Modal Component Showcase
@@ -38,7 +37,7 @@ export const LoadingModalShowcase = () => {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.container}>
       <View style={styles.section}>
         <ThemedText type="h6" style={styles.firstSubTitle}>
           Basic Usage
@@ -94,13 +93,17 @@ export const LoadingModalShowcase = () => {
           contentContainerStyle={styles.customContent}
         />
       </View>
-    </ThemedView>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   container: {
     paddingHorizontal: 16,
+    paddingBottom: 32,
   },
   firstSubTitle: {
     marginTop: 0,

@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git commit:*), Bash(gh pr create:*), Bash(git log:*), Bash(git pr list:*)
+allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git commit:*), Bash(gh pr create:*), Bash(git log:*), Bash(gh pr list:*)
 description: Create a github pull request
 ---
 
