@@ -12,7 +12,7 @@ This document outlines the integration of Expo Application Services (EAS) into t
 
 ### Current Stack
 
-- Expo SDK: 53.0.20
+- Expo SDK: 54.x
 - React Native: 0.79.5 (New Architecture enabled)
 - Package manager: pnpm
 

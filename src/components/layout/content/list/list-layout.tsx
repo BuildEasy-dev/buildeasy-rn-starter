@@ -6,7 +6,7 @@ import {
   ViewStyle,
   ActivityIndicator,
 } from 'react-native';
-import { ListRenderItem as FlashListRenderItem, ContentStyle } from '@shopify/flash-list';
+import { ListRenderItem as FlashListRenderItem } from '@shopify/flash-list';
 import { ThemedView, ThemedFlashList, ScrollToTopFlashList, ThemedText } from '@/components/themed';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { ListEmptyState } from './list-empty-state';
@@ -63,7 +63,7 @@ export interface ListLayoutProps<T> {
 
   // Styling
   containerStyle?: ViewStyle;
-  contentContainerStyle?: ContentStyle;
+  contentContainerStyle?: ViewStyle;
   separatorColor?: ThemedColor;
   showSeparator?: boolean;
 
@@ -109,7 +109,7 @@ export function ListLayout<T>({
   // Combine contentContainerStyle with required bottom padding
   // Note: FlashList contentContainerStyle doesn't support flexGrow, so we handle
   // empty state styling through the parent container
-  const finalContentContainerStyle = useMemo((): ContentStyle => {
+  const finalContentContainerStyle = useMemo((): ViewStyle => {
     return {
       paddingBottom: bottomInset,
       ...contentContainerStyle,

@@ -19,7 +19,7 @@ The core goal is a clean architecture that AI assistants like Cursor and Claude 
 
 ## Tech Stack
 
-- **Framework**: [Expo](https://expo.dev) (SDK 53)
+- **Framework**: [Expo](https://expo.dev) (SDK 54)
 - **UI Library**: [Tamagui](https://tamagui.dev)
 - **Navigation**: [Expo Router](https://docs.expo.dev/router/introduction/) (file-based)
 - **Data Fetching**: [TanStack Query](https://tanstack.com/query/latest)

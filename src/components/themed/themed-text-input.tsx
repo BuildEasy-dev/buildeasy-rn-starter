@@ -242,12 +242,12 @@ export const ThemedTextInput = memo(
       const visibilityIcon = passwordVisible ? 'lock.open.fill' : 'lock.fill';
       const borderRadius = getBorderRadius(size, rounded, variant);
 
-      const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      const handleFocus = (e: any) => {
         setFocused(true);
         rest.onFocus?.(e);
       };
 
-      const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      const handleBlur = (e: any) => {
         setFocused(false);
         rest.onBlur?.(e);
       };

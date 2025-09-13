@@ -11,21 +11,21 @@ export type ThemedFlashListProps<ItemT> = FlashListProps<ItemT> & {
 
 function ThemedFlashListComponent<ItemT>(
   { contentContainerStyle, lightColor, darkColor, ...otherProps }: ThemedFlashListProps<ItemT>,
-  ref: React.Ref<FlashList<ItemT>>
+  ref: any
 ) {
   const backgroundColor = useThemeColor('background', { light: lightColor, dark: darkColor });
 
   return (
     <FlashList
       ref={ref}
-      contentContainerStyle={{ backgroundColor, ...contentContainerStyle }}
+      contentContainerStyle={{ backgroundColor, ...(contentContainerStyle as any) }}
       {...otherProps}
     />
   );
 }
 
 export const ThemedFlashList = forwardRef(ThemedFlashListComponent) as <ItemT>(
-  props: ThemedFlashListProps<ItemT> & { ref?: React.Ref<FlashList<ItemT>> }
+  props: ThemedFlashListProps<ItemT> & { ref?: any }
 ) => React.ReactElement;
 
 /**

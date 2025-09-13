@@ -81,7 +81,7 @@ For detailed theming patterns and configuration, see **[docs/theme-guide.md](doc
 
 - **React Native**: 0.79.5 with New Architecture enabled
 - **React**: 19.0.0
-- **Expo SDK**: 53.0.20
+- **Expo SDK**: 54.x
 - **TypeScript**: Strict mode enabled
 - **Navigation**: Expo Router v5 (file-based)
 - **UI Framework**: Tamagui for theming and styled components

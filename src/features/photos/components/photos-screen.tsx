@@ -149,7 +149,6 @@ export function PhotosScreen() {
             data={posts}
             renderItem={renderPhoto}
             keyExtractor={(item: any) => item.id}
-            estimatedItemSize={500}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={
               posts.length === 0

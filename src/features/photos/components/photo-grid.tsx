@@ -159,7 +159,6 @@ export function PhotoGrid({
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       numColumns={GRID_COLUMNS}
-      estimatedItemSize={ITEM_SIZE}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ ...styles.container, ...tabBarProps.contentContainerStyle }}
       scrollIndicatorInsets={tabBarProps.scrollIndicatorInsets}
