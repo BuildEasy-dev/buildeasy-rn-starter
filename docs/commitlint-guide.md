@@ -65,7 +65,7 @@ Good: `feat: add feature`
 Check last commit:
 
 ```bash
-pnpm commitlint
+pnpm commitlint:check
 ```
 
 Check last 10 commits:

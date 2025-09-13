@@ -151,7 +151,7 @@ For detailed guidelines, see the [Commitlint Guide](docs/commitlint-guide.md).
 - `pnpm web` - Run on web
 - `pnpm lint` - Run ESLint
 - `pnpm typecheck` - Run TypeScript type checking
-- `pnpm commitlint` - Validate last commit message
+- `pnpm commitlint:check` - Validate last commit message
 - `pnpm storybook` - Launch Storybook
 
 ### Build & Deploy Scripts
